@@ -28,6 +28,7 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+@SuppressWarnings("unused")
 public class ThirstManager extends BukkitRunnable implements Listener {
     static Main plugin;
     public static HashMap<UUID, Integer> thirstPlayers = new HashMap<>();
