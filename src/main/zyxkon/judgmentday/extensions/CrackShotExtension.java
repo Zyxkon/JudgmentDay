@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+@SuppressWarnings("unused")
 public class CrackShotExtension implements Listener {
     Main plugin;
     public CrackShotExtension(Main plugin){
