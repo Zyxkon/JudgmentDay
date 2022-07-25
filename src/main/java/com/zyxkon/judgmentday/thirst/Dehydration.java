@@ -23,7 +23,7 @@ public class Dehydration {
                     Utils.sendActionBarMessage(player, "The lack of water makes you feel tired. Drink water immediately.");
                     bool = false;
                 }
-                int thirst = ThirstManager.thirstPlayers.get(player.getUniqueId());
+                int thirst = ThirstManager.getThirst(player);
                 if (thirst <= 10){
                     if (thirst == 10) Utils.sendActionBarMessage(player, "Your vision becomes blurry and everything around you seems distorted. FIND WATER NOW.");
                     player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 8*20, 0));
