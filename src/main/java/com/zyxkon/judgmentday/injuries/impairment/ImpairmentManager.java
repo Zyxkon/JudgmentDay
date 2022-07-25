@@ -20,11 +20,37 @@ import java.util.UUID;
 
 
 public class ImpairmentManager implements Listener {
-    public static Map<UUID, Impairment> affectedPlayers = new HashMap<>();
+    private static final Map<UUID, Impairment> affectedPlayers = new HashMap<>();
     static Main plugin;
     public ImpairmentManager(final Main plugin){
         ImpairmentManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+    public static boolean isInjured(Player player){
+        return isInjured(player.getUniqueId());
+    }
+    public static boolean isInjured(UUID uuid){
+        return affectedPlayers.containsKey(uuid);
+    }
+    public static void affectPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        affectedPlayers.put(uuid, new Impairment(plugin, player));
+    }
+    public static boolean healPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        if (affectedPlayers.containsKey(uuid)) {
+            affectedPlayers.get(uuid).cancel();
+            affectedPlayers.remove(uuid);
+            return true;
+        }
+        return false;
+    }
+    public static void shutDown(){
+        for (UUID uuid : affectedPlayers.keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
+            affectedPlayers.get(uuid).cancel();
+        }
     }
     @EventHandler
     public void onHurt(EntityDamageEvent event){
@@ -105,26 +131,6 @@ public class ImpairmentManager implements Listener {
         Player player = event.getEntity();
         System.out.println(event.getEntity().getLastDamageCause().toString());
         if (healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
-    }
-    public static void affectPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new Impairment(plugin, player));
-    }
-    public static boolean healPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
-            affectedPlayers.remove(uuid);
-            return true;
-        }
-        return false;
-    }
-    public static void shutDown(){
-        for (UUID uuid : affectedPlayers.keySet()){
-            Player player = Bukkit.getPlayer(uuid);
-            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
-            affectedPlayers.get(uuid).cancel();
-        }
     }
 }
 

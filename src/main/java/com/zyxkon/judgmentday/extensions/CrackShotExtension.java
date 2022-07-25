@@ -33,14 +33,14 @@ public class CrackShotExtension implements Listener {
                 percentChance = 5;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !InfectionManager.affectedPlayers.containsKey(player.getUniqueId()))
+                if (Utils.chance(percentChance) && !InfectionManager.isInjured(player))
                     InfectionManager.affectPlayer(player);
             }
             else if (damager == null){
                 percentChance = 10;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !InfectionManager.affectedPlayers.containsKey(player.getUniqueId()))
+                if (Utils.chance(percentChance) && !InfectionManager.isInjured(player))
                     InfectionManager.affectPlayer(player);
             }
         }
@@ -57,14 +57,14 @@ public class CrackShotExtension implements Listener {
                 percentChance = 10;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !BloodLossManager.affectedPlayers.containsKey(player.getUniqueId()))
+                if (Utils.chance(percentChance) && !BloodLossManager.isInjured(player))
                     BloodLossManager.affectPlayer(player);
             }
             else if (damager == null){
                 percentChance = 10;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !BloodLossManager.affectedPlayers.containsKey(player.getUniqueId()))
+                if (Utils.chance(percentChance) && !BloodLossManager.isInjured(player))
                     BloodLossManager.affectPlayer(player);
             }
         }

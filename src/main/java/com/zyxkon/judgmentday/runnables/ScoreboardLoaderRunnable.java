@@ -36,9 +36,9 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         objective.setDisplayName(Utils.translate("&c&n"+player.getName()));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         int thirst = ThirstManager.thirstPlayers.get(uuid);
-        boolean bleeding = BloodLossManager.affectedPlayers.containsKey(uuid);
-        boolean impaired = ImpairmentManager.affectedPlayers.containsKey(uuid);
-        boolean infected = InfectionManager.affectedPlayers.containsKey(uuid);
+        boolean bleeding = BloodLossManager.isInjured(player);
+        boolean impaired = ImpairmentManager.isInjured(player);
+        boolean infected = InfectionManager.isInjured(player);
         ArrayList<String> strings = new ArrayList<>();
         String injured = Utils.translate("&l&6»&eInjured: &r");
         if (!bleeding && !impaired && !infected) injured = injured.concat(Utils.translate("&aNo"));

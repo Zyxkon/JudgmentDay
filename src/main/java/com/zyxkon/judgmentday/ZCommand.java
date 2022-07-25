@@ -92,15 +92,15 @@ public class ZCommand implements CommandExecutor {
             else if (strings[0].equalsIgnoreCase("injure")){
                 Player p = Bukkit.getPlayer(strings[1]);
                 UUID uuid = p.getUniqueId();
-                if (strings[2].equalsIgnoreCase("bloodloss") && !BloodLossManager.affectedPlayers.containsKey(uuid)) {
+                if (strings[2].equalsIgnoreCase("bloodloss") && !BloodLossManager.isInjured(uuid)) {
                     BloodLossManager.affectPlayer(p);
                     p.sendMessage("You have been inflicted with blood loss!");
                 }
-                else if (strings[2].equalsIgnoreCase("impairment") && !ImpairmentManager.affectedPlayers.containsKey(uuid)) {
+                else if (strings[2].equalsIgnoreCase("impairment") && !ImpairmentManager.isInjured(uuid)) {
                     ImpairmentManager.affectPlayer(p);
                     p.sendMessage("You have been inflicted with impairment!");
                 }
-                else if (strings[2].equalsIgnoreCase("infection") && !InfectionManager.affectedPlayers.containsKey(uuid)) {
+                else if (strings[2].equalsIgnoreCase("infection") && !InfectionManager.isInjured(uuid)) {
                     InfectionManager.affectPlayer(p);
                     p.sendMessage("You have been inflicted with an infection!");
                 }

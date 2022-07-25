@@ -22,11 +22,38 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class InfectionManager implements Listener {
-    public static HashMap<UUID, Infection> affectedPlayers = new HashMap<>();
+    private static final HashMap<UUID, Infection> affectedPlayers = new HashMap<>();
     static Main plugin;
     public InfectionManager(Main plugin){
         InfectionManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+    public static boolean isInjured(Player player){
+        return isInjured(player.getUniqueId());
+    }
+    public static boolean isInjured(UUID uuid){
+        return affectedPlayers.containsKey(uuid);
+    }
+    public static void affectPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        affectedPlayers.put(uuid, new Infection(plugin, player));
+    }
+    public static boolean healPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        if (affectedPlayers.containsKey(uuid)) {
+            affectedPlayers.get(uuid).cancel();
+            affectedPlayers.remove(uuid);
+            return true;
+        }
+        return false;
+    }
+    public static void shutDown(){
+        for (UUID uuid : affectedPlayers.keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            for(PotionEffect potion : player.getActivePotionEffects()) player.removePotionEffect(potion.getType());
+            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
+            affectedPlayers.get(uuid).cancel();
+        }
     }
     @EventHandler
     public void onDamage(EntityDamageEvent event){
@@ -101,27 +128,6 @@ public class InfectionManager implements Listener {
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
         if (healPlayer(player)) event.setDeathMessage(String.format("%s succumbed to the infection.", player.getName()));
-    }
-    public static void affectPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new Infection(plugin, player));
-    }
-    public static boolean healPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
-            affectedPlayers.remove(uuid);
-            return true;
-        }
-        return false;
-    }
-    public static void shutDown(){
-        for (UUID uuid : affectedPlayers.keySet()){
-            Player player = Bukkit.getPlayer(uuid);
-            for(PotionEffect potion : player.getActivePotionEffects()) player.removePotionEffect(potion.getType());
-            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
-            affectedPlayers.get(uuid).cancel();
-        }
     }
 }
 

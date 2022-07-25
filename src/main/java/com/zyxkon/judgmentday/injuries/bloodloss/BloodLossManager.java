@@ -19,11 +19,35 @@ import java.util.*;
 
 
 public class BloodLossManager implements Listener {
-    public static Map<UUID, BloodLoss> affectedPlayers = new HashMap<>();
+    private static final Map<UUID, BloodLoss> affectedPlayers = new HashMap<>();
     static Main plugin;
     public BloodLossManager(Main plugin){
         BloodLossManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+    public static boolean isInjured(Player player){
+        return isInjured(player.getUniqueId());
+    }
+    public static boolean isInjured(UUID uuid){
+        return affectedPlayers.containsKey(uuid);
+    }
+    public static void affectPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        affectedPlayers.put(uuid, new BloodLoss(plugin, player));
+    }
+    public static boolean healPlayer(Player player){
+        UUID uuid = player.getUniqueId();
+        if (affectedPlayers.containsKey(uuid)) {
+            affectedPlayers.get(uuid).cancel();
+            affectedPlayers.remove(uuid);
+            return true;
+        }
+        return false;
+    }
+    public static void shutDown(){
+        for (UUID uuid : affectedPlayers.keySet()){
+            affectedPlayers.get(uuid).cancel();
+        }
     }
     @EventHandler
     public void onDamage(EntityDamageEvent event){
@@ -101,24 +125,6 @@ public class BloodLossManager implements Listener {
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
         if (healPlayer(player)) event.setDeathMessage(String.format("%s lost too much blood.", player.getName()));
-    }
-    public static void affectPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new BloodLoss(plugin, player));
-    }
-    public static boolean healPlayer(Player player){
-        UUID uuid = player.getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
-            affectedPlayers.remove(uuid);
-            return true;
-        }
-        return false;
-    }
-    public static void shutDown(){
-        for (UUID uuid : affectedPlayers.keySet()){
-            affectedPlayers.get(uuid).cancel();
-        }
     }
 }
 
