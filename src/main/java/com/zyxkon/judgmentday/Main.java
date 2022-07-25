@@ -13,11 +13,9 @@ import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.text.MessageFormat;
 
 public class Main extends JavaPlugin {
     @Override

@@ -34,6 +34,7 @@ public class ZCommand implements CommandExecutor {
         }
         if (strings.length == 0){
             commandSender.sendMessage("Plugin được phát triển bởi Zyxkon");
+            return true;
         }
         /*
         /zyxkon effect <amplifier> <duration> <effect>
@@ -43,9 +44,9 @@ public class ZCommand implements CommandExecutor {
         /zyxkon thirst <player> <amount>
         /zyxkon injure <player> [bloodloss|impairment|infection]
         */
-        else {
-            Player player = (Player) commandSender;
-            if (strings[0].equalsIgnoreCase("effect")){
+        Player player = (Player) commandSender;
+        switch (strings[0].toLowerCase()) {
+            case "effect": {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
                 int amplifier = Integer.parseInt(strings[1]);
@@ -57,7 +58,7 @@ public class ZCommand implements CommandExecutor {
                         meta.getDisplayName()));
                 return true;
             }
-            else if (strings[0].equalsIgnoreCase("enchant")){
+            case "enchant": {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 ItemMeta meta = item.getItemMeta();
                 Enchantment ench = Enchantment.getByName((strings[1]).toUpperCase());
@@ -66,7 +67,7 @@ public class ZCommand implements CommandExecutor {
                 item.setItemMeta(meta);
                 player.sendMessage(Utils.translate(String.format("&n%s &ahas been enchanted with &b%s&a of level &c%s", meta.getDisplayName(), ench.getName(), lvl)));
             }
-            else if (strings[0].equalsIgnoreCase("rename")){
+            case "rename": {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 ItemMeta meta = item.getItemMeta();
                 String str = Utils.translate("&r" + String.join(" ", Arrays.copyOfRange(strings, 1, strings.length)));
@@ -75,7 +76,7 @@ public class ZCommand implements CommandExecutor {
                 player.sendMessage(Utils.translate(String.format("&b&n%s &ahas been renamed to &a&n%s", item.getType(), str)));
                 return true;
             }
-            else if (strings[0].equalsIgnoreCase("unbreak")){
+            case "unbreak": {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 ItemMeta meta = item.getItemMeta();
                 meta.setUnbreakable(true);
@@ -83,30 +84,35 @@ public class ZCommand implements CommandExecutor {
                 player.sendMessage(Utils.translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
                 return true;
             }
-            else if (strings[0].equalsIgnoreCase("thirst")){
+            case "thirst": {
                 Player p = Bukkit.getPlayer(strings[1]);
                 int thirst = Integer.parseInt(strings[2]);
                 ThirstManager.setThirst(p, thirst);
                 return true;
             }
-            else if (strings[0].equalsIgnoreCase("injure")){
+            case "injure": {
                 Player p = Bukkit.getPlayer(strings[1]);
                 UUID uuid = p.getUniqueId();
-                if (strings[2].equalsIgnoreCase("bloodloss") && !BloodLossManager.isInjured(uuid)) {
-                    BloodLossManager.affectPlayer(p);
-                    p.sendMessage("You have been inflicted with blood loss!");
+                switch (strings[2].toLowerCase()){
+                    case "bloodloss": {
+                        if (BloodLossManager.isInjured(uuid)) return true;
+                        BloodLossManager.affectPlayer(p);
+                        p.sendMessage("You have been inflicted with blood loss!");
+                    }
+                    case "impairment": {
+                        if (ImpairmentManager.isInjured(uuid)) return true;
+                        ImpairmentManager.affectPlayer(p);
+                        p.sendMessage("You have been inflicted with impairment!");
+                    }
+                    case "infection": {
+                        if (InfectionManager.isInjured(uuid)) return true;
+                        InfectionManager.affectPlayer(p);
+                        p.sendMessage("You have been inflicted with an infection!");
+
+                    }
                 }
-                else if (strings[2].equalsIgnoreCase("impairment") && !ImpairmentManager.isInjured(uuid)) {
-                    ImpairmentManager.affectPlayer(p);
-                    p.sendMessage("You have been inflicted with impairment!");
-                }
-                else if (strings[2].equalsIgnoreCase("infection") && !InfectionManager.isInjured(uuid)) {
-                    InfectionManager.affectPlayer(p);
-                    p.sendMessage("You have been inflicted with an infection!");
-                }
-                else player.sendMessage("Unknown injury!");
             }
         }
-        return true;
+        return false;
     }
 }
