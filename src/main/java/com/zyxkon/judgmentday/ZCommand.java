@@ -56,7 +56,6 @@ public class ZCommand implements CommandExecutor {
                 item.setItemMeta(meta);
                 player.sendMessage(String.format("%s %s %s has been applied to %s", effect.getType(), amplifier, duration,
                         meta.getDisplayName()));
-                return true;
             }
             case "enchant": {
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -74,7 +73,6 @@ public class ZCommand implements CommandExecutor {
                 meta.setDisplayName(str);
                 item.setItemMeta(meta);
                 player.sendMessage(Utils.translate(String.format("&b&n%s &ahas been renamed to &a&n%s", item.getType(), str)));
-                return true;
             }
             case "unbreak": {
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -82,13 +80,11 @@ public class ZCommand implements CommandExecutor {
                 meta.setUnbreakable(true);
                 item.setItemMeta(meta);
                 player.sendMessage(Utils.translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
-                return true;
             }
             case "thirst": {
                 Player p = Bukkit.getPlayer(strings[1]);
                 int thirst = Integer.parseInt(strings[2]);
                 ThirstManager.setThirst(p, thirst);
-                return true;
             }
             case "injure": {
                 Player p = Bukkit.getPlayer(strings[1]);
@@ -108,10 +104,10 @@ public class ZCommand implements CommandExecutor {
                         if (InfectionManager.isInjured(uuid)) return true;
                         InfectionManager.affectPlayer(p);
                         p.sendMessage("You have been inflicted with an infection!");
-
                     }
                 }
             }
+            return true;
         }
         return false;
     }
