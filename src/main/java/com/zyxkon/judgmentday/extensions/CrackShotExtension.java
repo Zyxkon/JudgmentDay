@@ -1,10 +1,10 @@
-package zyxkon.judgmentday.extensions;
+package com.zyxkon.judgmentday.extensions;
 
 import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
-import zyxkon.judgmentday.Main;
-import zyxkon.judgmentday.Utils;
-import zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
-import zyxkon.judgmentday.injuries.infection.InfectionManager;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
+import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

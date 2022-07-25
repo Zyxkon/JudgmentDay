@@ -1,7 +1,7 @@
-package zyxkon.judgmentday.general_listeners;
+package com.zyxkon.judgmentday.general_listeners;
 
-import zyxkon.judgmentday.Main;
-import zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

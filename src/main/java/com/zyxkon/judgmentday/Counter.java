@@ -1,4 +1,4 @@
-package zyxkon.judgmentday;
+package com.zyxkon.judgmentday;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;

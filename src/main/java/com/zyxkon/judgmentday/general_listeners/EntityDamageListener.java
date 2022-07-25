@@ -1,6 +1,6 @@
-package zyxkon.judgmentday.general_listeners;
+package com.zyxkon.judgmentday.general_listeners;
 
-import zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Main;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

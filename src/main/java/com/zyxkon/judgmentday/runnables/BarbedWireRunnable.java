@@ -1,6 +1,6 @@
-package zyxkon.judgmentday.runnables;
+package com.zyxkon.judgmentday.runnables;
 
-import zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Main;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;

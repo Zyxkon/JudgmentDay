@@ -1,8 +1,9 @@
-package zyxkon.judgmentday.injuries.bloodloss;
+package com.zyxkon.judgmentday.injuries.infection;
 
-import zyxkon.judgmentday.Utils;
-import zyxkon.judgmentday.Main;
-import org.bukkit.*;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,56 +15,56 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
-import java.util.*;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.ArrayList;
 
-
-public class BloodLossManager implements Listener {
-    public static Map<UUID, BloodLoss> affectedPlayers = new HashMap<>();
+public class InfectionManager implements Listener {
+    public static HashMap<UUID, Infection> affectedPlayers = new HashMap<>();
     static Main plugin;
-    public BloodLossManager(Main plugin){
-        BloodLossManager.plugin = plugin;
+    public InfectionManager(Main plugin){
+        InfectionManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
     public void onDamage(EntityDamageEvent event){
-        Entity entity = event.getEntity();
-        if (entity instanceof Player){
-            Player player = (Player) entity;
+        if (event.getEntity() instanceof Player){
             float percentChance;
+            Player player = (Player) event.getEntity();
+            ItemStack armor;
             if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
                 percentChance = 5;
-                if (player.getEquipment().getBoots() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getBoots().getType());
+                armor = player.getEquipment().getBoots();
+                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
             else if (player.getLocation().getBlock().getType() == Material.WEB){
-                percentChance = 5;
-                ItemStack armor = player.getEquipment().getLeggings();
+                percentChance = 10;
+                armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
             else if (player.getLocation().add(0, 1, 0).getBlock().getType() == Material.WEB){
-                percentChance = 5;
-                ItemStack armor = player.getEquipment().getHelmet();
-                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getHelmet().getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
-            }
-            else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
-                percentChance = 5;
+                percentChance = 10;
+                armor = player.getEquipment().getHelmet();
+                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
         }
     }
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event){
-        Entity victim = event.getEntity();
+    public void onDamageByEntity(EntityDamageByEntityEvent event){
         Entity damager = event.getDamager();
-        if (victim instanceof Player){
+        if (event.getEntity() instanceof Player){
             float percentChance;
-            Player player = (Player) victim;
-            if (damager instanceof Zombie){
+            Player player = (Player) event.getEntity();
+            ItemStack armor;
+            if (damager instanceof Zombie) {
                 percentChance = 20;
-                if (player.getEquipment().getChestplate() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getChestplate().getType());
+                armor = player.getEquipment().getChestplate();
+                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
         }
@@ -73,14 +74,13 @@ public class BloodLossManager implements Listener {
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){
             {
-                add(Material.NETHER_WARTS);
+                add(Material.GLOWSTONE_DUST);
                 add(Material.MUSHROOM_SOUP);
             }
         };
         if (remedies.contains(event.getMaterial())){
-            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-                Utils.healPlayer(player, 8d);
-                if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
+                if (healPlayer(player)) Utils.sendActionBarMessage(player, "You take an antibiotic. Your infection goes away.");
             }
         }
     }
@@ -100,11 +100,11 @@ public class BloodLossManager implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        if (healPlayer(player)) event.setDeathMessage(String.format("%s lost too much blood.", player.getName()));
+        if (healPlayer(player)) event.setDeathMessage(String.format("%s succumbed to the infection.", player.getName()));
     }
     public static void affectPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new BloodLoss(plugin, player));
+        affectedPlayers.put(uuid, new Infection(plugin, player));
     }
     public static boolean healPlayer(Player player){
         UUID uuid = player.getUniqueId();
@@ -117,6 +117,9 @@ public class BloodLossManager implements Listener {
     }
     public static void shutDown(){
         for (UUID uuid : affectedPlayers.keySet()){
+            Player player = Bukkit.getPlayer(uuid);
+            for(PotionEffect potion : player.getActivePotionEffects()) player.removePotionEffect(potion.getType());
+            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
             affectedPlayers.get(uuid).cancel();
         }
     }

@@ -1,4 +1,4 @@
-package zyxkon.judgmentday.extensions;
+package com.zyxkon.judgmentday.extensions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;

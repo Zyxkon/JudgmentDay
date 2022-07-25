@@ -1,7 +1,7 @@
-package zyxkon.judgmentday.thirst;
+package com.zyxkon.judgmentday.thirst;
 
-import zyxkon.judgmentday.Main;
-import zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;

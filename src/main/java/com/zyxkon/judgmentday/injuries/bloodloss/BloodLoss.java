@@ -1,7 +1,7 @@
-package zyxkon.judgmentday.injuries.bloodloss;
+package com.zyxkon.judgmentday.injuries.bloodloss;
 
-import zyxkon.judgmentday.Main;
-import zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import org.bukkit.entity.Player;
 
 public class BloodLoss {

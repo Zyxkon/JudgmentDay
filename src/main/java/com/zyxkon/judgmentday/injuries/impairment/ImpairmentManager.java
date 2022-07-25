@@ -1,70 +1,55 @@
-package zyxkon.judgmentday.injuries.infection;
+package com.zyxkon.judgmentday.injuries.impairment;
 
-import zyxkon.judgmentday.Utils;
-import zyxkon.judgmentday.Main;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.*;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 
-import java.util.UUID;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public class InfectionManager implements Listener {
-    public static HashMap<UUID, Infection> affectedPlayers = new HashMap<>();
+
+public class ImpairmentManager implements Listener {
+    public static Map<UUID, Impairment> affectedPlayers = new HashMap<>();
     static Main plugin;
-    public InfectionManager(Main plugin){
-        InfectionManager.plugin = plugin;
+    public ImpairmentManager(final Main plugin){
+        ImpairmentManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
-    public void onDamage(EntityDamageEvent event){
-        if (event.getEntity() instanceof Player){
+    public void onHurt(EntityDamageEvent event){
+        Entity entity = event.getEntity();
+        if (entity instanceof Player){
+            Player player = (Player) entity;
             float percentChance;
-            Player player = (Player) event.getEntity();
-            ItemStack armor;
-            if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
+            if (player.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
                 percentChance = 5;
-                armor = player.getEquipment().getBoots();
+                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+            }
+            else if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
+                percentChance = 15;
+                ItemStack armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
-            else if (player.getLocation().getBlock().getType() == Material.WEB){
-                percentChance = 10;
-                armor = player.getEquipment().getLeggings();
+            else if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
+                percentChance = 5;
+                ItemStack armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
-            else if (player.getLocation().add(0, 1, 0).getBlock().getType() == Material.WEB){
-                percentChance = 10;
-                armor = player.getEquipment().getHelmet();
-                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
-            }
-        }
-    }
-    @EventHandler
-    public void onDamageByEntity(EntityDamageByEntityEvent event){
-        Entity damager = event.getDamager();
-        if (event.getEntity() instanceof Player){
-            float percentChance;
-            Player player = (Player) event.getEntity();
-            ItemStack armor;
-            if (damager instanceof Zombie) {
-                percentChance = 20;
-                armor = player.getEquipment().getChestplate();
-                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
+            else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
+                percentChance = 5;
                 if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
             }
         }
@@ -74,13 +59,14 @@ public class InfectionManager implements Listener {
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){
             {
-                add(Material.GLOWSTONE_DUST);
+                add(Material.NETHER_WARTS);
                 add(Material.MUSHROOM_SOUP);
             }
         };
         if (remedies.contains(event.getMaterial())){
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
-                if (healPlayer(player)) Utils.sendActionBarMessage(player, "You take an antibiotic. Your infection goes away.");
+            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
+                if (healPlayer(player)) Utils.sendActionBarMessage(player,
+                        "You bandage your broken legs but it still takes you a while to walk normally again.");
             }
         }
     }
@@ -98,13 +84,31 @@ public class InfectionManager implements Listener {
         }
     }
     @EventHandler
+    public void onJump(PlayerMoveEvent event){
+        Player player = event.getPlayer();
+        UUID uuid = player.getUniqueId();
+        Location to = event.getTo();
+        Location from = event.getFrom();
+        if (affectedPlayers.containsKey(uuid)) {
+            if (!affectedPlayers.get(uuid).canJump) {
+                if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event){
+        Player player = event.getPlayer();
+        player.setWalkSpeed(player.getWalkSpeed());
+    }
+    @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        if (healPlayer(player)) event.setDeathMessage(String.format("%s succumbed to the infection.", player.getName()));
+        System.out.println(event.getEntity().getLastDamageCause().toString());
+        if (healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
     }
     public static void affectPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new Infection(plugin, player));
+        affectedPlayers.put(uuid, new Impairment(plugin, player));
     }
     public static boolean healPlayer(Player player){
         UUID uuid = player.getUniqueId();
@@ -118,7 +122,6 @@ public class InfectionManager implements Listener {
     public static void shutDown(){
         for (UUID uuid : affectedPlayers.keySet()){
             Player player = Bukkit.getPlayer(uuid);
-            for(PotionEffect potion : player.getActivePotionEffects()) player.removePotionEffect(potion.getType());
             player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
             affectedPlayers.get(uuid).cancel();
         }

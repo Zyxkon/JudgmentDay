@@ -1,10 +1,9 @@
-package zyxkon.judgmentday.runnables;
+package com.zyxkon.judgmentday.runnables;
 
 import java.util.stream.Collectors;
 
-import zyxkon.judgmentday.Main;
-import static zyxkon.judgmentday.Utils.randRange;
-import static zyxkon.judgmentday.Utils.chance;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.*;
@@ -31,18 +30,18 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
             Random random = new Random();
             if (ents.size() <= limit){
                 World w = p.getWorld();
-                int x = randRange(15, 50);
-                int y = randRange(-3, 3);
-                int z = randRange(15, 50);
+                int x = Utils.randRange(15, 50);
+                int y = Utils.randRange(-3, 3);
+                int z = Utils.randRange(15, 50);
                 if (random.nextBoolean()) x = -x;
                 if (random.nextBoolean()) z = -z;
                 Location loc = p.getLocation().add(x, y, z);
-                int x_offset = randRange(-4, 4);
-                int z_offset = randRange(-4, 4);
+                int x_offset = Utils.randRange(-4, 4);
+                int z_offset = Utils.randRange(-4, 4);
                 loc.add(x_offset, 0, z_offset);
                 EntityType ent = EntityType.ZOMBIE;
-                if (chance(10)) ent = EntityType.HUSK;
-                else if (chance(35)) ent = EntityType.ZOMBIE_VILLAGER;
+                if (Utils.chance(10)) ent = EntityType.HUSK;
+                else if (Utils.chance(35)) ent = EntityType.ZOMBIE_VILLAGER;
                 w.spawnEntity(loc, ent);
                 loc.add(-x_offset, 0, -z_offset);
             }

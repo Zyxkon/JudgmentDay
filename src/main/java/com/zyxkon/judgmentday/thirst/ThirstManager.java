@@ -1,7 +1,7 @@
-package zyxkon.judgmentday.thirst;
+package com.zyxkon.judgmentday.thirst;
 
-import zyxkon.judgmentday.Utils;
-import zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;

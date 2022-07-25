@@ -1,9 +1,9 @@
-package zyxkon.judgmentday;
+package com.zyxkon.judgmentday;
 
-import zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
-import zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
-import zyxkon.judgmentday.injuries.infection.InfectionManager;
-import zyxkon.judgmentday.thirst.ThirstManager;
+import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
+import com.zyxkon.judgmentday.thirst.ThirstManager;
+import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
+import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,8 +19,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static zyxkon.judgmentday.Utils.translate;
-
 public class ZCommand implements CommandExecutor {
     Main plugin;
     public ZCommand(Main plugin){
@@ -31,7 +29,7 @@ public class ZCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!(commandSender instanceof Player)){
-            commandSender.sendMessage(translate("&cOnly &nplayers&c can use this command!"));
+            commandSender.sendMessage(Utils.translate("&cOnly &nplayers&c can use this command!"));
             return true;
         }
         if (strings.length == 0){
@@ -66,7 +64,7 @@ public class ZCommand implements CommandExecutor {
                 int lvl = Integer.parseInt(strings[2]);
                 meta.addEnchant(ench, lvl, true);
                 item.setItemMeta(meta);
-                player.sendMessage(translate(String.format("&n%s &ahas been enchanted with &b%s&a of level &c%s", meta.getDisplayName(), ench.getName(), lvl)));
+                player.sendMessage(Utils.translate(String.format("&n%s &ahas been enchanted with &b%s&a of level &c%s", meta.getDisplayName(), ench.getName(), lvl)));
             }
             else if (strings[0].equalsIgnoreCase("rename")){
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -82,7 +80,7 @@ public class ZCommand implements CommandExecutor {
                 ItemMeta meta = item.getItemMeta();
                 meta.setUnbreakable(true);
                 item.setItemMeta(meta);
-                player.sendMessage(translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
+                player.sendMessage(Utils.translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
                 return true;
             }
             else if (strings[0].equalsIgnoreCase("thirst")){
