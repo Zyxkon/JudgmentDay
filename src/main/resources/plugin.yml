@@ -1,4 +1,4 @@
-main: zyxkon.judgmentday.Main
+main: com.zyxkon.judgmentday.Main
 name: JudgmentDay
 version: 1.0
 description: A zombie apocalypse plugin.
