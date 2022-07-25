@@ -47,11 +47,11 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         if (bleeding) strings.add(Utils.translate("&c  •&nBLEEDING"));
         if (impaired) strings.add(Utils.translate("&6  •&nIMPAIRED"));
         if (infected) strings.add(Utils.translate("&2  •&nINFECTED"));
-        Integer mobsKilled = Counter.mobKills.get(uuid);
+        int mobsKilled = Counter.getMobKills(uuid);
         strings.add(Utils.translate("&l&8»&7Mobs killed: " + mobsKilled));
-        Integer playersKilled = Counter.playerKills.get(uuid);
+        int playersKilled = Counter.getPlayerKills(uuid);
         strings.add(Utils.translate("&l&2»&aPlayers killed: " + playersKilled));
-        Integer deaths = Counter.deaths.get(uuid);
+        int deaths = Counter.getDeaths(uuid);
         strings.add(Utils.translate("&l&4»&cDeaths: " + deaths));
         strings.add(Utils.translate("&l&3»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%"));
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);

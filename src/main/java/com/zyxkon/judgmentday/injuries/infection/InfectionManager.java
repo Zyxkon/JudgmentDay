@@ -2,6 +2,7 @@ package com.zyxkon.judgmentday.injuries.infection;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.impairment.Impairment;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -28,6 +29,9 @@ public class InfectionManager implements Listener {
         InfectionManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+    public static Infection getInjury(UUID uuid){
+        return affectedPlayers.get(uuid);
+    }
     public static boolean isInjured(Player player){
         return isInjured(player.getUniqueId());
     }
@@ -40,8 +44,8 @@ public class InfectionManager implements Listener {
     }
     public static boolean healPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
+        if (isInjured(uuid)) {
+            getInjury(uuid).cancel();
             affectedPlayers.remove(uuid);
             return true;
         }
@@ -51,8 +55,8 @@ public class InfectionManager implements Listener {
         for (UUID uuid : affectedPlayers.keySet()){
             Player player = Bukkit.getPlayer(uuid);
             for(PotionEffect potion : player.getActivePotionEffects()) player.removePotionEffect(potion.getType());
-            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
-            affectedPlayers.get(uuid).cancel();
+            player.setWalkSpeed(getInjury(uuid).normalSpeed);
+            getInjury(uuid).cancel();
         }
     }
     @EventHandler
@@ -65,19 +69,19 @@ public class InfectionManager implements Listener {
                 percentChance = 5;
                 armor = player.getEquipment().getBoots();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (player.getLocation().getBlock().getType() == Material.WEB){
                 percentChance = 10;
                 armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (player.getLocation().add(0, 1, 0).getBlock().getType() == Material.WEB){
                 percentChance = 10;
                 armor = player.getEquipment().getHelmet();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
         }
     }
@@ -92,7 +96,7 @@ public class InfectionManager implements Listener {
                 percentChance = 20;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
         }
     }
@@ -114,13 +118,13 @@ public class InfectionManager implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) affectPlayer(event.getPlayer());
+        if (isInjured(uuid)) affectPlayer(event.getPlayer());
     }
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
+        if (isInjured(uuid)) {
+            getInjury(uuid).cancel();
             affectedPlayers.put(uuid, null);
         }
     }

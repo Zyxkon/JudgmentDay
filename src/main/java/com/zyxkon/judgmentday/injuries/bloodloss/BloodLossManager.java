@@ -25,6 +25,9 @@ public class BloodLossManager implements Listener {
         BloodLossManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+    public static BloodLoss getInjury(UUID uuid){
+        return affectedPlayers.get(uuid);
+    }
     public static boolean isInjured(Player player){
         return isInjured(player.getUniqueId());
     }
@@ -37,8 +40,8 @@ public class BloodLossManager implements Listener {
     }
     public static boolean healPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
+        if (isInjured(uuid)) {
+            getInjury(uuid).cancel();
             affectedPlayers.remove(uuid);
             return true;
         }
@@ -46,7 +49,7 @@ public class BloodLossManager implements Listener {
     }
     public static void shutDown(){
         for (UUID uuid : affectedPlayers.keySet()){
-            affectedPlayers.get(uuid).cancel();
+            if (getInjury(uuid) != null) getInjury(uuid).cancel();
         }
     }
     @EventHandler
@@ -58,23 +61,23 @@ public class BloodLossManager implements Listener {
             if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
                 percentChance = 5;
                 if (player.getEquipment().getBoots() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getBoots().getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (player.getLocation().getBlock().getType() == Material.WEB){
                 percentChance = 5;
                 ItemStack armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (player.getLocation().add(0, 1, 0).getBlock().getType() == Material.WEB){
                 percentChance = 5;
                 ItemStack armor = player.getEquipment().getHelmet();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getHelmet().getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
                 percentChance = 5;
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
         }
     }
@@ -88,7 +91,7 @@ public class BloodLossManager implements Listener {
             if (damager instanceof Zombie){
                 percentChance = 20;
                 if (player.getEquipment().getChestplate() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getChestplate().getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
         }
     }
@@ -101,23 +104,22 @@ public class BloodLossManager implements Listener {
                 add(Material.MUSHROOM_SOUP);
             }
         };
-        if (remedies.contains(event.getMaterial())){
-            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-                Utils.healPlayer(player, 8d);
-                if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
-            }
+        if (!remedies.contains(event.getMaterial())) return;
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
+            Utils.healPlayer(player, 8d);
+            if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
         }
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
-        UUID uuid = event.getPlayer().getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) affectPlayer(event.getPlayer());
+        Player player = event.getPlayer();
+        if (isInjured(player)) affectPlayer(player);
     }
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
+        if (isInjured(uuid)) {
+            getInjury(uuid).cancel();
             affectedPlayers.put(uuid, null);
         }
     }

@@ -2,6 +2,7 @@ package com.zyxkon.judgmentday.injuries.impairment;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.bloodloss.BloodLoss;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -26,6 +27,9 @@ public class ImpairmentManager implements Listener {
         ImpairmentManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+    public static Impairment getInjury(UUID uuid){
+        return affectedPlayers.get(uuid);
+    }
     public static boolean isInjured(Player player){
         return isInjured(player.getUniqueId());
     }
@@ -38,8 +42,8 @@ public class ImpairmentManager implements Listener {
     }
     public static boolean healPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
+        if (isInjured(uuid)) {
+            getInjury(uuid).cancel();
             affectedPlayers.remove(uuid);
             return true;
         }
@@ -48,8 +52,8 @@ public class ImpairmentManager implements Listener {
     public static void shutDown(){
         for (UUID uuid : affectedPlayers.keySet()){
             Player player = Bukkit.getPlayer(uuid);
-            player.setWalkSpeed(affectedPlayers.get(uuid).normalSpeed);
-            affectedPlayers.get(uuid).cancel();
+            player.setWalkSpeed(getInjury(uuid).normalSpeed);
+            getInjury(uuid).cancel();
         }
     }
     @EventHandler
@@ -60,23 +64,23 @@ public class ImpairmentManager implements Listener {
             float percentChance;
             if (player.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
                 percentChance = 5;
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
                 percentChance = 15;
                 ItemStack armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
                 percentChance = 5;
                 ItemStack armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
             else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
                 percentChance = 5;
-                if (Utils.chance(percentChance) && !affectedPlayers.containsKey(player.getUniqueId())) affectPlayer(player);
+                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
             }
         }
     }
@@ -99,13 +103,13 @@ public class ImpairmentManager implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) affectPlayer(event.getPlayer());
+        if (isInjured(uuid)) affectPlayer(event.getPlayer());
     }
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (affectedPlayers.containsKey(uuid)) {
-            affectedPlayers.get(uuid).cancel();
+        if (isInjured(uuid)) {
+            getInjury(uuid).cancel();
             affectedPlayers.put(uuid, null);
         }
     }
@@ -115,8 +119,8 @@ public class ImpairmentManager implements Listener {
         UUID uuid = player.getUniqueId();
         Location to = event.getTo();
         Location from = event.getFrom();
-        if (affectedPlayers.containsKey(uuid)) {
-            if (!affectedPlayers.get(uuid).canJump) {
+        if (isInjured(uuid)) {
+            if (!getInjury(uuid).canJump) {
                 if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
             }
         }
@@ -129,7 +133,6 @@ public class ImpairmentManager implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        System.out.println(event.getEntity().getLastDamageCause().toString());
         if (healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
     }
 }

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
@@ -34,8 +35,10 @@ public class ThirstManager extends BukkitRunnable implements Listener {
     private static HashMap<UUID, Integer> thirstPlayers = new HashMap<>();
     private static final HashMap<UUID, Dehydration> affectedPlayers = new HashMap<>();
     private static final HashMap<UUID, Integer> thirstTimer = new HashMap<>();
+    private static String pluginName;
     public ThirstManager(Main plugin){
         ThirstManager.plugin = plugin;
+        pluginName = plugin.getName();
         this.runTaskTimer(plugin, 0L, 20L);
         Bukkit.getPluginManager().registerEvents(this, plugin);
         initializeData();
@@ -91,9 +94,22 @@ public class ThirstManager extends BukkitRunnable implements Listener {
         else if (Utils.isInRange(thirst, 0, max_thirst/6)) color = ChatColor.DARK_RED;
         return color;
     }
+    public static void initializeData() {
+        File file = new File(MessageFormat.format("plugins{0}{1}{0}ThirstData.dat", File.separator, pluginName));
+        if (!file.exists()){
+            try {
+                BukkitObjectOutputStream output = new BukkitObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
+                output.writeObject(thirstPlayers);
+                output.flush();
+                output.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     @SuppressWarnings("unchecked")
     public static void loadData() {
-        File file = new File("plugins/JudgmentDay/ThirstData.dat");
+        File file = new File(MessageFormat.format("plugins{0}{1}{0}ThirstData.dat", File.separator, pluginName));
         try {
             BukkitObjectInputStream input = new BukkitObjectInputStream(new GZIPInputStream(new FileInputStream(file)));
             Object readObj = input.readObject();
@@ -107,21 +123,8 @@ public class ThirstManager extends BukkitRunnable implements Listener {
             e.printStackTrace();
         }
     }
-    public static void initializeData() {
-        File file = new File("plugins/JudgmentDay/ThirstData.dat");
-        if (!file.exists()){
-            try {
-                BukkitObjectOutputStream output = new BukkitObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
-                output.writeObject(thirstPlayers);
-                output.flush();
-                output.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
     public static void saveData() {
-        File file = new File("plugins/JudgmentDay/ThirstData.dat");
+        File file = new File(MessageFormat.format("plugins{0}{1}{0}ThirstData.dat", File.separator, pluginName));
         try {
             BukkitObjectOutputStream output = new BukkitObjectOutputStream(new GZIPOutputStream(new FileOutputStream(file)));
             output.writeObject(thirstPlayers);
