@@ -54,8 +54,8 @@ public class ZCommand implements CommandExecutor {
                 PotionEffect effect = PotionEffectType.getByName(strings[3]).createEffect(duration, amplifier);
                 meta.addCustomEffect(effect, true);
                 item.setItemMeta(meta);
-                player.sendMessage(String.format("%s %s %s has been applied to %s", effect.getType(), amplifier, duration,
-                        meta.getDisplayName()));
+                player.sendMessage(String.format("%s %s %s has been applied to %s", effect.getType(), amplifier, duration, meta.getDisplayName()));
+                break;
             }
             case "enchant": {
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -65,6 +65,7 @@ public class ZCommand implements CommandExecutor {
                 meta.addEnchant(ench, lvl, true);
                 item.setItemMeta(meta);
                 player.sendMessage(Utils.translate(String.format("&n%s &ahas been enchanted with &b%s&a of level &c%s", meta.getDisplayName(), ench.getName(), lvl)));
+                break;
             }
             case "rename": {
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -73,6 +74,7 @@ public class ZCommand implements CommandExecutor {
                 meta.setDisplayName(str);
                 item.setItemMeta(meta);
                 player.sendMessage(Utils.translate(String.format("&b&n%s &ahas been renamed to &a&n%s", item.getType(), str)));
+                break;
             }
             case "unbreak": {
                 ItemStack item = player.getInventory().getItemInMainHand();
@@ -80,11 +82,13 @@ public class ZCommand implements CommandExecutor {
                 meta.setUnbreakable(true);
                 item.setItemMeta(meta);
                 player.sendMessage(Utils.translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
+                break;
             }
             case "thirst": {
                 Player p = Bukkit.getPlayer(strings[1]);
                 int thirst = Integer.parseInt(strings[2]);
                 ThirstManager.setThirst(p, thirst);
+                break;
             }
             case "injure": {
                 Player p = Bukkit.getPlayer(strings[1]);
@@ -94,20 +98,23 @@ public class ZCommand implements CommandExecutor {
                         if (BloodLossManager.isInjured(uuid)) return true;
                         BloodLossManager.affectPlayer(p);
                         p.sendMessage("You have been inflicted with blood loss!");
+                        break;
                     }
                     case "impairment": {
                         if (ImpairmentManager.isInjured(uuid)) return true;
                         ImpairmentManager.affectPlayer(p);
                         p.sendMessage("You have been inflicted with impairment!");
+                        break;
                     }
                     case "infection": {
                         if (InfectionManager.isInjured(uuid)) return true;
                         InfectionManager.affectPlayer(p);
                         p.sendMessage("You have been inflicted with an infection!");
+                        break;
                     }
                 }
+                break;
             }
-            return true;
         }
         return false;
     }

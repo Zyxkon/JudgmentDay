@@ -5,6 +5,7 @@ import com.zyxkon.judgmentday.Main;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -95,20 +96,24 @@ public class BloodLossManager implements Listener {
             }
         }
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onHealing(PlayerInteractEvent event){
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){
             {
-                add(Material.NETHER_WARTS);
+                add(Material.NETHER_STALK);
                 add(Material.MUSHROOM_SOUP);
             }
         };
         if (!remedies.contains(event.getMaterial())) return;
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-            Utils.healPlayer(player, 8d);
-            if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
-        }
+        // A || B => One true/Both false => True/False
+        // A && B => One false/Both true => False/True
+        // !(A||B) => !(One true/Both False) => !(True/False) => False/True
+        // !(A&&B) => !(One false/Both true) => !(False/True) => True/False
+        if (!(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getAction().equals(Action.RIGHT_CLICK_AIR))) return;
+        Utils.healPlayer(player, 8d);
+        if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
+
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event){

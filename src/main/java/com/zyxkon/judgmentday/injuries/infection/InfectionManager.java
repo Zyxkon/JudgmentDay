@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -100,7 +101,7 @@ public class InfectionManager implements Listener {
             }
         }
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onHealing(PlayerInteractEvent event){
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){
@@ -109,10 +110,9 @@ public class InfectionManager implements Listener {
                 add(Material.MUSHROOM_SOUP);
             }
         };
-        if (remedies.contains(event.getMaterial())){
-            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
-                if (healPlayer(player)) Utils.sendActionBarMessage(player, "You take an antibiotic. Your infection goes away.");
-            }
+        if (!remedies.contains(event.getMaterial())) return;
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR){
+            if (healPlayer(player)) Utils.sendActionBarMessage(player, "You take an antibiotic. Your infection goes away.");
         }
     }
     @EventHandler

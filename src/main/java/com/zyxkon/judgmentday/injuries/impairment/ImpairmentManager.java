@@ -7,6 +7,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -84,20 +85,19 @@ public class ImpairmentManager implements Listener {
             }
         }
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onHealing(PlayerInteractEvent event){
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){
             {
-                add(Material.NETHER_WARTS);
+                add(Material.NETHER_STALK);
                 add(Material.MUSHROOM_SOUP);
             }
         };
-        if (remedies.contains(event.getMaterial())){
-            if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
-                if (healPlayer(player)) Utils.sendActionBarMessage(player,
-                        "You bandage your broken legs but it still takes you a while to walk normally again.");
-            }
+        if (!remedies.contains(event.getMaterial())) return;
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
+            if (healPlayer(player)) Utils.sendActionBarMessage(player,
+                    "You bandage your broken legs but it still takes you a while to walk normally again.");
         }
     }
     @EventHandler
