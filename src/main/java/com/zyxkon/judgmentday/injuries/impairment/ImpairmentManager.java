@@ -126,10 +126,9 @@ public class ImpairmentManager implements Listener {
         if (getInjury(uuid).canJump) return;
         if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
     }
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        getInjury(player).cancel();
         if (healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
     }
 }

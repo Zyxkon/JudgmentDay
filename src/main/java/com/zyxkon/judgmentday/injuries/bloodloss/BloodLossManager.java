@@ -96,7 +96,7 @@ public class BloodLossManager implements Listener {
             }
         }
     }
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler
     public void onHealing(PlayerInteractEvent event){
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){

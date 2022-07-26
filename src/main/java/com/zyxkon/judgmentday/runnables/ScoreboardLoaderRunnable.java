@@ -67,12 +67,12 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         }
         scores.add(status);
         scores.addAll(injuries);
-        scores.add("&8&l»&7⚔ Mobs killed: " + Counter.getMobKills(uuid));
+        scores.add("&8&l»&7&l⚔&7 Mobs killed: " + Counter.getMobKills(uuid));
         scores.add("&2&l»&a&l⨁&a Players killed: " + Counter.getPlayerKills(uuid));
-        scores.add("&4&l»&c☠ Deaths: " + Counter.getDeaths(uuid));
+        scores.add("&4&l»&c&l☠&c Deaths: " + Counter.getDeaths(uuid));
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
-        scores.add("&1&l»&l&9۩ Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
+        scores.add("&1&l»&9&l۩ &9Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
         scores = (ArrayList<String>) scores.stream().map(Utils::translate).collect(Collectors.toList());
         Utils.addScore(objective, scores);
         player.setScoreboard(board);

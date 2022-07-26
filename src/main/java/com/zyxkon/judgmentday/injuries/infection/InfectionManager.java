@@ -101,7 +101,7 @@ public class InfectionManager implements Listener {
             }
         }
     }
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler
     public void onHealing(PlayerInteractEvent event){
         Player player = event.getPlayer();
         ArrayList<Material> remedies = new ArrayList<Material>(){
