@@ -28,6 +28,9 @@ public class ImpairmentManager implements Listener {
         ImpairmentManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+    public static Impairment getInjury(Player player){
+        return affectedPlayers.get(player.getUniqueId());
+    }
     public static Impairment getInjury(UUID uuid){
         return affectedPlayers.get(uuid);
     }
@@ -119,20 +122,15 @@ public class ImpairmentManager implements Listener {
         UUID uuid = player.getUniqueId();
         Location to = event.getTo();
         Location from = event.getFrom();
-        if (isInjured(uuid)) {
-            if (!getInjury(uuid).canJump) {
-                if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
-            }
+        if (!isInjured(uuid)) return;
+        if (!getInjury(uuid).canJump) {
+            if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
         }
-    }
-    @EventHandler
-    public void onRespawn(PlayerRespawnEvent event){
-        Player player = event.getPlayer();
-        player.setWalkSpeed(player.getWalkSpeed());
     }
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
+        getInjury(player).cancel();
         if (healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
     }
 }
