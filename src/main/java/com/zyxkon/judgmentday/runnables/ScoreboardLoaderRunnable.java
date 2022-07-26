@@ -42,12 +42,34 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         boolean impaired = ImpairmentManager.isInjured(player);
         boolean infected = InfectionManager.isInjured(player);
         ArrayList<String> scores = new ArrayList<>();
-        scores.add("&6&l»&e❤ Status: &r" + ((!bleeding && !impaired && !infected) ? "&aNo" : "&4&n&lYES"));
-        if (bleeding) scores.add("&c  •&nBLEEDING");
-        if (impaired) scores.add("&6  •&nIMPAIRED");
-        if (infected) scores.add("&2  •&nINFECTED");
+        int count = 0;
+        String status = "&6&l»&e❤ Status: &r";
+        if (bleeding) {
+            scores.add("&c  •&nBLEEDING");
+            count++;
+        }
+        if (impaired) {
+            scores.add("&6  •&nIMPAIRED");
+            count++;
+        }
+        if (infected) {
+            scores.add("&2  •&nINFECTED");
+            count++;
+        }
+        switch (count){
+            case 0:
+                status += "&aFine";
+                break;
+            case 1:
+            case 2:
+                status += "&6&lCaution";
+                break;
+            default:
+                status += "&c&lDanger";
+        }
+        scores.add(status);
         scores.add("&8&l»&7⚔ Mobs killed: " + Counter.getMobKills(uuid));
-        scores.add("&2&l»&a⨁ Players killed: &c&l" + Counter.getPlayerKills(uuid));
+        scores.add("&2&l»&a&l⨁&a Players killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c☠ Deaths: " + Counter.getDeaths(uuid));
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
