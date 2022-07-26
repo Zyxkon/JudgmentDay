@@ -14,7 +14,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ScoreboardLoaderRunnable extends BukkitRunnable {
     private final Main plugin;
@@ -49,9 +51,8 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         scores.add("&4&l»&c☠ Deaths: " + Counter.getDeaths(uuid));
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
-        String location = "&1&l»&l&9۩ Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions));
-        scores.add(location);
-        scores.forEach(Utils::translate);
+        scores.add("&1&l»&l&9۩ Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
+        scores = (ArrayList<String>) scores.stream().map(Utils::translate);
         Utils.addScore(objective, scores);
         player.setScoreboard(board);
     }
