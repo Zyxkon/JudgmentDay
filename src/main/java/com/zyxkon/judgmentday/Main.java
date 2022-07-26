@@ -12,24 +12,25 @@ import com.zyxkon.judgmentday.general_listeners.EntityDamageListener;
 import com.zyxkon.judgmentday.general_listeners.MainListener;
 import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {
-    private static Economy econ = null;
+    private static Logger logger;
     @Override
     public void onEnable(){
+        Main.logger = this.getLogger();
         File file = new File(this.getDataFolder() + File.separator);
         if (!file.exists()) file.mkdir();
         String[] externalPlugins = {"CrackShot", "WorldGuard", "WorldEdit", "Vault"};
         for (String str : externalPlugins){
             Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(str);
-            if (plugin == null) System.out.printf("WARNING: Plugin %s is not installed!%n\n", str);
+            if (plugin == null) log(Level.WARNING, String.format("Plugin %s is not installed!", str));
             switch (str){
                 case "CrackShot":
                     new CrackShotExtension(this);
@@ -63,5 +64,8 @@ public class Main extends JavaPlugin {
         BloodLossManager.shutDown();
         ImpairmentManager.shutDown();
         InfectionManager.shutDown();
+    }
+    public void log(Level level, String str){
+        logger.log(level, str);
     }
 }
