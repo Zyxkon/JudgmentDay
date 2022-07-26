@@ -123,11 +123,10 @@ public class ImpairmentManager implements Listener {
         Location to = event.getTo();
         Location from = event.getFrom();
         if (!isInjured(uuid)) return;
-        if (!getInjury(uuid).canJump) {
-            if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
-        }
+        if (getInjury(uuid).canJump) return;
+        if (to.getY() - from.getY() == 0.41999998688697815) event.setCancelled(true);
     }
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
         getInjury(player).cancel();
