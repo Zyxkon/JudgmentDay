@@ -17,7 +17,9 @@ public class Impairment {
         this.canJump = true;
         Impairment.plugin = plugin;
         this.player = player;
-        this.normalSpeed = (!InfectionManager.isInjured(player) ? player.getWalkSpeed() : 1);
+//        this.normalSpeed = (!InfectionManager.isInjured(player) ? player.getWalkSpeed() : 1);
+        this.normalSpeed = player.getWalkSpeed();
+        System.out.println(normalSpeed);
         process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             int timer = 0;
             final int stage_1 = 60*2;

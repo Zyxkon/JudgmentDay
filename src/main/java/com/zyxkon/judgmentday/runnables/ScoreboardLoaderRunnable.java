@@ -67,7 +67,7 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         }
         scores.add(status);
         scores.addAll(injuries);
-        scores.add("&8&l»░&7☠Mobs killed: " + Counter.getMobKills(uuid));
+        scores.add("&8&l»░&7☣Mobs killed: " + Counter.getMobKills(uuid));
         scores.add("&2&l»░&a&l⚔&aPlayers killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»░&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
         scores.add("&3&l»░&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
