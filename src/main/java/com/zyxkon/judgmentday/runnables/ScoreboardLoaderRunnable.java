@@ -52,7 +52,7 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
         scores.add("&1&l»&l&9۩ Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
-        scores = (ArrayList<String>) scores.stream().map(Utils::translate);
+        scores = (ArrayList<String>) scores.stream().map(Utils::translate).collect(Collectors.toList());
         Utils.addScore(objective, scores);
         player.setScoreboard(board);
     }
