@@ -112,6 +112,13 @@ public class ZCommand implements CommandExecutor {
                         p.sendMessage("You have been inflicted with an infection!");
                         break;
                     }
+                    case "all": {
+                        if (!BloodLossManager.isInjured(uuid)) BloodLossManager.affectPlayer(p);
+                        if (!ImpairmentManager.isInjured(uuid)) ImpairmentManager.affectPlayer(p);
+                        if (!InfectionManager.isInjured(uuid)) InfectionManager.affectPlayer(p);
+                        p.sendMessage("You have been inflicted with all sorts of injuries possible!");
+                        break;
+                    }
                 }
                 return true;
             }

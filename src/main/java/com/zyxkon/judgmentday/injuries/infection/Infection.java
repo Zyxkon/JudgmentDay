@@ -26,7 +26,7 @@ public class Infection {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 5 * 20, 0));
                         if (timer % 2 == 0) Utils.healPlayer(player, 1d);
                     }
-                    player.setWalkSpeed((float) (normalSpeed * (95.0 / 100.0)));
+                    if (normalSpeed >= 1) player.setWalkSpeed((float) (normalSpeed * (95.0 / 100.0)));
                     if (timer >= 40) {
                         if (Utils.isInRange(timer, 40, 45)) Utils.sendActionBarMessage(player, Utils.translate(
                                 "You feel exhausted. Your infection is &e&nstage 2."));
