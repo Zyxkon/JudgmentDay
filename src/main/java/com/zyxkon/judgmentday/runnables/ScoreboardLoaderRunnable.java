@@ -38,22 +38,20 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         objective.setDisplayName(Utils.translate("&c&n"+player.getName()));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         int thirst = ThirstManager.getThirst(player);
-        boolean bleeding = BloodLossManager.isInjured(player);
-        boolean impaired = ImpairmentManager.isInjured(player);
-        boolean infected = InfectionManager.isInjured(player);
         ArrayList<String> scores = new ArrayList<>();
         int count = 0;
         String status = "&6&l»&e❤ Status: &r";
-        if (bleeding) {
-            scores.add("&c  •&nBLEEDING");
+        ArrayList<String> injuries = new ArrayList<>();
+        if (BloodLossManager.isInjured(player)) {
+            injuries.add("&c  •&nBLEEDING");
             count++;
         }
-        if (impaired) {
-            scores.add("&6  •&nIMPAIRED");
+        if (ImpairmentManager.isInjured(player)) {
+            injuries.add("&6  •&nIMPAIRED");
             count++;
         }
-        if (infected) {
-            scores.add("&2  •&nINFECTED");
+        if (InfectionManager.isInjured(player)) {
+            injuries.add("&2  •&nINFECTED");
             count++;
         }
         switch (count){
@@ -62,12 +60,13 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
                 break;
             case 1:
             case 2:
-                status += "&6&lCaution";
+                status += "&6&nCaution";
                 break;
             default:
-                status += "&c&lDanger";
+                status += "&4&l&nDanger";
         }
         scores.add(status);
+        scores.addAll(injuries);
         scores.add("&8&l»&7⚔ Mobs killed: " + Counter.getMobKills(uuid));
         scores.add("&2&l»&a&l⨁&a Players killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c☠ Deaths: " + Counter.getDeaths(uuid));
