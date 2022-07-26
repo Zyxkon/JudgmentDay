@@ -16,9 +16,9 @@ import org.bukkit.inventory.ItemStack;
 
 @SuppressWarnings("unused")
 public class CrackShotExtension implements Listener {
-    Main plugin;
+    static Main plugin;
     public CrackShotExtension(Main plugin){
-        this.plugin = plugin;
+        CrackShotExtension.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler

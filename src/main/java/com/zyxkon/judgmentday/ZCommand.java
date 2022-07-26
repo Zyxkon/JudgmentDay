@@ -123,7 +123,12 @@ public class ZCommand implements CommandExecutor {
                 return true;
             }
             case "heal":{
-                Player p = !strings[1].isEmpty() ? Bukkit.getPlayer(strings[1]) : player;
+                Player p;
+                try {
+                    p = Bukkit.getPlayer(strings[1]);
+                } catch (IndexOutOfBoundsException exception){
+                    p = player;
+                }
                 if (BloodLossManager.isInjured(p)) BloodLossManager.healPlayer(p);
                 if (ImpairmentManager.isInjured(p)) ImpairmentManager.healPlayer(p);
                 if (InfectionManager.isInjured(p)) InfectionManager.healPlayer(p);
