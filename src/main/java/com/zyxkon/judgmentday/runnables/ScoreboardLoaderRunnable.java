@@ -50,12 +50,12 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         int mobsKilled = Counter.getMobKills(uuid);
         strings.add(Utils.translate("&8&l»&7Mobs killed: " + mobsKilled));
         int playersKilled = Counter.getPlayerKills(uuid);
-        strings.add(Utils.translate("&2&l»&aPlayers killed: " + playersKilled));
+        strings.add(Utils.translate(String.format("&2&l»&aPlayers killed: %d&c&l⨁", playersKilled)));
         int deaths = Counter.getDeaths(uuid);
-        strings.add(Utils.translate("&4&l»&cDeaths: " + deaths));
+        strings.add(Utils.translate("&4&l»&cDeaths ☠: " + deaths));
         strings.add(Utils.translate("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%"));
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
-        String location = Utils.translate("&1&l»&l&9Location: &r").concat(regions.isEmpty() ? "Unknown" : String.join("-", regions));
+        String location = Utils.translate("&1&l»&l&9Location ۩: &r").concat(regions.isEmpty() ? "Unknown" : String.join("-", regions));
         strings.add(location);
         Utils.addScore(objective, strings);
         player.setScoreboard(board);

@@ -106,14 +106,11 @@ public class BloodLossManager implements Listener {
             }
         };
         if (!remedies.contains(event.getMaterial())) return;
-        // A || B => One true/Both false => True/False
-        // A && B => One false/Both true => False/True
-        // !(A||B) => !(One true/Both False) => !(True/False) => False/True
-        // !(A&&B) => !(One false/Both true) => !(False/True) => True/False
-        if (!(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getAction().equals(Action.RIGHT_CLICK_AIR))) return;
-        Utils.healPlayer(player, 8d);
-        if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
-
+        Action action = event.getAction();
+        if (action.equals(Action.RIGHT_CLICK_BLOCK) || action.equals(Action.RIGHT_CLICK_AIR)) {
+            Utils.healPlayer(player, 8d);
+            if (healPlayer(player)) Utils.sendActionBarMessage(player, "You closed your open wound, the bleeding stops.");
+        }
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event){

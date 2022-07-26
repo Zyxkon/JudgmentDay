@@ -113,7 +113,7 @@ public class ZCommand implements CommandExecutor {
                         break;
                     }
                 }
-                break;
+                return true;
             }
         }
         return false;
