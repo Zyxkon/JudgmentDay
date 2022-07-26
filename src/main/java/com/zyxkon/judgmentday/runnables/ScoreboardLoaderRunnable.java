@@ -39,25 +39,20 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         boolean bleeding = BloodLossManager.isInjured(player);
         boolean impaired = ImpairmentManager.isInjured(player);
         boolean infected = InfectionManager.isInjured(player);
-        ArrayList<String> strings = new ArrayList<>();
-        String injured = Utils.translate("&6&l»&eInjured: &r");
-        if (!bleeding && !impaired && !infected) injured = injured.concat(Utils.translate("&aNo"));
-        else injured = injured.concat(Utils.translate("&4&n&lYES"));
-        strings.add(injured);
-        if (bleeding) strings.add(Utils.translate("&c  •&nBLEEDING"));
-        if (impaired) strings.add(Utils.translate("&6  •&nIMPAIRED"));
-        if (infected) strings.add(Utils.translate("&2  •&nINFECTED"));
-        int mobsKilled = Counter.getMobKills(uuid);
-        strings.add(Utils.translate("&8&l»&7Mobs killed: " + mobsKilled));
-        int playersKilled = Counter.getPlayerKills(uuid);
-        strings.add(Utils.translate(String.format("&2&l»&aPlayers killed: %d&c&l⨁", playersKilled)));
-        int deaths = Counter.getDeaths(uuid);
-        strings.add(Utils.translate("&4&l»&cDeaths ☠: " + deaths));
-        strings.add(Utils.translate("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%"));
+        ArrayList<String> scores = new ArrayList<>();
+        scores.add("&6&l»&e❤ Status: &r" + ((!bleeding && !impaired && !infected) ? "&aNo" : "&4&n&lYES"));
+        if (bleeding) scores.add("&c  •&nBLEEDING");
+        if (impaired) scores.add("&6  •&nIMPAIRED");
+        if (infected) scores.add("&2  •&nINFECTED");
+        scores.add("&8&l»&7⚔ Mobs killed: " + Counter.getMobKills(uuid));
+        scores.add("&2&l»&a⨁ Players killed: &c&l" + Counter.getPlayerKills(uuid));
+        scores.add("&4&l»&c☠ Deaths: " + Counter.getDeaths(uuid));
+        scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
-        String location = Utils.translate("&1&l»&l&9Location ۩: &r").concat(regions.isEmpty() ? "Unknown" : String.join("-", regions));
-        strings.add(location);
-        Utils.addScore(objective, strings);
+        String location = "&1&l»&l&9۩ Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions));
+        scores.add(location);
+        scores.forEach(Utils::translate);
+        Utils.addScore(objective, scores);
         player.setScoreboard(board);
     }
 }
