@@ -40,7 +40,7 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         boolean impaired = ImpairmentManager.isInjured(player);
         boolean infected = InfectionManager.isInjured(player);
         ArrayList<String> strings = new ArrayList<>();
-        String injured = Utils.translate("&l&6»&eInjured: &r");
+        String injured = Utils.translate("&6&l»&eInjured: &r");
         if (!bleeding && !impaired && !infected) injured = injured.concat(Utils.translate("&aNo"));
         else injured = injured.concat(Utils.translate("&4&n&lYES"));
         strings.add(injured);
@@ -48,14 +48,14 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         if (impaired) strings.add(Utils.translate("&6  •&nIMPAIRED"));
         if (infected) strings.add(Utils.translate("&2  •&nINFECTED"));
         int mobsKilled = Counter.getMobKills(uuid);
-        strings.add(Utils.translate("&l&8»&7Mobs killed: " + mobsKilled));
+        strings.add(Utils.translate("&8&l»&7Mobs killed: " + mobsKilled));
         int playersKilled = Counter.getPlayerKills(uuid);
-        strings.add(Utils.translate("&l&2»&aPlayers killed: " + playersKilled));
+        strings.add(Utils.translate("&2&l»&aPlayers killed: " + playersKilled));
         int deaths = Counter.getDeaths(uuid);
-        strings.add(Utils.translate("&l&4»&cDeaths: " + deaths));
-        strings.add(Utils.translate("&l&3»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%"));
+        strings.add(Utils.translate("&4&l»&cDeaths: " + deaths));
+        strings.add(Utils.translate("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%"));
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
-        String location = Utils.translate("&l&1»&l&9Location: &r").concat(regions.isEmpty() ? "Unknown" : String.join("-", regions));
+        String location = Utils.translate("&1&l»&l&9Location: &r").concat(regions.isEmpty() ? "Unknown" : String.join("-", regions));
         strings.add(location);
         Utils.addScore(objective, strings);
         player.setScoreboard(board);
