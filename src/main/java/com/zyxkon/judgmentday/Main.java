@@ -31,6 +31,7 @@ public class Main extends JavaPlugin {
         for (String str : externalPlugins){
             Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(str);
             if (plugin == null) log(Level.WARNING, String.format("Plugin %s is not installed!", str));
+            else log(Level.INFO, String.format("Plugin %s found! Begin loading...", str));
             switch (str){
                 case "CrackShot":
                     new CrackShotExtension(this);
