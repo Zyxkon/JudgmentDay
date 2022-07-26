@@ -164,12 +164,11 @@ public class ThirstManager extends BukkitRunnable implements Listener {
     @EventHandler
     public void onDrink(PlayerItemConsumeEvent event){
         Player player = event.getPlayer();
-        if (event.getItem().getType() == Material.POTION){
-            PotionType potionType = ((PotionMeta) event.getItem().getItemMeta()).getBasePotionData().getType();
-            if (potionType == PotionType.WATER) {
-                addThirst(player, 30);
-                healPlayer(player);
-            }
+        if (!(event.getItem().getType() == Material.POTION)) return;
+        PotionType potionType = ((PotionMeta) event.getItem().getItemMeta()).getBasePotionData().getType();
+        if (potionType == PotionType.WATER) {
+            addThirst(player, 30);
+            healPlayer(player);
         }
     }
     @EventHandler

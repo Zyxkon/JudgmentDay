@@ -56,45 +56,44 @@ public class BloodLossManager implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent event){
         Entity entity = event.getEntity();
-        if (entity instanceof Player){
-            Player player = (Player) entity;
-            float percentChance;
-            if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
-                percentChance = 5;
-                if (player.getEquipment().getBoots() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getBoots().getType());
-                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-            else if (player.getLocation().getBlock().getType() == Material.WEB){
-                percentChance = 5;
-                ItemStack armor = player.getEquipment().getLeggings();
-                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-            else if (player.getLocation().add(0, 1, 0).getBlock().getType() == Material.WEB){
-                percentChance = 5;
-                ItemStack armor = player.getEquipment().getHelmet();
-                if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getHelmet().getType());
-                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-            else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
-                percentChance = 5;
-                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
+        if (!(entity instanceof Player)) return;
+        Player player = (Player) entity;
+        if (player.isDead()) return;
+        float percentChance;
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
+            percentChance = 5;
+            if (player.getEquipment().getBoots() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getBoots().getType());
+            if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
+        }
+        else if (player.getLocation().getBlock().getType() == Material.WEB){
+            percentChance = 5;
+            ItemStack armor = player.getEquipment().getLeggings();
+            if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
+            if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
+        }
+        else if (player.getLocation().add(0, 1, 0).getBlock().getType() == Material.WEB){
+            percentChance = 5;
+            ItemStack armor = player.getEquipment().getHelmet();
+            if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getHelmet().getType());
+            if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
+        }
+        else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
+            percentChance = 5;
+            if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
         }
     }
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event){
         Entity victim = event.getEntity();
         Entity damager = event.getDamager();
-        if (victim instanceof Player){
-            float percentChance;
-            Player player = (Player) victim;
-            if (damager instanceof Zombie){
-                percentChance = 20;
-                if (player.getEquipment().getChestplate() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getChestplate().getType());
-                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-        }
+        if (!(victim instanceof Player)) return;
+        Player player = (Player) victim;
+        if (!(damager instanceof Zombie)) return;
+        if (victim.isDead()) return;
+        float percentChance;
+        percentChance = 20;
+        if (player.getEquipment().getChestplate() != null) percentChance = Utils.chanceOfArmor(percentChance, player.getEquipment().getChestplate().getType());
+        if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
     }
     @EventHandler
     public void onHealing(PlayerInteractEvent event){
@@ -120,10 +119,9 @@ public class BloodLossManager implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (isInjured(uuid)) {
-            getInjury(uuid).cancel();
-            affectedPlayers.put(uuid, null);
-        }
+        if (!isInjured(uuid)) return;
+        getInjury(uuid).cancel();
+        affectedPlayers.put(uuid, null);
     }
     @EventHandler
     public void onDeath(PlayerDeathEvent event){

@@ -2,7 +2,6 @@ package com.zyxkon.judgmentday.injuries.impairment;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
-import com.zyxkon.judgmentday.injuries.bloodloss.BloodLoss;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -28,9 +27,9 @@ public class ImpairmentManager implements Listener {
         ImpairmentManager.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-    public static Impairment getInjury(Player player){
-        return affectedPlayers.get(player.getUniqueId());
-    }
+//    public static Impairment getInjury(Player player){
+//        return affectedPlayers.get(player.getUniqueId());
+//    }
     public static Impairment getInjury(UUID uuid){
         return affectedPlayers.get(uuid);
     }
@@ -61,30 +60,35 @@ public class ImpairmentManager implements Listener {
         }
     }
     @EventHandler
-    public void onHurt(EntityDamageEvent event){
+    public void onDamage(EntityDamageEvent event){
         Entity entity = event.getEntity();
-        if (entity instanceof Player){
-            Player player = (Player) entity;
-            float percentChance;
-            if (player.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
-                percentChance = 5;
-                if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-            else if (event.getCause() == EntityDamageEvent.DamageCause.FALL){
+        if (!(entity instanceof Player)) return;
+        Player player = (Player) entity;
+        if (player.isDead()) return;
+        float percentChance;
+        if (player.getLocation().getBlock().getType() == Material.STATIONARY_WATER) {
+            percentChance = 5;
+            if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
+        }
+        ItemStack armor;
+        switch (event.getCause()){
+            case FALL:
                 percentChance = 15;
-                ItemStack armor = player.getEquipment().getLeggings();
+                armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-            else if (event.getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || event.getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION){
+                break;
+            case BLOCK_EXPLOSION:
+            case ENTITY_EXPLOSION:
                 percentChance = 5;
-                ItemStack armor = player.getEquipment().getLeggings();
+                armor = player.getEquipment().getLeggings();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
                 if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
-            }
-            else if (event.getCause() == EntityDamageEvent.DamageCause.SUFFOCATION){
+                break;
+            case SUFFOCATION: {
                 percentChance = 5;
                 if (Utils.chance(percentChance) && !isInjured(player)) affectPlayer(player);
+                break;
             }
         }
     }
@@ -111,10 +115,9 @@ public class ImpairmentManager implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         UUID uuid = event.getPlayer().getUniqueId();
-        if (isInjured(uuid)) {
-            getInjury(uuid).cancel();
-            affectedPlayers.put(uuid, null);
-        }
+        if (!isInjured(uuid)) return;
+        getInjury(uuid).cancel();
+        affectedPlayers.put(uuid, null);
     }
     @EventHandler
     public void onJump(PlayerMoveEvent event){

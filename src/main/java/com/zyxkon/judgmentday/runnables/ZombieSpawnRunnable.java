@@ -17,22 +17,22 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
     final Main plugin;
     public ZombieSpawnRunnable(Main plugin){
         this.plugin = plugin;
-        this.runTaskTimer(plugin, 0L, 10L);
+        this.runTaskTimer(plugin, 0L, 20L);
     }
     @Override
     public void run(){
         for (Player p: plugin.getServer().getOnlinePlayers()) {
-            List<Entity> ents = p.getNearbyEntities(40, 5, 40);
-            int limit = 5;
+            List<Entity> ents = p.getNearbyEntities(40, 10, 40);
+            int limit = 3;
             if (ents.stream().anyMatch(e -> e instanceof Player)) limit *=
                     (ents.stream().filter(e -> e instanceof Player)).toArray().length;
             ents = ents.stream().filter((e) -> e.getType() == EntityType.ZOMBIE).collect(Collectors.toList());
             Random random = new Random();
             if (ents.size() <= limit){
                 World w = p.getWorld();
-                int x = Utils.randRange(15, 50);
+                int x = Utils.randRange(15, 40);
                 int y = Utils.randRange(-3, 3);
-                int z = Utils.randRange(15, 50);
+                int z = Utils.randRange(15, 40);
                 if (random.nextBoolean()) x = -x;
                 if (random.nextBoolean()) z = -z;
                 Location loc = p.getLocation().add(x, y, z);
@@ -40,8 +40,8 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
                 int z_offset = Utils.randRange(-4, 4);
                 loc.add(x_offset, 0, z_offset);
                 EntityType ent = EntityType.ZOMBIE;
-                if (Utils.chance(10)) ent = EntityType.HUSK;
-                else if (Utils.chance(35)) ent = EntityType.ZOMBIE_VILLAGER;
+                if (Utils.chance(1)) ent = EntityType.HUSK;
+                else if (Utils.chance(5)) ent = EntityType.ZOMBIE_VILLAGER;
                 w.spawnEntity(loc, ent);
                 loc.add(-x_offset, 0, -z_offset);
             }

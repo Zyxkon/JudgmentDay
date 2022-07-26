@@ -74,9 +74,9 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         scores.add("&5&l»&d&l⚔&dPlayers killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
         scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");
-        scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
         scores.add("&1&l»&9&l۩&9Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
+        scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         scores = (ArrayList<String>) scores.stream().map(Utils::translate).collect(Collectors.toList());
         Utils.addScore(objective, scores);
         player.setScoreboard(board);
