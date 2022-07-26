@@ -133,6 +133,12 @@ public class Counter implements Listener {
             }
         }
     }
+    public static void resetStats(Player player){
+        UUID uuid = player.getUniqueId();
+        deaths.put(uuid, 0);
+        mobKills.put(uuid, 0);
+        playerKills.put(uuid, 0);
+    }
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();

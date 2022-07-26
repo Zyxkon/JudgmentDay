@@ -1,6 +1,6 @@
 main: com.zyxkon.judgmentday.Main
 name: JudgmentDay
-version: 1.0
+version: 2.0
 description: A zombie apocalypse plugin.
 author: Zyxkon
 softdepend: [WorldGuard, CrackShot, WorldEdit]
@@ -8,3 +8,7 @@ commands:
   zyxkon:
     usage: /zyxkon
     description: This command was implemented for testing purpose.
+  JudgmentDay:
+    aliases: [jd, judgmentday]
+    usage: /judgmentday
+    description: Command for the JudgmentDay plugin.

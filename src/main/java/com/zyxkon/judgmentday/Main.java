@@ -41,22 +41,10 @@ public class Main extends JavaPlugin {
                     break;
             }
         }
-        new ImpairmentManager(this);
-        new InfectionManager(this);
-        new BloodLossManager(this);
-        new ThirstManager(this);
-
-        new ZCommand(this);
-
-        new Counter(this);
-        new MainListener(this);
-        new CreatureSpawnListener(this);
-        new PlayerDeathListener(this);
-        new EntityDamageListener(this);
-
-        new ScoreboardLoaderRunnable(this);
-        new ZombieSpawnRunnable(this);
-        new BarbedWireRunnable(this);
+        registerEvents();
+        runTasks();
+        getCommands();
+        registerManagers();
     }
     @Override
     public void onDisable(){
@@ -68,5 +56,27 @@ public class Main extends JavaPlugin {
     }
     public void log(Level level, String str){
         logger.log(level, str);
+    }
+    private void registerEvents(){
+        new Counter(this);
+        new MainListener(this);
+        new CreatureSpawnListener(this);
+        new PlayerDeathListener(this);
+        new EntityDamageListener(this);
+    }
+    private void runTasks(){
+        new ScoreboardLoaderRunnable(this);
+        new ZombieSpawnRunnable(this);
+        new BarbedWireRunnable(this);
+    }
+    private void getCommands(){
+        new Commands(this);
+        new ZCommand(this);
+    }
+    private void registerManagers(){
+        new ImpairmentManager(this);
+        new InfectionManager(this);
+        new BloodLossManager(this);
+        new ThirstManager(this);
     }
 }

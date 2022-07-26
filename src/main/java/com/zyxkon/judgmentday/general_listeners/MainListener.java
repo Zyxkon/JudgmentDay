@@ -23,54 +23,65 @@ import org.bukkit.material.Openable;
 
 public class MainListener implements Listener {
     Main plugin;
-    public MainListener(Main plugin){
+
+    public MainListener(Main plugin) {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
+
     @EventHandler
-    public void onCombust(EntityCombustEvent event){
+    public void onCombust(EntityCombustEvent event) {
         if (event.getEntity() instanceof Zombie) event.setCancelled(true);
     }
+
     @EventHandler
-    public void onCauldronLevelChange(CauldronLevelChangeEvent event){
-        switch (event.getReason()){
-            case BUCKET_FILL: case BUCKET_EMPTY: case BOTTLE_FILL:
-                case BOTTLE_EMPTY: case BANNER_WASH: case ARMOR_WASH: case EXTINGUISH:
-                    if (((Player) event.getEntity()).getGameMode() == GameMode.SURVIVAL) event.setNewLevel(event.getOldLevel());
-                    break;
-            case EVAPORATE: case UNKNOWN:
+    public void onCauldronLevelChange(CauldronLevelChangeEvent event) {
+        switch (event.getReason()) {
+            case BUCKET_FILL:
+            case BUCKET_EMPTY:
+            case BOTTLE_FILL:
+            case BOTTLE_EMPTY:
+            case BANNER_WASH:
+            case ARMOR_WASH:
+            case EXTINGUISH:
+                if (((Player) event.getEntity()).getGameMode() == GameMode.SURVIVAL)
+                    event.setNewLevel(event.getOldLevel());
+                break;
+            case EVAPORATE:
+            case UNKNOWN:
                 event.setNewLevel(event.getOldLevel());
                 break;
         }
     }
+
     @EventHandler
-    public void onBreak(BlockBreakEvent event){
+    public void onBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SURVIVAL) event.setCancelled(true);
     }
+
     @EventHandler
-    public void onPlace(BlockPlaceEvent event){
+    public void onPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SURVIVAL) event.setCancelled(true);
     }
+
     @EventHandler
-    public void onInteract(PlayerInteractEvent event){
+    public void onInteract(PlayerInteractEvent event) {
         Block clickedBlock = event.getClickedBlock();
         if (event.getPlayer().isSneaking()
                 || event.getHand() == EquipmentSlot.OFF_HAND) return;
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-            if (clickedBlock.getType() == Material.IRON_DOOR_BLOCK){
-                Door door = (Door) clickedBlock.getState().getData();
-                if (door.isTopHalf()) clickedBlock = clickedBlock.getRelative(BlockFace.DOWN);
-                BlockState state = clickedBlock.getState();
-                Openable openable = (Openable) state.getData();
-                Sound sound = openable.isOpen() ? Sound.BLOCK_IRON_DOOR_CLOSE : Sound.BLOCK_IRON_DOOR_OPEN;
-                event.getPlayer().getWorld().playSound(clickedBlock.getLocation(), sound, 1, 1);
-                openable.setOpen(!openable.isOpen());
-                state.update();
-                event.setCancelled(true);
-            }
-        }
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+        if (!(clickedBlock.getType() == Material.IRON_DOOR_BLOCK)) return;
+        Door door = (Door) clickedBlock.getState().getData();
+        if (door.isTopHalf()) clickedBlock = clickedBlock.getRelative(BlockFace.DOWN);
+        BlockState state = clickedBlock.getState();
+        Openable openable = (Openable) state.getData();
+        Sound sound = openable.isOpen() ? Sound.BLOCK_IRON_DOOR_CLOSE : Sound.BLOCK_IRON_DOOR_OPEN;
+        event.getPlayer().getWorld().playSound(clickedBlock.getLocation(), sound, 1, 1);
+        openable.setOpen(!openable.isOpen());
+        state.update();
+        event.setCancelled(true);
     }
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event){
