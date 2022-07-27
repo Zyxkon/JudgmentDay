@@ -8,17 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.UUID;
 
 public class Commands implements CommandExecutor {
@@ -36,10 +27,7 @@ public class Commands implements CommandExecutor {
 //            commandSender.sendMessage(messages.toArray(new String[]{}));
 //        }
         /*
-        /jd effect <amplifier> <duration> <effect>
-        /jd enchant <enchantment> <level>
-        /jd rename <name>
-        /jd unbreak
+
         /jd thirst <player> <amount>
         /jd injure <player> [bloodloss|impairment|infection]
         */
@@ -47,20 +35,88 @@ public class Commands implements CommandExecutor {
         switch (strings[0].toLowerCase()) {
             case "stats":{
                 switch (strings[1].toLowerCase()){
-                    case "reset":
+                    case "reset": {
                         Player p;
-                        try{
+                        try {
                             p = Bukkit.getPlayer(strings[2]);
-                        } catch (IndexOutOfBoundsException exception){
+                        } catch (IndexOutOfBoundsException exception) {
                             p = player;
                         }
                         Counter.resetStats(p);
                         p.sendMessage("Your stats have been resetted!");
                         break;
+                    }
+                    case "get":{
+                        int counts = 0;
+                        String str = "count";
+                        Player p;
+                        try {
+                            p = Bukkit.getPlayer(strings[3]);
+                        }
+                        catch (IndexOutOfBoundsException exception){
+                            p = player;
+                        }
+                        switch (strings[2].toLowerCase()){
+                            case "d":
+                            case "deaths":{
+                                str = "death";
+                                counts = Counter.getDeaths(p);
+                                break;
+                            }
+                            case "pk":
+                            case "player_kills":{
+                                str = "player kills";
+                                counts = Counter.getPlayerKills(p);
+                                break;
+                            }
+                            case "wk":
+                            case "walker_kills":{
+                                str = "walker kills";
+                                counts = Counter.getWalkerKills(p);
+                                break;
+                            }
+                        }
+                        player.sendMessage(String.format("%s's %s is %s ", p.getName(), str, counts));
+                        break;
+                    }
                 }
                 break;
             }
             case "thirst": {
+                switch (strings[2].toLowerCase()){
+                    case "get":{
+                        Player p;
+                        try {
+                            p = Bukkit.getPlayer(strings[3]);
+                        } catch (IndexOutOfBoundsException exception){
+                            p = player;
+                        }
+                        player.sendMessage(String.format("%s's hydration is %d", p.getName(), ThirstManager.getThirst(p))+"%");
+                        break;
+                    }
+                    case "set":{
+                        /*
+                        * 2     3        4
+                        * set <player> <thirst>
+                        * set <thirst>
+                        * set 223 // sets the player's thirst to 223
+                        * set 223 223 // sets the thirst of the player called 223 to 223
+                        *
+                        *
+                         */
+                        Player p;
+                        int thirst;
+                        try {
+                            thirst = Integer.parseInt(strings[3]);
+                            p = player;
+                        } catch (NumberFormatException exception){
+                            p = Bukkit.getPlayer(strings[3]);
+                            thirst = Integer.parseInt(strings[4]);
+                        }
+                        ThirstManager.setThirst(p, thirst);
+                        p.sendMessage(String.format("Your hydration is now %s", thirst)+"%");
+                    }
+                }
                 Player p = Bukkit.getPlayer(strings[1]);
                 int thirst = Integer.parseInt(strings[2]);
                 ThirstManager.setThirst(p, thirst);
@@ -113,5 +169,8 @@ public class Commands implements CommandExecutor {
             }
         }
         return false;
+    }
+    public static void main(String[] args){
+        System.out.println(Integer.parseInt("da"));
     }
 }

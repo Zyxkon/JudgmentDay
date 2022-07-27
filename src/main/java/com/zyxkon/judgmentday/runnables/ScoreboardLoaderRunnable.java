@@ -70,7 +70,7 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         scores.add(status);
         scores.addAll(injuries);
         DecimalFormat df = new DecimalFormat("#.##");
-        scores.add("&8&l»&7&l☣&7Walkers killed: " + Counter.getMobKills(uuid));
+        scores.add("&8&l»&7&l☣&7Walkers killed: " + Counter.getWalkerKills(uuid));
         scores.add("&5&l»&d&l⚔&dPlayers killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
         scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");

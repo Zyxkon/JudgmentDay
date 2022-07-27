@@ -42,10 +42,10 @@ public class Counter implements Listener {
     public static int getDeaths(UUID uuid){
         return deaths.get(uuid);
     }
-    public static int getMobKills(Player player){
-        return getMobKills(player.getUniqueId());
+    public static int getWalkerKills(Player player){
+        return getWalkerKills(player.getUniqueId());
     }
-    public static int getMobKills(UUID uuid){
+    public static int getWalkerKills(UUID uuid){
         return mobKills.get(uuid);
     }
     public static int getPlayerKills(Player player){
