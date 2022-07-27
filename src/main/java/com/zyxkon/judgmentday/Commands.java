@@ -170,7 +170,4 @@ public class Commands implements CommandExecutor {
         }
         return false;
     }
-    public static void main(String[] args){
-        System.out.println(Integer.parseInt("da"));
-    }
 }
