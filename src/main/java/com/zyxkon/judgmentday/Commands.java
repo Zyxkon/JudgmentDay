@@ -117,9 +117,9 @@ public class Commands implements CommandExecutor {
                         p.sendMessage(String.format("Your hydration is now %s", thirst)+"%");
                     }
                 }
-                Player p = Bukkit.getPlayer(strings[1]);
-                int thirst = Integer.parseInt(strings[2]);
-                ThirstManager.setThirst(p, thirst);
+//                Player p = Bukkit.getPlayer(strings[1]);
+//                int thirst = Integer.parseInt(strings[2]);
+//                ThirstManager.setThirst(p, thirst);
                 break;
             }
             case "injure": {
