@@ -27,7 +27,15 @@ public class CreatureSpawnListener implements Listener {
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
         Location loc = event.getEntity().getLocation();
-        if (!loc.getBlock().isEmpty() || !loc.getBlock().getRelative(BlockFace.UP).isEmpty() || loc.getBlock().getRelative(BlockFace.DOWN).isEmpty()) {
+        if (!loc.getBlock().isEmpty()) {
+            event.setCancelled(true);
+            return;
+        }
+        if (!loc.getBlock().getRelative(BlockFace.UP).isEmpty()) {
+            event.setCancelled(true);
+            return;
+        }
+        if (loc.getBlock().getRelative(BlockFace.DOWN).isEmpty()){
             event.setCancelled(true);
             return;
         }

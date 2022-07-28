@@ -2,9 +2,12 @@ package com.zyxkon.judgmentday.injuries.infection;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.logging.Level;
 
 public class Infection {
     Main plugin;
@@ -14,7 +17,7 @@ public class Infection {
     public Infection(Main plugin, Player player){
         this.plugin = plugin;
         this.player = player;
-        this.normalSpeed = player.getWalkSpeed();
+        this.normalSpeed = (!ImpairmentManager.isInjured(player) ? player.getWalkSpeed() : 0.2f);
         process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
             int timer = 0;
             @Override
@@ -25,7 +28,8 @@ public class Infection {
                     if (timer < 170) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 5 * 20, 0));
                     }
-                    if (normalSpeed >= 1) player.setWalkSpeed((float) (normalSpeed * (95.0 / 100.0)));
+                    plugin.log(Level.INFO, "Infection"+ normalSpeed);
+                    if (player.getWalkSpeed() >= 0.2f) player.setWalkSpeed((float) (normalSpeed * (95.0 / 100.0)));
                     if (timer >= 40) {
                         if (Utils.isInRange(timer, 40, 45)) Utils.sendActionBarMessage(player, Utils.translate(
                                 "You feel exhausted. Your infection is &e&nstage 2."));

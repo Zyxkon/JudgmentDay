@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class Utils {
+public final class Utils {
     public static String translate(String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
     }

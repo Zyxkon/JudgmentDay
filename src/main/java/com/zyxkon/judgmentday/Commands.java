@@ -251,7 +251,7 @@ public class Commands implements CommandExecutor {
                             case "br" :case "barracks": case "barrack":{
                                 String region = strings[3];
                                 ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
-                                if (WorldGuardExtension.isBarrack(region)){
+                                if (!WorldGuardExtension.isBarrack(region)){
                                     commandSender.sendMessage(String.format("Region '%s' is not a barrack!", region));
                                     return true;
                                 }

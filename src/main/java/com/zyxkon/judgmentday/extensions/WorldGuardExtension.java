@@ -2,7 +2,6 @@ package com.zyxkon.judgmentday.extensions;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,11 +13,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WorldGuardExtension {
-    private static Main plugin;
-    public WorldGuardExtension(Main plugin){
-        WorldGuardExtension.plugin = plugin;
-    }
+public final class WorldGuardExtension {
+    private static final Main plugin = Main.getInstance();
     private static WorldGuardPlugin getWorldGuard(){
         Plugin pl = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (!(pl instanceof WorldGuardPlugin)) return null;
@@ -28,7 +24,7 @@ public class WorldGuardExtension {
         WorldGuardPlugin worldGuard = getWorldGuard();
         if (worldGuard == null) return false;
         Set<String> regions = new HashSet<>();
-        for (World world : plugin.getServer().getWorlds()){
+        for (World world : Main.getInstance().getServer().getWorlds()){
             RegionManager manager = worldGuard.getRegionManager(world);
             regions.addAll(manager.getRegions().keySet());
         }
@@ -43,7 +39,7 @@ public class WorldGuardExtension {
         if (worldGuard == null) return array;
         RegionManager manager = worldGuard.getRegionManager(location.getWorld());
         ApplicableRegionSet set = manager.getApplicableRegions(location);
-        for (ProtectedRegion region : set) array.add(region.getId());
+        set.forEach(r -> array.add(r.getId()));
         return array;
     }
     public static ArrayList<String> getBarracks(){
@@ -53,11 +49,9 @@ public class WorldGuardExtension {
         return new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
     }
     public static boolean isBarrack(String regionId){
-        if (!regionExists(regionId)) return false;
-        return getBarracks().contains(regionId);
+        return (regionExists(regionId) && getBarracks().contains(regionId));
     }
     public static boolean isSafezone(String regionId){
-        if (!regionExists(regionId)) return false;
-        return getSafezones().contains(regionId);
+        return (regionExists(regionId) && getSafezones().contains(regionId));
     }
 }

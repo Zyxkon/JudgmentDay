@@ -16,13 +16,12 @@ import org.bukkit.scoreboard.*;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ScoreboardLoaderRunnable extends BukkitRunnable {
     private final Main plugin;
-    ScoreboardManager manager = Bukkit.getScoreboardManager();
+    static ScoreboardManager manager = Bukkit.getScoreboardManager();
     public ScoreboardLoaderRunnable(Main plugin){
         this.plugin = plugin;
         this.runTaskTimer(plugin, 0L, 1L);
@@ -73,15 +72,19 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         scores.add("&8&l»&7&l☣&7Walkers killed: " + Counter.getWalkerKills(uuid));
         scores.add("&5&l»&d&l⚔&dPlayers killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
-        scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");
-        ArrayList<String> regions = new ArrayList<>();
-        if (!WorldGuardExtension.getRegion(player).isEmpty()){
-            for (int i = 0; i<WorldGuardExtension.getRegion(player).size(); i++) {
-                String str = WorldGuardExtension.getRegion(player).get(i);
-                regions.add(i, str.substring(0, 1).toUpperCase() + str.substring(1));
+        if (plugin.hasPlugin("Vault")){
+            scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");
+        }
+        ArrayList<String> regions = WorldGuardExtension.getRegion(player);
+        if (!regions.isEmpty()){
+            for (int i = 0; i<regions.size(); i++) {
+                String str = regions.get(i);
+                regions.set(i, str.substring(0, 1).toUpperCase() + str.substring(1));
             }
         }
-        scores.add("&1&l»&9&l۩&9Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
+        if (plugin.hasPlugin("WorldGuard")){
+            scores.add("&1&l»&9&l۩&9Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
+        }
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         scores = (ArrayList<String>) scores.stream().map(Utils::translate).collect(Collectors.toList());
         Utils.addScore(objective, scores);

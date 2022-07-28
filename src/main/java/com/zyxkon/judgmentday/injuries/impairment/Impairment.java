@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.logging.Level;
+
 public class Impairment {
     static Main plugin;
     Player player;
@@ -27,6 +29,7 @@ public class Impairment {
             @Override
             public void run() {
                 if (!player.isDead()){
+                    plugin.log(Level.INFO, Float.toString(player.getWalkSpeed()));
                     if (Utils.isInRange(timer, 0, 5)) Utils.sendActionBarMessage(player,
                             "Your legs are injured and you are finding it harder to walk by the second. Find a first aid kit.");
                     if (Utils.isInRange(timer, 0, 100))

@@ -11,6 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.text.DecimalFormat;
+
 public class VaultExtension implements Listener {
     static Main plugin;
     private static Economy eco = null;
@@ -31,7 +33,10 @@ public class VaultExtension implements Listener {
         if (eco == null) return;
         if (!eco.isEnabled()) return;
         if (!eco.hasAccount(player)) return;
-        eco.depositPlayer(player, Utils.randRange(0, 300)/100.);
+        double money = Utils.randRange(0, 300)/100.;
+        DecimalFormat df = new DecimalFormat("#.##");
+        Utils.sendActionBarMessage(player, Utils.translate(String.format("&a&l+&a%s&2$",df.format(money))));
+        eco.depositPlayer(player, money);
     }
     public static double getMoney(Player player){
         return (eco != null ? eco.getBalance(player) : 0);
