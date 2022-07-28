@@ -21,24 +21,24 @@ public class EntityDamageListener implements Listener {
         this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
-    @EventHandler
-    public static void onDamageByEntity(EntityDamageByEntityEvent event){
-        Entity victim = event.getEntity();
-        Entity attacker = event.getDamager();
-        if (victim instanceof Player && attacker instanceof Zombie){
-            Player player = (Player) victim;
-            PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 4*20, 0);
-            PotionEffect nausea = new PotionEffect(PotionEffectType.CONFUSION, 6*20, 0);
-            PotionEffect[] pot = {slow, nausea};
-            player.addPotionEffects(Arrays.stream(pot).collect(Collectors.toList()));
-        }
-    }
+//    @EventHandler
+//    public static void onDamageByEntity(EntityDamageByEntityEvent event){
+//        Entity victim = event.getEntity();
+//        Entity attacker = event.getDamager();
+//        if (victim instanceof Player && attacker instanceof Zombie){
+//            Player player = (Player) victim;
+//            PotionEffect slow = new PotionEffect(PotionEffectType.SLOW, 4*20, 0);
+//            PotionEffect nausea = new PotionEffect(PotionEffectType.CONFUSION, 6*20, 0);
+//            PotionEffect[] pot = {slow, nausea};
+//            player.addPotionEffects(Arrays.stream(pot).collect(Collectors.toList()));
+//        }
+//    }
     @EventHandler
     public void onDamage(EntityDamageEvent event){
         Entity victim = event.getEntity();
         if (victim instanceof Zombie && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
             event.setCancelled(true);
-            ((Zombie) victim).damage(event.getDamage()/10);
+            ((Zombie) victim).damage(event.getDamage()/3);
         }
     }
 }

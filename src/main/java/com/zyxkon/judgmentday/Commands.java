@@ -167,6 +167,42 @@ public class Commands implements CommandExecutor {
                 p.sendMessage("You have been healed!");
                 return true;
             }
+            case "r":
+            case "regions":{
+                if (Bukkit.getPluginManager().getPlugin("WorldGuard") == null){
+                    player.sendMessage("WorldGuard isn't installed, you can't use this subcommand!");
+                    return true;
+                }
+                switch (strings[1].toLowerCase()){
+                    case "add": {
+                        switch (strings[2].toLowerCase()){
+                            case "safezones":
+                            case "safezone":{
+
+                                break;
+                            }
+                            case "garrisons":
+                            case "garrison": {
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case "remove": {
+                        switch (strings[2].toLowerCase()){
+                            case "safezone":{
+
+                                break;
+                            }
+                            case "garrison":{
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
         }
         return false;
     }

@@ -63,6 +63,9 @@ public class Utils {
         else if (Arrays.asList(diamondArmor).contains(material)) toReturn -= toReturn*(99.9/100.);
         return toReturn;
     }
+    public static boolean randBool(){
+        return (new Random()).nextBoolean();
+    }
     public static boolean indexIsIn(int index, Object[] array){
         return index<=array.length-1;
     }

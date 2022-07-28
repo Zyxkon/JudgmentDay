@@ -14,9 +14,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.material.Door;
+import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
 public class MainListener implements Listener {
@@ -63,11 +65,11 @@ public class MainListener implements Listener {
         state.update();
         event.setCancelled(true);
     }
-//    @EventHandler
-//    public void onEntityDamage(EntityDamageEvent event){
-//        Location loc = event.getEntity().getLocation();
-//        World w = loc.getWorld();
-//        loc.add(0, 1, 0);
-//        w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, new MaterialData(Material.REDSTONE_WIRE));
-//    }
+    @EventHandler
+    public void onEntityDamage(EntityDamageEvent event){
+        Location loc = event.getEntity().getLocation();
+        World w = loc.getWorld();
+        loc.add(0, 1, 0);
+        w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, new MaterialData(Material.REDSTONE_WIRE));
+    }
 }

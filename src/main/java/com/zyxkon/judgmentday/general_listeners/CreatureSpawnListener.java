@@ -3,6 +3,7 @@ package com.zyxkon.judgmentday.general_listeners;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 
+import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 public class CreatureSpawnListener implements Listener {
     Main plugin;
@@ -23,26 +24,32 @@ public class CreatureSpawnListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
-    public static void onCreatureSpawn(CreatureSpawnEvent event) {
+    public void onCreatureSpawn(CreatureSpawnEvent event) {
         Location loc = event.getEntity().getLocation();
         if (!loc.getBlock().isEmpty() || !loc.getBlock().getRelative(BlockFace.UP).isEmpty() || loc.getBlock().getRelative(BlockFace.DOWN).isEmpty()) {
             event.setCancelled(true);
             return;
         }
         if (!(event.getEntity() instanceof Zombie)){
-            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL
-                    || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
+            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
                 event.setCancelled(true);
-                EntityType ent = EntityType.ZOMBIE;
-                event.getLocation().getWorld().spawnEntity(loc, ent);
             }
+        }
+        float lChance = 1/6f*100;
+        float gChance = 1/12f*100;
+        float cChance = 1/24f*100;
+        float iChance = 1/10f;
+        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
+            ArrayList<String> safezones = new ArrayList<>();
+            plugin.getRegionsConfig().getList("garrisons").forEach(s -> safezones.add((String) s));
+            ArrayList<String> regions = WorldGuardExtension.getRegion(loc);
+
         }
         if (event.getEntity() instanceof Zombie){
             try {
                 Ageable a = (Ageable) event.getEntity();
                 if (!a.isAdult()) a.setAdult();
             } catch (ClassCastException ignored){}
-            Random r = new Random();
             Zombie z = (Zombie) event.getEntity();
             z.setBaby(false);
             z.setHealth(10d);
@@ -50,42 +57,33 @@ public class CreatureSpawnListener implements Listener {
             z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3d);
             z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(7d);
             z.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(100d);
-            ItemStack helmet = null;
-            ItemStack chestplate = null;
-            ItemStack leggings = null;
-            ItemStack boots = null;
-            if (r.nextBoolean()) {
-                if (Utils.chance(1/6. * 100)) helmet = new ItemStack(Material.LEATHER_HELMET);
-                else if (Utils.chance(1/7. * 100)) helmet = new ItemStack(Material.GOLD_HELMET);
-                else if (Utils.chance(1/8. * 100)) helmet = new ItemStack(Material.CHAINMAIL_HELMET);
-                else if (Utils.chance(5)) helmet = new ItemStack(Material.IRON_HELMET);
-//                else if (Utils.chance(30)) helmet = new ItemStack(Material.DIAMOND_HELMET);
+            ItemStack helmet, chestplate, leggings, boots;
+            helmet = chestplate = leggings = boots = null;
+            if (Utils.randBool()) {
+                if (Utils.chance(lChance)) helmet = new ItemStack(Material.LEATHER_HELMET);
+                else if (Utils.chance(gChance)) helmet = new ItemStack(Material.GOLD_HELMET);
+                else if (Utils.chance(cChance)) helmet = new ItemStack(Material.CHAINMAIL_HELMET);
+                else if (Utils.chance(iChance)) helmet = new ItemStack(Material.IRON_HELMET);
             }
-            if (r.nextBoolean()) {
-                if (Utils.chance(1/6. * 100)) chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-                else if (Utils.chance(1/7. * 100)) chestplate = new ItemStack(Material.GOLD_CHESTPLATE);
-                else if (Utils.chance(1/8. * 100)) chestplate = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
-                else if (Utils.chance(5)) chestplate = new ItemStack(Material.IRON_CHESTPLATE);
-//                else if (Utils.chance(30)) chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
+            if (Utils.randBool()) {
+                if (Utils.chance(lChance)) chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+                else if (Utils.chance(gChance)) chestplate = new ItemStack(Material.GOLD_CHESTPLATE);
+                else if (Utils.chance(cChance)) chestplate = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+                else if (Utils.chance(iChance)) chestplate = new ItemStack(Material.IRON_CHESTPLATE);
             }
-            if (r.nextBoolean()) {
-                if (Utils.chance(1./6. * 100)) leggings = new ItemStack(Material.LEATHER_LEGGINGS);
-                else if (Utils.chance(1/7. * 100)) leggings = new ItemStack(Material.GOLD_LEGGINGS);
-                else if (Utils.chance(1/8. * 100)) leggings = new ItemStack(Material.CHAINMAIL_LEGGINGS);
-                else if (Utils.chance(5)) leggings = new ItemStack(Material.IRON_LEGGINGS);
-//                else if (Utils.chance(30)) leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
+            if (Utils.randBool()) {
+                if (Utils.chance(lChance)) leggings = new ItemStack(Material.LEATHER_LEGGINGS);
+                else if (Utils.chance(gChance)) leggings = new ItemStack(Material.GOLD_LEGGINGS);
+                else if (Utils.chance(cChance)) leggings = new ItemStack(Material.CHAINMAIL_LEGGINGS);
+                else if (Utils.chance(iChance)) leggings = new ItemStack(Material.IRON_LEGGINGS);
             }
-            if (r.nextBoolean()) {
-                if (Utils.chance(1./6. * 100)) boots = new ItemStack(Material.LEATHER_BOOTS);
-                else if (Utils.chance(1/7. * 100)) boots = new ItemStack(Material.GOLD_BOOTS);
-                else if (Utils.chance(1/8. * 100)) boots = new ItemStack(Material.CHAINMAIL_BOOTS);
-                else if (Utils.chance(5)) boots = new ItemStack(Material.IRON_BOOTS);
-//                else if (Utils.chance(30)) boots = new ItemStack(Material.DIAMOND_BOOTS);
+            if (Utils.randBool()) {
+                if (Utils.chance(lChance)) boots = new ItemStack(Material.LEATHER_BOOTS);
+                else if (Utils.chance(gChance)) boots = new ItemStack(Material.GOLD_BOOTS);
+                else if (Utils.chance(cChance)) boots = new ItemStack(Material.CHAINMAIL_BOOTS);
+                else if (Utils.chance(iChance)) boots = new ItemStack(Material.IRON_BOOTS);
             }
-            z.getEquipment().setHelmet(helmet);
-            z.getEquipment().setChestplate(chestplate);
-            z.getEquipment().setLeggings(leggings);
-            z.getEquipment().setBoots(boots);
+            z.getEquipment().setArmorContents(new ItemStack[]{helmet, chestplate, leggings, boots});
         }
     }
 }

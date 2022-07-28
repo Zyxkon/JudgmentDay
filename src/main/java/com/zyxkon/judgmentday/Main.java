@@ -13,6 +13,8 @@ import com.zyxkon.judgmentday.general_listeners.MainListener;
 import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,16 +24,20 @@ import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {
     private static Logger logger;
+    private static File regionsFile;
+    private static FileConfiguration regionsConfig;
     @Override
     public void onEnable(){
         Main.logger = this.getLogger();
-        File file = new File(this.getDataFolder() + File.separator);
-        if (!file.exists()) file.mkdir();
+        initializeData();
+        if (!regionsFile.exists()){
+            saveResource("regions.yml", false);
+        }
         String[] externalPlugins = {"CrackShot", "WorldGuard", "WorldEdit", "Vault"};
         for (String str : externalPlugins){
             Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin(str);
-            if (plugin == null) log(Level.WARNING, Utils.translate(String.format("&4Plugin %s is not installed!", str)));
-            else log(Level.INFO, String.format("&4Plugin %s found! Begin loading...", str));
+            if (plugin == null) log(Level.WARNING, String.format("Plugin %s is not installed!", str));
+            else log(Level.INFO, String.format("Plugin %s found! Begin loading...", str));
             switch (str){
                 case "CrackShot":
                     new CrackShotExtension(this);
@@ -69,5 +75,17 @@ public class Main extends JavaPlugin {
     }
     public void log(Level level, String str){
         logger.log(level, str);
+    }
+    private void initializeData(){
+        File file = new File(getDataFolder() + File.separator);
+        if (!file.exists()) file.mkdir();
+        regionsFile = new File(getDataFolder(), "regions.yml");
+        regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
+    }
+    public File getRegionsFile(){
+        return regionsFile;
+    }
+    public FileConfiguration getRegionsConfig(){
+        return regionsConfig;
     }
 }
