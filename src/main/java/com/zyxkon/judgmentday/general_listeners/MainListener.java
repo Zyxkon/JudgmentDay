@@ -14,11 +14,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.material.Door;
-import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
 public class MainListener implements Listener {
@@ -37,33 +35,15 @@ public class MainListener implements Listener {
     @EventHandler
     public void onCauldronLevelChange(CauldronLevelChangeEvent event) {
         switch (event.getReason()) {
-            case BUCKET_FILL:
-            case BUCKET_EMPTY:
-            case BOTTLE_FILL:
-            case BOTTLE_EMPTY:
-            case BANNER_WASH:
-            case ARMOR_WASH:
+            case BUCKET_FILL: case BUCKET_EMPTY: case BOTTLE_FILL: case BOTTLE_EMPTY: case BANNER_WASH: case ARMOR_WASH:
             case EXTINGUISH:
                 if (((Player) event.getEntity()).getGameMode() == GameMode.SURVIVAL)
                     event.setNewLevel(event.getOldLevel());
                 break;
-            case EVAPORATE:
-            case UNKNOWN:
+            case EVAPORATE: case UNKNOWN:
                 event.setNewLevel(event.getOldLevel());
                 break;
         }
-    }
-
-    @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL) event.setCancelled(true);
-    }
-
-    @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL) event.setCancelled(true);
     }
 
     @EventHandler
@@ -83,11 +63,11 @@ public class MainListener implements Listener {
         state.update();
         event.setCancelled(true);
     }
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event){
-        Location loc = event.getEntity().getLocation();
-        World w = loc.getWorld();
-        loc.add(0, 1, 0);
-        w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, new MaterialData(Material.REDSTONE_WIRE));
-    }
+//    @EventHandler
+//    public void onEntityDamage(EntityDamageEvent event){
+//        Location loc = event.getEntity().getLocation();
+//        World w = loc.getWorld();
+//        loc.add(0, 1, 0);
+//        w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, new MaterialData(Material.REDSTONE_WIRE));
+//    }
 }

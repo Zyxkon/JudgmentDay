@@ -22,7 +22,6 @@ import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-@SuppressWarnings("unused")
 public class Counter implements Listener {
     private static HashMap<UUID, Integer> deaths = new HashMap<>();
     private static HashMap<UUID, Integer> mobKills = new HashMap<>();

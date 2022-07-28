@@ -44,6 +44,33 @@ public class ThirstManager extends BukkitRunnable implements Listener {
         initializeData();
         loadData();
     }
+    @Override
+    public void run(){
+        for (Player player: plugin.getServer().getOnlinePlayers()){
+            UUID uuid = player.getUniqueId();
+            if (player.getGameMode().equals(GameMode.SURVIVAL)){
+                if (thirstPlayers.get(player.getUniqueId()) <= 0) return;
+                if (!thirstTimer.containsKey(uuid)) thirstTimer.put(uuid, 0);
+                int timer = thirstTimer.get(uuid);
+                if (!player.isDead()) {
+                    if (thirstTimer.containsKey(uuid)) thirstTimer.put(uuid, thirstTimer.get(uuid)+1);
+                    int thirst = thirstPlayers.get(uuid);
+                    if (Utils.isInRange(thirst, 90, 100)) {
+                        if (timer % 15 == 0) addThirst(player, -1);
+                        return;
+                    }
+                    else if (Utils.isInRange(thirst, 30, 90)){
+                        if (timer % 20 == 0) addThirst(player, -1);
+                        return;
+                    }
+                    else if (Utils.isInRange(thirst, 0, 30)) {
+                        if (timer % 30 == 0) addThirst(player, -1);
+                        return;
+                    }
+                }
+            }
+        }
+    }
     public static int getThirst(Player player){
         return getThirst(player.getUniqueId());
     }
@@ -134,42 +161,14 @@ public class ThirstManager extends BukkitRunnable implements Listener {
             e.printStackTrace();
         }
     }
-    @Override
-    public void run(){
-        for (Player player: plugin.getServer().getOnlinePlayers()){
-            UUID uuid = player.getUniqueId();
-            if (player.getGameMode().equals(GameMode.SURVIVAL)){
-                if (thirstPlayers.get(player.getUniqueId()) <= 0) return;
-                if (!thirstTimer.containsKey(uuid)) thirstTimer.put(uuid, 0);
-                int timer = thirstTimer.get(uuid);
-                if (!player.isDead()) {
-                    if (thirstTimer.containsKey(uuid)) thirstTimer.put(uuid, thirstTimer.get(uuid)+1);
-                    int thirst = thirstPlayers.get(uuid);
-                    if (Utils.isInRange(thirst, 90, 100)) {
-                        if (timer % 15 == 0) addThirst(player, -1);
-                        return;
-                    }
-                    else if (Utils.isInRange(thirst, 30, 90)){
-                        if (timer % 20 == 0) addThirst(player, -1);
-                        return;
-                    }
-                    else if (Utils.isInRange(thirst, 0, 30)) {
-                        if (timer % 30 == 0) addThirst(player, -1);
-                        return;
-                    }
-                }
-            }
-        }
-    }
     @EventHandler
     public void onDrink(PlayerItemConsumeEvent event){
         Player player = event.getPlayer();
         if (!(event.getItem().getType() == Material.POTION)) return;
         PotionType potionType = ((PotionMeta) event.getItem().getItemMeta()).getBasePotionData().getType();
-        if (potionType == PotionType.WATER) {
-            addThirst(player, 30);
-            healPlayer(player);
-        }
+        if (!(potionType == PotionType.WATER)) return;
+        addThirst(player, 25);
+        healPlayer(player);
     }
     @EventHandler
     public void onJoin(PlayerJoinEvent event){

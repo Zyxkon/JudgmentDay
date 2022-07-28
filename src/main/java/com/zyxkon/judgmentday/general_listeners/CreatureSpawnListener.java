@@ -55,30 +55,30 @@ public class CreatureSpawnListener implements Listener {
             ItemStack leggings = null;
             ItemStack boots = null;
             if (r.nextBoolean()) {
-                if (Utils.chance(1/6.)) helmet = new ItemStack(Material.LEATHER_HELMET);
-                else if (Utils.chance(1/7.)) helmet = new ItemStack(Material.GOLD_HELMET);
-                else if (Utils.chance(1/8.)) helmet = new ItemStack(Material.CHAINMAIL_HELMET);
+                if (Utils.chance(1/6. * 100)) helmet = new ItemStack(Material.LEATHER_HELMET);
+                else if (Utils.chance(1/7. * 100)) helmet = new ItemStack(Material.GOLD_HELMET);
+                else if (Utils.chance(1/8. * 100)) helmet = new ItemStack(Material.CHAINMAIL_HELMET);
                 else if (Utils.chance(5)) helmet = new ItemStack(Material.IRON_HELMET);
 //                else if (Utils.chance(30)) helmet = new ItemStack(Material.DIAMOND_HELMET);
             }
             if (r.nextBoolean()) {
-                if (Utils.chance(1/6.)) chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
-                else if (Utils.chance(1/7.)) chestplate = new ItemStack(Material.GOLD_CHESTPLATE);
-                else if (Utils.chance(1/8.)) chestplate = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
+                if (Utils.chance(1/6. * 100)) chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+                else if (Utils.chance(1/7. * 100)) chestplate = new ItemStack(Material.GOLD_CHESTPLATE);
+                else if (Utils.chance(1/8. * 100)) chestplate = new ItemStack(Material.CHAINMAIL_CHESTPLATE);
                 else if (Utils.chance(5)) chestplate = new ItemStack(Material.IRON_CHESTPLATE);
 //                else if (Utils.chance(30)) chestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
             }
             if (r.nextBoolean()) {
-                if (Utils.chance(1./6.)) leggings = new ItemStack(Material.LEATHER_LEGGINGS);
-                else if (Utils.chance(1/7.)) leggings = new ItemStack(Material.GOLD_LEGGINGS);
-                else if (Utils.chance(1/8.)) leggings = new ItemStack(Material.CHAINMAIL_LEGGINGS);
+                if (Utils.chance(1./6. * 100)) leggings = new ItemStack(Material.LEATHER_LEGGINGS);
+                else if (Utils.chance(1/7. * 100)) leggings = new ItemStack(Material.GOLD_LEGGINGS);
+                else if (Utils.chance(1/8. * 100)) leggings = new ItemStack(Material.CHAINMAIL_LEGGINGS);
                 else if (Utils.chance(5)) leggings = new ItemStack(Material.IRON_LEGGINGS);
 //                else if (Utils.chance(30)) leggings = new ItemStack(Material.DIAMOND_LEGGINGS);
             }
             if (r.nextBoolean()) {
-                if (Utils.chance(1./6.)) boots = new ItemStack(Material.LEATHER_BOOTS);
-                else if (Utils.chance(1/7.)) boots = new ItemStack(Material.GOLD_BOOTS);
-                else if (Utils.chance(1/8.)) boots = new ItemStack(Material.CHAINMAIL_BOOTS);
+                if (Utils.chance(1./6. * 100)) boots = new ItemStack(Material.LEATHER_BOOTS);
+                else if (Utils.chance(1/7. * 100)) boots = new ItemStack(Material.GOLD_BOOTS);
+                else if (Utils.chance(1/8. * 100)) boots = new ItemStack(Material.CHAINMAIL_BOOTS);
                 else if (Utils.chance(5)) boots = new ItemStack(Material.IRON_BOOTS);
 //                else if (Utils.chance(30)) boots = new ItemStack(Material.DIAMOND_BOOTS);
             }
