@@ -3,6 +3,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -14,6 +15,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class WorldGuardExtension {
+    private static Main plugin;
+    public WorldGuardExtension(Main plugin){
+        WorldGuardExtension.plugin = plugin;
+    }
     private static WorldGuardPlugin getWorldGuard(){
         Plugin pl = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (!(pl instanceof WorldGuardPlugin)) return null;
@@ -23,7 +28,7 @@ public class WorldGuardExtension {
         WorldGuardPlugin worldGuard = getWorldGuard();
         if (worldGuard == null) return false;
         Set<String> regions = new HashSet<>();
-        for (World world : Bukkit.getServer().getWorlds()){
+        for (World world : plugin.getServer().getWorlds()){
             RegionManager manager = worldGuard.getRegionManager(world);
             regions.addAll(manager.getRegions().keySet());
         }
@@ -40,5 +45,15 @@ public class WorldGuardExtension {
         ApplicableRegionSet set = manager.getApplicableRegions(location);
         for (ProtectedRegion region : set) array.add(region.getId());
         return array;
+    }
+    public static boolean isBarrack(String regionId){
+        if (!regionExists(regionId)) return false;
+        ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
+        return barracks.contains(regionId);
+    }
+    public static boolean isSafezone(String regionId){
+        if (!regionExists(regionId)) return false;
+        ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+        return safezones.contains(regionId);
     }
 }

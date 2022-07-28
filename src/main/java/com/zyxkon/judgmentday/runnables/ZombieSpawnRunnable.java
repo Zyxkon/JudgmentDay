@@ -17,13 +17,13 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
     final Main plugin;
     public ZombieSpawnRunnable(Main plugin){
         this.plugin = plugin;
-        this.runTaskTimer(plugin, 0L, 20L);
+        this.runTaskTimer(plugin, 0L, 5L);
     }
     @Override
     public void run(){
         for (Player p: plugin.getServer().getOnlinePlayers()) {
             List<Entity> ents = p.getNearbyEntities(40, 10, 40);
-            int limit = 3;
+            int limit = 10;
             if (ents.stream().anyMatch(e -> e instanceof Player)) limit *=
                     (ents.stream().filter(e -> e instanceof Player)).toArray().length;
             ents = ents.stream().filter((e) -> e.getType() == EntityType.ZOMBIE).collect(Collectors.toList());
