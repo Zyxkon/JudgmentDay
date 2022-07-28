@@ -1,5 +1,6 @@
 package com.zyxkon.judgmentday;
 
+import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
@@ -10,6 +11,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class Commands implements CommandExecutor {
@@ -174,28 +177,83 @@ public class Commands implements CommandExecutor {
                     return true;
                 }
                 switch (strings[1].toLowerCase()){
+                    case "a":
                     case "add": {
                         switch (strings[2].toLowerCase()){
                             case "safezones":
                             case "safezone":{
-
-                                break;
+                                String region = strings[3];
+                                if (!WorldGuardExtension.regionExists(region)){
+                                    commandSender.sendMessage(String.format("Region %s does not exist!", region));
+                                    return true;
+                                }
+                                ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+                                if (safezones.contains(region)){
+                                    commandSender.sendMessage(String.format("%s is already a safezone!", region));
+                                    return true;
+                                }
+                                safezones.add(region);
+                                plugin.getRegionsConfig().set("safezones", region);
+                                try{
+                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate("The region has &asuccessfully&f been saved as a safezone!"));
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
+                                }
+                                return true;
                             }
                             case "garrisons":
                             case "garrison": {
-                                break;
+                                String region = strings[3];
+                                if (!WorldGuardExtension.regionExists(region)){
+                                    commandSender.sendMessage(String.format("Region %s does not exist!", region));
+                                    return true;
+                                }
+                                ArrayList<String> garrisons = new ArrayList<>(plugin.getRegionsConfig().getStringList("garrisons"));
+                                if (garrisons.contains(region)){
+                                    commandSender.sendMessage(String.format("%s is already a garrison!", region));
+                                    return true;
+                                }
+                                garrisons.add(region);
+                                plugin.getRegionsConfig().set("garrisons", region);
+                                try{
+                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate("The region has &asuccessfully&f been saved as a garrison!"));
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
+                                }
+                                return true;
                             }
                         }
                         break;
                     }
+                    case "r":
                     case "remove": {
                         switch (strings[2].toLowerCase()){
+                            case "safezones":
                             case "safezone":{
-
-                                break;
+                                String region = strings[3];
+                                ArrayList<String> garrisons = new ArrayList<>(plugin.getRegionsConfig().getStringList("garrisons"));
+                                if (garrisons.contains(region)){
+                                    commandSender.sendMessage(String.format("%s is already a garrison!", region));
+                                    return true;
+                                }
+                                garrisons.add(region);
+                                plugin.getRegionsConfig().set("garrisons", region);
+                                try{
+                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate("The region has &asuccessfully&f been saved as a garrison!"));
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
+                                }
+                                return true;
                             }
+                            case "garrisons":
                             case "garrison":{
-                                break;
+                                return true;
                             }
                         }
                         break;

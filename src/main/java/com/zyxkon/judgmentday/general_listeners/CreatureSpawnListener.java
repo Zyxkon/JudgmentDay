@@ -40,8 +40,7 @@ public class CreatureSpawnListener implements Listener {
         float cChance = 1/24f*100;
         float iChance = 1/10f;
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
-            ArrayList<String> safezones = new ArrayList<>();
-            plugin.getRegionsConfig().getList("garrisons").forEach(s -> safezones.add((String) s));
+            ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("garrisons"));
             ArrayList<String> regions = WorldGuardExtension.getRegion(loc);
 
         }
