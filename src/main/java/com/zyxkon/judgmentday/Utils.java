@@ -66,7 +66,7 @@ public class Utils {
     public static boolean randBool(){
         return (new Random()).nextBoolean();
     }
-    public static boolean indexIsIn(int index, Object[] array){
-        return index<=array.length-1;
+    public static String group(String delimiter, String... strings){
+        return String.join(delimiter, strings);
     }
 }

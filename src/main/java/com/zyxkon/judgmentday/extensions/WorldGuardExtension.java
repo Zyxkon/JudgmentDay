@@ -46,14 +46,18 @@ public class WorldGuardExtension {
         for (ProtectedRegion region : set) array.add(region.getId());
         return array;
     }
+    public static ArrayList<String> getBarracks(){
+        return new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
+    }
+    public static ArrayList<String> getSafezones(){
+        return new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+    }
     public static boolean isBarrack(String regionId){
         if (!regionExists(regionId)) return false;
-        ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
-        return barracks.contains(regionId);
+        return getBarracks().contains(regionId);
     }
     public static boolean isSafezone(String regionId){
         if (!regionExists(regionId)) return false;
-        ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
-        return safezones.contains(regionId);
+        return getSafezones().contains(regionId);
     }
 }

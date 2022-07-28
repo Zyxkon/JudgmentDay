@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Commands implements CommandExecutor {
     static Main plugin;
@@ -24,16 +25,17 @@ public class Commands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-//        if (strings.length == 0){
-//            ArrayList<String> messages = new ArrayList<>();
-//            messages.add("");
-//            commandSender.sendMessage(messages.toArray(new String[]{}));
-//        }
-        /*
-
-        /jd thirst <player> <amount>
-        /jd injure <player> [bloodloss|impairment|infection]
-        */
+        if (strings.length == 0){
+            String space = new String(new char[6]).replace("\0", "-");
+            String msg = Utils.group("\n",
+                    space+plugin.getName()+space,
+                    String.format("Author: %s", String.join(", ",plugin.getDescription().getAuthors())),
+                    String.format("Version: %s", plugin.getDescription().getVersion()),
+                    String.format("Aliases: %s", String.join(", ", command.getAliases()))
+            );
+            commandSender.sendMessage(Utils.translate(msg));
+            return true;
+        }
         Player player = (Player) commandSender;
         switch (strings[0].toLowerCase()) {
             case "stats":{
@@ -267,6 +269,20 @@ public class Commands implements CommandExecutor {
                         }
                         break;
                     }
+                    case "g": case "get":{
+                        switch (strings[2].toLowerCase()){
+                            case "sz": case "safezones": case "safezone": {
+                                ArrayList<String> safezones = WorldGuardExtension.getSafezones();
+                                commandSender.sendMessage(String.join("\n", safezones));
+                                return true;
+                            }
+                            case "br" :case "barracks": case "barrack":{
+                                ArrayList<String> barracks = WorldGuardExtension.getBarracks();
+                                commandSender.sendMessage(String.join("\n", barracks));
+                                return true;
+                            }
+                        }
+                    }
                 }
                 break;
             }
@@ -274,6 +290,8 @@ public class Commands implements CommandExecutor {
                 switch (strings[1].toLowerCase()){
                     case "rl": case "reload": {
                         plugin.reload();
+                        commandSender.sendMessage(Utils.translate(String.format(
+                                "The configuration of plugin %s has been reloaded!", plugin.getName())));
                         return true;
                     }
                 }

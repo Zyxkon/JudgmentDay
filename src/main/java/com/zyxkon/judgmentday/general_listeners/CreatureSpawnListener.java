@@ -26,7 +26,6 @@ public class CreatureSpawnListener implements Listener {
     }
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        plugin.log(Level.INFO, event.getSpawnReason().toString());
         Location loc = event.getEntity().getLocation();
         if (!loc.getBlock().isEmpty() || !loc.getBlock().getRelative(BlockFace.UP).isEmpty() || loc.getBlock().getRelative(BlockFace.DOWN).isEmpty()) {
             event.setCancelled(true);
@@ -44,7 +43,7 @@ public class CreatureSpawnListener implements Listener {
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
             ArrayList<String> regions = WorldGuardExtension.getRegion(loc);
             for (String r : regions){
-                if (WorldGuardExtension.isSafezone(r)) {
+                if (WorldGuardExtension.isSafezone(r) && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) {
                     event.setCancelled(true);
                     return;
                 }

@@ -22,28 +22,29 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
     @Override
     public void run(){
         for (Player p: plugin.getServer().getOnlinePlayers()) {
-            List<Entity> ents = p.getNearbyEntities(40, 10, 40);
-            int limit = 10;
+            List<Entity> ents = p.getNearbyEntities(50, 10, 50);
+            int limit = 40;
             if (ents.stream().anyMatch(e -> e instanceof Player)) limit *=
                     (ents.stream().filter(e -> e instanceof Player)).toArray().length;
             ents = ents.stream().filter((e) -> e.getType() == EntityType.ZOMBIE).collect(Collectors.toList());
             Random random = new Random();
             if (ents.size() <= limit){
                 World w = p.getWorld();
-                int x = Utils.randRange(15, 40);
-                int y = Utils.randRange(-3, 3);
-                int z = Utils.randRange(15, 40);
-                if (random.nextBoolean()) x = -x;
-                if (random.nextBoolean()) z = -z;
-                Location loc = p.getLocation().add(x, y, z);
-                int x_offset = Utils.randRange(-4, 4);
-                int z_offset = Utils.randRange(-4, 4);
-                loc.add(x_offset, 0, z_offset);
-                EntityType ent = EntityType.ZOMBIE;
-                if (Utils.chance(1)) ent = EntityType.HUSK;
-                else if (Utils.chance(5)) ent = EntityType.ZOMBIE_VILLAGER;
-                w.spawnEntity(loc, ent);
-                loc.add(-x_offset, 0, -z_offset);
+                for (int i = 0; i<Utils.randRange(0, 10); i++){
+                    int x = Utils.randRange(15, 40);
+                    int y = Utils.randRange(-3, 3);
+                    int z = Utils.randRange(15, 40);
+                    if (random.nextBoolean()) x = -x;
+                    if (random.nextBoolean()) z = -z;
+                    Location loc = p.getLocation().add(x, y, z);
+                    int x_offset = Utils.randRange(-4, 4);
+                    int z_offset = Utils.randRange(-4, 4);
+                    loc.add(x_offset, 0, z_offset);
+                    EntityType ent = EntityType.ZOMBIE;
+                    if (Utils.chance(1)) ent = EntityType.HUSK;
+                    else if (Utils.chance(5)) ent = EntityType.ZOMBIE_VILLAGER;
+                    w.spawnEntity(loc, ent);
+                }
             }
         }
     }
