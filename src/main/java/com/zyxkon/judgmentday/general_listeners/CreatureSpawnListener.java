@@ -51,9 +51,9 @@ public class CreatureSpawnListener implements Listener {
             for (String r : regions){
                 if (WorldGuardExtension.isBarrack(r)) {
                     iChance *= 300;
-                    cChance *= 150;
+                    cChance *= 30;
                     lChance /= 10;
-                    cChance /= 10;
+                    gChance /= 10;
                     break;
                 }
             }

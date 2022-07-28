@@ -22,7 +22,7 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
     @Override
     public void run(){
         for (Player p: plugin.getServer().getOnlinePlayers()) {
-            List<Entity> ents = p.getNearbyEntities(50, 10, 50);
+            List<Entity> ents = p.getNearbyEntities(30, 10, 30);
             int limit = 40;
             if (ents.stream().anyMatch(e -> e instanceof Player)) limit *=
                     (ents.stream().filter(e -> e instanceof Player)).toArray().length;
