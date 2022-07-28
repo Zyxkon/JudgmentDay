@@ -193,7 +193,7 @@ public class Commands implements CommandExecutor {
                                 plugin.getRegionsConfig().set("safezones", safezones);
                                 try{
                                     plugin.getRegionsConfig().save(plugin.getRegionsFile());
-                                    commandSender.sendMessage(Utils.translate("The region has &asuccessfully&f been saved as a safezone!"));
+                                    commandSender.sendMessage(Utils.translate(String.format("Region %s has &asuccessfully&f been saved as a safezone!", region)));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                     commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
@@ -207,7 +207,7 @@ public class Commands implements CommandExecutor {
                                     return true;
                                 }
                                 if (WorldGuardExtension.isBarrack(region)) {
-                                    commandSender.sendMessage(String.format("%s is already a barrack!", region));
+                                    commandSender.sendMessage(String.format("Region %s is already a barrack!", region));
                                     return true;
                                 }
                                 ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
@@ -215,7 +215,8 @@ public class Commands implements CommandExecutor {
                                 plugin.getRegionsConfig().set("barracks", barracks);
                                 try{
                                     plugin.getRegionsConfig().save(plugin.getRegionsFile());
-                                    commandSender.sendMessage(Utils.translate("The region has &asuccessfully&f been saved as a barrack!"));
+                                    commandSender.sendMessage(Utils.translate(String.format(
+                                            "Region %s has &asuccessfully&f been saved as a barrack!", region)));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                     commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
@@ -225,49 +226,56 @@ public class Commands implements CommandExecutor {
                         }
                         break;
                     }
-//                    case "r": case "remove": {
-//                        switch (strings[2].toLowerCase()){
-//                            case "safezones":
-//                            case "safezone":{
-//                                String region = strings[3];
-//                                ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
-//                                if (!safezones.contains(region)){
-//                                    commandSender.sendMessage(String.format("%s is not a safezone!", region));
-//                                    return true;
-//                                }
-//                                safezones.remove(region);
-//                                plugin.getRegionsConfig().set("safezones", region);
-//                                try{
-//                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
-//                                    commandSender.sendMessage(Utils.translate(String.format("Safezone %s has been removed!", region)));
-//                                } catch (IOException exception) {
-//                                    exception.printStackTrace();
-//                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
-//                                }
-//                                return true;
-//                            }
-//                            case "barracks":
-//                            case "barrack":{
-//                                String region = strings[3];
-//                                ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
-//                                if (!barracks.contains(region)){
-//                                    commandSender.sendMessage(String.format("%s is not a barrack!", region));
-//                                    return true;
-//                                }
-//                                barracks.remove(region);
-//                                plugin.getRegionsConfig().set("barracks", region);
-//                                try{
-//                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
-//                                    commandSender.sendMessage(Utils.translate(String.format("Barrack %s has been removed!", region)));
-//                                } catch (IOException exception) {
-//                                    exception.printStackTrace();
-//                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
-//                                }
-//                                return true;
-//                            }
-//                        }
-//                        break;
-//                    }
+                    case "r": case "remove": {
+                        switch (strings[2].toLowerCase()){
+                            case "sz": case "safezones": case "safezone":{
+                                String region = strings[3];
+                                ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+                                if (!WorldGuardExtension.isSafezone(region)){
+                                    commandSender.sendMessage(String.format("Region %s is not a safezone!", region));
+                                    return true;
+                                }
+                                safezones.remove(region);
+                                plugin.getRegionsConfig().set("safezones", safezones);
+                                try{
+                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate(String.format("Safezone %s has been removed!", region)));
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
+                                }
+                                return true;
+                            }
+                            case "br" :case "barracks": case "barrack":{
+                                String region = strings[3];
+                                ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
+                                if (WorldGuardExtension.isBarrack(region)){
+                                    commandSender.sendMessage(String.format("Region '%s' is not a barrack!", region));
+                                    return true;
+                                }
+                                barracks.remove(region);
+                                plugin.getRegionsConfig().set("barracks", barracks);
+                                try{
+                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate(String.format("Barrack %s has been removed!", region)));
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                    commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
+                                }
+                                return true;
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            case "c": case "cfg": case "config":{
+                switch (strings[1].toLowerCase()){
+                    case "rl": case "reload": {
+                        plugin.reload();
+                        return true;
+                    }
                 }
                 break;
             }

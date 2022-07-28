@@ -16,6 +16,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class CreatureSpawnListener implements Listener {
     Main plugin;
@@ -25,6 +26,7 @@ public class CreatureSpawnListener implements Listener {
     }
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
+        plugin.log(Level.INFO, event.getSpawnReason().toString());
         Location loc = event.getEntity().getLocation();
         if (!loc.getBlock().isEmpty() || !loc.getBlock().getRelative(BlockFace.UP).isEmpty() || loc.getBlock().getRelative(BlockFace.DOWN).isEmpty()) {
             event.setCancelled(true);
@@ -42,7 +44,10 @@ public class CreatureSpawnListener implements Listener {
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
             ArrayList<String> regions = WorldGuardExtension.getRegion(loc);
             for (String r : regions){
-                if (WorldGuardExtension.isSafezone(r)) return;
+                if (WorldGuardExtension.isSafezone(r)) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
             for (String r : regions){
                 if (WorldGuardExtension.isBarrack(r)) {

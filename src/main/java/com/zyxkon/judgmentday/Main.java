@@ -83,6 +83,9 @@ public class Main extends JavaPlugin {
     private void initializeData(){
         File file = new File(getDataFolder() + File.separator);
         if (!file.exists()) file.mkdir();
+        reload();
+    }
+    public void reload(){
         regionsFile = new File(getDataFolder(), "regions.yml");
         regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
     }
