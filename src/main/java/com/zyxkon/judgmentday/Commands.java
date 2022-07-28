@@ -170,8 +170,7 @@ public class Commands implements CommandExecutor {
                 p.sendMessage("You have been healed!");
                 return true;
             }
-            case "r":
-            case "regions":{
+            case "r": case "regions":{
                 if (Bukkit.getPluginManager().getPlugin("WorldGuard") == null){
                     player.sendMessage("WorldGuard isn't installed, you can't use this subcommand!");
                     return true;

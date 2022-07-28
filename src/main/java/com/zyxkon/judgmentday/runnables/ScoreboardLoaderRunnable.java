@@ -75,12 +75,12 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         scores.add("&4&l»&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
         scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");
         ArrayList<String> regions = WorldGuardExtension.getRegion(player);
-        if (!regions.isEmpty()){
-            for (int i = 0; i<regions.size(); i++) {
-                String str = regions.get(i);
-                regions.add(i, str.substring(0, 1).toUpperCase() + str.substring(1));
-            }
-        }
+//        if (!regions.isEmpty()){
+//            for (int i = 0; i<regions.size(); i++) {
+//                String str = regions.get(i);
+//                regions.add(i, str.substring(0, 1).toUpperCase() + str.substring(1));
+//            }
+//        }
         scores.add("&1&l»&9&l۩&9Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         scores = (ArrayList<String>) scores.stream().map(Utils::translate).collect(Collectors.toList());

@@ -1,5 +1,6 @@
 package com.zyxkon.judgmentday;
 import com.zyxkon.judgmentday.extensions.VaultExtension;
+import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import com.zyxkon.judgmentday.extensions.CrackShotExtension;
@@ -41,6 +42,9 @@ public class Main extends JavaPlugin {
             switch (str){
                 case "CrackShot":
                     new CrackShotExtension(this);
+                    break;
+                case "WorldGuard":
+                    new WorldGuardExtension(this);
                     break;
                 case "Vault":
                     new VaultExtension(this);
