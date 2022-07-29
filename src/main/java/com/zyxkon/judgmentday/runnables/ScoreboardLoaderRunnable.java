@@ -76,7 +76,11 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         if (plugin.hasPlugin("Vault")){
             DecimalFormat df = new DecimalFormat("#.##");
             String money = df.format(VaultExtension.getMoney(player));
-            money = String.format("%,d",Integer.parseInt(money.substring(0, money.indexOf('.'))))+money.substring(money.indexOf('.'));
+            int index = money.indexOf('.');
+            if (index == -1){
+                index = money.length()-1;
+            }
+            money = String.format("%,d",Integer.parseInt(money.substring(0, index)))+money.substring(index);
             scores.add(String.format("&2&l»&a&l＄&aBalance: %s$", money));
         }
         ArrayList<String> regions = WorldGuardExtension.getRegions(player);

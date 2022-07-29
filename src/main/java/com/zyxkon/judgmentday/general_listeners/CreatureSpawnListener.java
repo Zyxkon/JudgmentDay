@@ -5,19 +5,26 @@ import com.zyxkon.judgmentday.Utils;
 
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import org.bukkit.Bukkit;
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Banner;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
+import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 public class CreatureSpawnListener implements Listener {
@@ -50,6 +57,7 @@ public class CreatureSpawnListener implements Listener {
         float gChance = 1/12f*100;
         float cChance = 1/18f*100;
         float iChance = 1/10f;
+        boolean isBarracks = false;
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
             ArrayList<String> regions = WorldGuardExtension.getRegions(loc);
             for (String r : regions){
@@ -58,19 +66,15 @@ public class CreatureSpawnListener implements Listener {
                     return;
                 }
                 else if (WorldGuardExtension.isBarracks(r)) {
+                    isBarracks = true;
                     iChance *= 750;
                     cChance *= 5;
-                    lChance /= 100;
-                    gChance /= 200;
+                    gChance /= 100;
                     break;
                 }
             }
         }
         if (event.getEntity() instanceof Zombie){
-//            try {
-//                Ageable a = (Ageable) event.getEntity();
-//                if (!a.isAdult()) a.setAdult();
-//            } catch (ClassCastException ignored){}
             Zombie z = (Zombie) event.getEntity();
             z.setBaby(false);
             z.setHealth(15d);
@@ -78,11 +82,11 @@ public class CreatureSpawnListener implements Listener {
             z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3d);
             z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4d);
             ItemStack helmet, chestplate, leggings, boots;
-//            helmet = chestplate = leggings = boots = null;
             ArrayList<ItemStack> helmetList = new ArrayList<>();
             ArrayList<ItemStack> chestplateList = new ArrayList<>();
             ArrayList<ItemStack> leggingsList = new ArrayList<>();
             ArrayList<ItemStack> bootsList = new ArrayList<>();
+            ItemStack[] armor;
             if (Utils.randBool()) {
                 if (Utils.chance(iChance)) helmetList.add(new ItemStack(Material.IRON_HELMET));
                 if (Utils.chance(cChance)) helmetList.add(new ItemStack(Material.CHAINMAIL_HELMET));
@@ -111,7 +115,32 @@ public class CreatureSpawnListener implements Listener {
             chestplate = Utils.randElement(chestplateList);
             leggings = Utils.randElement(leggingsList);
             boots = Utils.randElement(bootsList);
-            ItemStack[] armor = new ItemStack[]{boots, leggings, chestplate, helmet};
+            armor = new ItemStack[]{boots, leggings, chestplate, helmet};
+            if (isBarracks){
+                if (Utils.chance(10)) {
+                    armor = new ItemStack[]{
+                            new ItemStack(Material.IRON_BOOTS), new ItemStack(Material.IRON_LEGGINGS),
+                            new ItemStack(Material.IRON_CHESTPLATE), new ItemStack(Material.IRON_HELMET)
+                    };
+                }
+                if (Utils.chance(25)) {
+                    ItemStack shield = new ItemStack(Material.SHIELD);
+                    BlockStateMeta shieldBsm = (BlockStateMeta) shield.getItemMeta();
+                    Banner banner = (Banner) shieldBsm.getBlockState();
+                    List<Pattern> patterns = new ArrayList<Pattern>(){
+                        {
+                            add(new Pattern(DyeColor.WHITE,PatternType.STRIPE_TOP));
+                            add(new Pattern(DyeColor.GRAY,PatternType.STRIPE_MIDDLE));
+                            add(new Pattern(DyeColor.BLACK,PatternType.BORDER));
+                        }
+                    };
+                    banner.setPatterns(patterns);
+                    shieldBsm.setBlockState(banner);
+                    shield.setItemMeta(shieldBsm);
+                    if (Utils.randBool()) z.getEquipment().setItemInMainHand(shield);
+                    else z.getEquipment().setItemInOffHand(shield);
+                }
+            }
             for (ItemStack item : armor){
                 if (Utils.randBool() && item != null){
                     ItemMeta meta = item.getItemMeta();
