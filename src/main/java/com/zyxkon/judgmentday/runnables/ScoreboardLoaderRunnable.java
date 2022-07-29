@@ -75,7 +75,7 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         if (plugin.hasPlugin("Vault")){
             scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");
         }
-        ArrayList<String> regions = WorldGuardExtension.getRegion(player);
+        ArrayList<String> regions = WorldGuardExtension.getRegions(player);
         if (!regions.isEmpty()){
             for (int i = 0; i<regions.size(); i++) {
                 String str = regions.get(i);

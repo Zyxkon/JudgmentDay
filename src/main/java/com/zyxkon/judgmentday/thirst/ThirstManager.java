@@ -4,7 +4,6 @@ import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,7 +47,7 @@ public class ThirstManager extends BukkitRunnable implements Listener {
     public void run(){
         for (Player player: plugin.getServer().getOnlinePlayers()){
             UUID uuid = player.getUniqueId();
-            if (player.getGameMode().equals(GameMode.SURVIVAL)){
+            if (!Utils.isInvincible(player)){
                 if (thirstPlayers.get(player.getUniqueId()) <= 0) return;
                 if (!thirstTimer.containsKey(uuid)) thirstTimer.put(uuid, 0);
                 int timer = thirstTimer.get(uuid);
@@ -111,14 +110,15 @@ public class ThirstManager extends BukkitRunnable implements Listener {
     }
     public static ChatColor formatThirst(int thirst){
         int max_thirst = 100;
-        ChatColor color = ChatColor.WHITE;
-        if (Utils.isInRange(thirst, (int) (max_thirst/6.*5), max_thirst)) color = ChatColor.AQUA;
-        else if (Utils.isInRange(thirst, (int) (max_thirst/6.*4), (int) (max_thirst/6.*5))) color = ChatColor.GREEN;
-        else if (Utils.isInRange(thirst, (int) (max_thirst/6.*3), (int) (max_thirst/6.*4))) color = ChatColor.YELLOW;
-        else if (Utils.isInRange(thirst, (int) (max_thirst/6.*2), (int) (max_thirst/6.*3))) color = ChatColor.GOLD;
-        else if (Utils.isInRange(thirst, max_thirst/6, (int) (max_thirst/6.*2))) color = ChatColor.RED;
-        else if (Utils.isInRange(thirst, 0, max_thirst/6)) color = ChatColor.DARK_RED;
-        return color;
+        ChatColor[] colors = {ChatColor.AQUA, ChatColor.GREEN, ChatColor.YELLOW ,
+                ChatColor.GOLD, ChatColor.RED, ChatColor.DARK_RED};
+        int size = colors.length;
+        for (int i = 0; i<size; i++){
+            if (Utils.isInRange(thirst, (int) ((double) max_thirst/size*(size-i-1)), (int) ((double) max_thirst/size*(size-i)))){
+                return colors[i];
+            }
+        }
+        return ChatColor.WHITE;
     }
     public static void initializeData() {
         File file = new File(MessageFormat.format("plugins{0}{1}{0}ThirstData.dat", File.separator, pluginName));

@@ -1,6 +1,7 @@
 package com.zyxkon.judgmentday.general_listeners;
 
 import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -10,8 +11,6 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -39,7 +38,7 @@ public class MainListener implements Listener {
         switch (event.getReason()) {
             case BUCKET_FILL: case BUCKET_EMPTY: case BOTTLE_FILL: case BOTTLE_EMPTY: case BANNER_WASH: case ARMOR_WASH:
             case EXTINGUISH:
-                if (((Player) event.getEntity()).getGameMode() == GameMode.SURVIVAL)
+                if (!Utils.isInvincible((Player) event.getEntity()))
                     event.setNewLevel(event.getOldLevel());
                 break;
             case EVAPORATE: case UNKNOWN:

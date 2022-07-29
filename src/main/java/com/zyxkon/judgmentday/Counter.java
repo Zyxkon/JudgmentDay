@@ -152,20 +152,17 @@ public class Counter implements Listener {
         UUID uuid = player.getUniqueId();
         deaths.merge(uuid, 1, Integer::sum);
         Player killer = event.getEntity().getKiller();
-        if (killer != null){
-            uuid = killer.getUniqueId();
-            playerKills.merge(uuid, 1, Integer::sum);
-        }
+        if (killer == null) return;
+        uuid = killer.getUniqueId();
+        playerKills.merge(uuid, 1, Integer::sum);
     }
     @EventHandler
     public void onKill(EntityDeathEvent event){
         Entity entity = event.getEntity();
-        if (entity instanceof Zombie){
-            Player player = ((Zombie) entity).getKiller();
-            if (player != null){
-                UUID uuid = player.getUniqueId();
-                mobKills.merge(uuid, 1, Integer::sum);
-            }
-        }
+        if (!(entity instanceof Zombie)) return;
+        Player player = ((Zombie) entity).getKiller();
+        if (player == null) return;
+        UUID uuid = player.getUniqueId();
+        mobKills.merge(uuid, 1, Integer::sum);
     }
 }

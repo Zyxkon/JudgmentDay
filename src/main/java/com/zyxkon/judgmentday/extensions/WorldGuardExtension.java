@@ -30,10 +30,10 @@ public final class WorldGuardExtension {
         }
         return regions.contains(regionId);
     }
-    public static ArrayList<String> getRegion(Player player){
-        return getRegion(player.getLocation());
+    public static ArrayList<String> getRegions(Player player){
+        return getRegions(player.getLocation());
     }
-    public static ArrayList<String> getRegion(Location location){
+    public static ArrayList<String> getRegions(Location location){
         WorldGuardPlugin worldGuard = getWorldGuard();
         ArrayList<String> array = new ArrayList<>();
         if (worldGuard == null) return array;

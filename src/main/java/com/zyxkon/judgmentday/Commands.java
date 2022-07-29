@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class Commands implements CommandExecutor {
     static Main plugin;
@@ -85,10 +84,10 @@ public class Commands implements CommandExecutor {
                         break;
                     }
                 }
-                break;
+                return true;
             }
             case "thirst": {
-                switch (strings[2].toLowerCase()){
+                switch (strings[1].toLowerCase()){
                     case "get":{
                         Player p;
                         try {
@@ -97,7 +96,7 @@ public class Commands implements CommandExecutor {
                             p = player;
                         }
                         player.sendMessage(String.format("%s's hydration is %d", p.getName(), ThirstManager.getThirst(p))+"%");
-                        break;
+                        return true;
                     }
                     case "set":{
                         /*
@@ -120,12 +119,13 @@ public class Commands implements CommandExecutor {
                         }
                         ThirstManager.setThirst(p, thirst);
                         p.sendMessage(String.format("Your hydration is now %s", thirst)+"%");
+                        return true;
                     }
                 }
 //                Player p = Bukkit.getPlayer(strings[1]);
 //                int thirst = Integer.parseInt(strings[2]);
 //                ThirstManager.setThirst(p, thirst);
-                break;
+                return true;
             }
             case "injure": {
                 Player p = Bukkit.getPlayer(strings[1]);

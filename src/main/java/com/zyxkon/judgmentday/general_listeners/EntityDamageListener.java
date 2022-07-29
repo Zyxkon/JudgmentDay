@@ -3,17 +3,10 @@ package com.zyxkon.judgmentday.general_listeners;
 import com.zyxkon.judgmentday.Main;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class EntityDamageListener implements Listener {
     Main plugin;

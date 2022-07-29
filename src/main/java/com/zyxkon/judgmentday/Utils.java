@@ -2,14 +2,15 @@ package com.zyxkon.judgmentday;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public final class Utils {
     public static String translate(String str) {
@@ -22,9 +23,9 @@ public final class Utils {
     public static boolean isInRange(int n, int a, int b){
         return a <= n && n <= b;
     }
-    public static boolean chance(double percentage){
-        return chance((float) percentage);
-    }
+//    public static boolean chance(double percentage){
+//        return chance((float) percentage);
+//    }
     public static boolean chance(float percentage){
         String str = Float.toString(percentage);
         int exponent = str.substring(str.indexOf('.')).length()-1;
@@ -68,5 +69,22 @@ public final class Utils {
     }
     public static String group(String delimiter, String... strings){
         return String.join(delimiter, strings);
+    }
+    public static boolean isInvincible(Player player){
+        GameMode gameMode = player.getGameMode();
+        return (gameMode == GameMode.CREATIVE || gameMode == GameMode.SPECTATOR);
+    }
+    public static boolean isSolid(Location location){
+        return isSolid(location.getBlock());
+    }
+    public static boolean isSolid(Block block){
+        Material[] fluids = {Material.STATIONARY_WATER, Material.WATER, Material.STATIONARY_LAVA, Material.LAVA};
+        return (!block.isEmpty() && !Arrays.asList(fluids).contains(block.getType()));
+    }
+    public static <T> T randElement(ArrayList<T> arrayList){
+        if (arrayList.isEmpty()) return null;
+        int size = arrayList.size();
+        Random random = new Random();
+        return arrayList.get(random.nextInt(size));
     }
 }
