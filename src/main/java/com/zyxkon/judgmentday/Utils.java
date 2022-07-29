@@ -68,9 +68,9 @@ public final class Utils {
     public static String group(String delimiter, String... strings){
         return String.join(delimiter, strings);
     }
-    public static boolean isInvincible(Player player){
+    public static boolean isVulnerable(Player player){
         GameMode gameMode = player.getGameMode();
-        return (gameMode == GameMode.CREATIVE || gameMode == GameMode.SPECTATOR);
+        return (!(gameMode == GameMode.CREATIVE) && !(gameMode == GameMode.SPECTATOR));
     }
     public static boolean isSolid(Location location){
         return isSolid(location.getBlock());

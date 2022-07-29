@@ -6,14 +6,17 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.material.Door;
@@ -38,7 +41,7 @@ public class MainListener implements Listener {
         switch (event.getReason()) {
             case BUCKET_FILL: case BUCKET_EMPTY: case BOTTLE_FILL: case BOTTLE_EMPTY: case BANNER_WASH: case ARMOR_WASH:
             case EXTINGUISH:
-                if (!Utils.isInvincible((Player) event.getEntity()))
+                if (Utils.isVulnerable((Player) event.getEntity()))
                     event.setNewLevel(event.getOldLevel());
                 break;
             case EVAPORATE: case UNKNOWN:
@@ -70,5 +73,20 @@ public class MainListener implements Listener {
         World w = loc.getWorld();
         loc.add(0, 1, 0);
         w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, new MaterialData(Material.REDSTONE_WIRE));
+    }
+    @EventHandler
+    public void onDamage(EntityDamageEvent event){
+        Entity victim = event.getEntity();
+        if (victim instanceof Zombie && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
+            event.setCancelled(true);
+            ((Zombie) victim).damage(event.getDamage()/3);
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onEntityDeath(EntityDeathEvent event){
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Zombie)) return;
+        event.getDrops().clear();
+        event.setDroppedExp(0);
     }
 }

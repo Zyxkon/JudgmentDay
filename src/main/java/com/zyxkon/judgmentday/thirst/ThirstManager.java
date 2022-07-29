@@ -47,7 +47,7 @@ public class ThirstManager extends BukkitRunnable implements Listener {
     public void run(){
         for (Player player: plugin.getServer().getOnlinePlayers()){
             UUID uuid = player.getUniqueId();
-            if (!Utils.isInvincible(player)){
+            if (Utils.isVulnerable(player)){
                 if (thirstPlayers.get(player.getUniqueId()) <= 0) return;
                 if (!thirstTimer.containsKey(uuid)) thirstTimer.put(uuid, 0);
                 int timer = thirstTimer.get(uuid);

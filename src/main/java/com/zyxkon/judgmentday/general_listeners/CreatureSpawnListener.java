@@ -19,13 +19,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 public class CreatureSpawnListener implements Listener {
     Main plugin;
@@ -49,8 +47,15 @@ public class CreatureSpawnListener implements Listener {
             return;
         }
         if (!(event.getEntity() instanceof Zombie)){
-            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
+            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
+                if (event.getEntity() instanceof Chicken) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+            else if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL){
                 event.setCancelled(true);
+                return;
             }
         }
         float lChance = 1/6f*100;
@@ -142,10 +147,13 @@ public class CreatureSpawnListener implements Listener {
                 }
             }
             for (ItemStack item : armor){
-                if (Utils.randBool() && item != null){
-                    ItemMeta meta = item.getItemMeta();
-                    meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
-                    item.setItemMeta(meta);
+                if (item != null){
+                    item.setDurability((short) 10);
+                    if (Utils.randBool()) {
+                        ItemMeta meta = item.getItemMeta();
+                        meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+                        item.setItemMeta(meta);
+                    }
                 }
             }
             z.getEquipment().setArmorContents(armor);

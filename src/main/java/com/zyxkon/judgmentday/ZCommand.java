@@ -1,10 +1,6 @@
 package com.zyxkon.judgmentday;
 
-import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
-import com.zyxkon.judgmentday.thirst.ThirstManager;
-import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
-import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
-import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.Arrays;
-import java.util.UUID;
+
 
 public class ZCommand implements CommandExecutor {
     Main plugin;
@@ -84,6 +80,13 @@ public class ZCommand implements CommandExecutor {
                 player.sendMessage(Utils.translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
                 break;
             }
+//            case "attrs": {
+//                ItemStack item = player.getInventory().getItemInMainHand();
+//                ItemMeta meta = item.getItemMeta();
+//
+//                Attribute[] attrs = {Attribute.GENERIC_ARMOR};
+//                return true;
+//            }
         }
         return false;
     }

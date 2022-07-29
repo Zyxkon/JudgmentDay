@@ -9,12 +9,9 @@ import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
 import com.zyxkon.judgmentday.general_listeners.CreatureSpawnListener;
-import com.zyxkon.judgmentday.general_listeners.EntityDamageListener;
 import com.zyxkon.judgmentday.general_listeners.MainListener;
 import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -60,7 +57,6 @@ public class Main extends JavaPlugin {
         new MainListener(this);
         new CreatureSpawnListener(this);
         new PlayerDeathListener(this);
-        new EntityDamageListener(this);
 
         new ScoreboardLoaderRunnable(this);
         new ZombieSpawnRunnable(this);
