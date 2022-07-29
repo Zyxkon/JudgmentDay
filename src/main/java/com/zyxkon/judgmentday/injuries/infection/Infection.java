@@ -28,8 +28,7 @@ public class Infection {
                     if (timer < 170) {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 5 * 20, 0));
                     }
-                    plugin.log(Level.INFO, "Infection"+ normalSpeed);
-                    if (player.getWalkSpeed() >= 0.2f) player.setWalkSpeed((float) (normalSpeed * (95.0 / 100.0)));
+                    if (player.getWalkSpeed() >= normalSpeed) player.setWalkSpeed((float) (normalSpeed * (95.0 / 100.0)));
                     if (timer >= 40) {
                         if (Utils.isInRange(timer, 40, 45)) Utils.sendActionBarMessage(player, Utils.translate(
                                 "You feel exhausted. Your infection is &e&nstage 2."));

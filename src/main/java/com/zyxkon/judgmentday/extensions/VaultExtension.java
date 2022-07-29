@@ -27,6 +27,7 @@ public class VaultExtension implements Listener {
     @EventHandler
     public void onKill(EntityDeathEvent event){
         event.getDrops().clear();
+        event.setDroppedExp(0);
         Entity entity = event.getEntity();
         Player player = event.getEntity().getKiller();
         if (!(entity instanceof Zombie)) return;

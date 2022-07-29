@@ -55,8 +55,9 @@ public class CreatureSpawnListener implements Listener {
                     event.setCancelled(true);
                     return;
                 }
-                else if (WorldGuardExtension.isBarrack(r)) {
-                    iChance *= 500;
+                else if (WorldGuardExtension.isBarracks(r)) {
+                    iChance *= 750;
+                    cChance *= 5;
                     lChance /= 100;
                     gChance /= 200;
                     break;

@@ -48,7 +48,7 @@ public final class WorldGuardExtension {
     public static ArrayList<String> getSafezones(){
         return new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
     }
-    public static boolean isBarrack(String regionId){
+    public static boolean isBarracks(String regionId){
         return (regionExists(regionId) && getBarracks().contains(regionId));
     }
     public static boolean isSafezone(String regionId){
