@@ -23,9 +23,6 @@ public final class Utils {
     public static boolean isInRange(int n, int a, int b){
         return a <= n && n <= b;
     }
-//    public static boolean chance(double percentage){
-//        return chance((float) percentage);
-//    }
     public static boolean chance(float percentage){
         String str = Float.toString(percentage);
         int exponent = str.substring(str.indexOf('.')).length()-1;

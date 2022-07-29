@@ -183,19 +183,19 @@ public class Commands implements CommandExecutor {
                             case "sz": case "safezone":{
                                 String region = strings[3];
                                 if (!WorldGuardExtension.regionExists(region)){
-                                    commandSender.sendMessage(String.format("Region %s does not exist!", region));
+                                    commandSender.sendMessage(String.format("Region '%s' does not exist!", region));
                                     return true;
                                 }
                                 if (WorldGuardExtension.isSafezone(region)) {
-                                    commandSender.sendMessage(String.format("%s is already a safezone!", region));
+                                    commandSender.sendMessage(String.format("Region '%s' is already a safezone!", region));
                                     return true;
                                 }
-                                ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+                                ArrayList<String> safezones = new ArrayList<>(WorldGuardExtension.getRegionsConfig().getStringList("safezones"));
                                 safezones.add(region);
-                                plugin.getRegionsConfig().set("safezones", safezones);
+                                WorldGuardExtension.getRegionsConfig().set("safezones", safezones);
                                 try{
-                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
-                                    commandSender.sendMessage(Utils.translate(String.format("Region %s has &asuccessfully&f been saved as a safezone!", region)));
+                                    WorldGuardExtension.getRegionsConfig().save(WorldGuardExtension.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate(String.format("Region '%s' has &asuccessfully&f been saved as a safezone!", region)));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                     commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
@@ -205,20 +205,20 @@ public class Commands implements CommandExecutor {
                             case "br": case "barracks": {
                                 String region = strings[3];
                                 if (!WorldGuardExtension.regionExists(region)){
-                                    commandSender.sendMessage(String.format("Region %s does not exist!", region));
+                                    commandSender.sendMessage(String.format("Region '%s' does not exist!", region));
                                     return true;
                                 }
                                 if (WorldGuardExtension.isBarracks(region)) {
-                                    commandSender.sendMessage(String.format("Region %s is already a barracks!", region));
+                                    commandSender.sendMessage(String.format("Region '%s' is already a barracks!", region));
                                     return true;
                                 }
-                                ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
+                                ArrayList<String> barracks = new ArrayList<>(WorldGuardExtension.getRegionsConfig().getStringList("barracks"));
                                 barracks.add(region);
-                                plugin.getRegionsConfig().set("barracks", barracks);
+                                WorldGuardExtension.getRegionsConfig().set("barracks", barracks);
                                 try{
-                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
+                                    WorldGuardExtension.getRegionsConfig().save(WorldGuardExtension.getRegionsFile());
                                     commandSender.sendMessage(Utils.translate(String.format(
-                                            "Region %s has &asuccessfully&f been saved as a barracks!", region)));
+                                            "Region '%s' has &asuccessfully&f been saved as a barracks!", region)));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                     commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
@@ -232,16 +232,16 @@ public class Commands implements CommandExecutor {
                         switch (strings[2].toLowerCase()){
                             case "sz": case "safezone":{
                                 String region = strings[3];
-                                ArrayList<String> safezones = new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+                                ArrayList<String> safezones = new ArrayList<>(WorldGuardExtension.getRegionsConfig().getStringList("safezones"));
                                 if (!WorldGuardExtension.isSafezone(region)){
-                                    commandSender.sendMessage(String.format("Region %s is not a safezone!", region));
+                                    commandSender.sendMessage(String.format("Region '%s' is not a safezone!", region));
                                     return true;
                                 }
                                 safezones.remove(region);
-                                plugin.getRegionsConfig().set("safezones", safezones);
+                                WorldGuardExtension.getRegionsConfig().set("safezones", safezones);
                                 try{
-                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
-                                    commandSender.sendMessage(Utils.translate(String.format("Safezone %s has been removed!", region)));
+                                    WorldGuardExtension.getRegionsConfig().save(WorldGuardExtension.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate(String.format("Safezone '%s' has been removed!", region)));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                     commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
@@ -250,16 +250,16 @@ public class Commands implements CommandExecutor {
                             }
                             case "br": case "barracks":{
                                 String region = strings[3];
-                                ArrayList<String> barracks = new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
+                                ArrayList<String> barracks = new ArrayList<>(WorldGuardExtension.getRegionsConfig().getStringList("barracks"));
                                 if (!WorldGuardExtension.isBarracks(region)){
                                     commandSender.sendMessage(String.format("Region '%s' is not a barracks!", region));
                                     return true;
                                 }
                                 barracks.remove(region);
-                                plugin.getRegionsConfig().set("barracks", barracks);
+                                WorldGuardExtension.getRegionsConfig().set("barracks", barracks);
                                 try{
-                                    plugin.getRegionsConfig().save(plugin.getRegionsFile());
-                                    commandSender.sendMessage(Utils.translate(String.format("Barracks %s has been removed!", region)));
+                                    WorldGuardExtension.getRegionsConfig().save(WorldGuardExtension.getRegionsFile());
+                                    commandSender.sendMessage(Utils.translate(String.format("Barracks '%s' has been removed!", region)));
                                 } catch (IOException exception) {
                                     exception.printStackTrace();
                                     commandSender.sendMessage(Utils.translate("An &cerror&f has occurred!"));
@@ -289,7 +289,7 @@ public class Commands implements CommandExecutor {
             case "c": case "cfg": case "config":{
                 switch (strings[1].toLowerCase()){
                     case "rl": case "reload": {
-                        plugin.reload();
+                        WorldGuardExtension.reload();
                         commandSender.sendMessage(Utils.translate(String.format(
                                 "The configuration of plugin %s has been reloaded!", plugin.getName())));
                         return true;

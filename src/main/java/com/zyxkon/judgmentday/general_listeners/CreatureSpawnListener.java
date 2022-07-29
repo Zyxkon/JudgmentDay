@@ -9,11 +9,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -65,17 +67,16 @@ public class CreatureSpawnListener implements Listener {
             }
         }
         if (event.getEntity() instanceof Zombie){
-            try {
-                Ageable a = (Ageable) event.getEntity();
-                if (!a.isAdult()) a.setAdult();
-            } catch (ClassCastException ignored){}
+//            try {
+//                Ageable a = (Ageable) event.getEntity();
+//                if (!a.isAdult()) a.setAdult();
+//            } catch (ClassCastException ignored){}
             Zombie z = (Zombie) event.getEntity();
             z.setBaby(false);
-            z.setHealth(10d);
+            z.setHealth(15d);
             z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100d);
             z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3d);
-            z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(7d);
-            z.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(100d);
+            z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4d);
             ItemStack helmet, chestplate, leggings, boots;
 //            helmet = chestplate = leggings = boots = null;
             ArrayList<ItemStack> helmetList = new ArrayList<>();
@@ -110,7 +111,15 @@ public class CreatureSpawnListener implements Listener {
             chestplate = Utils.randElement(chestplateList);
             leggings = Utils.randElement(leggingsList);
             boots = Utils.randElement(bootsList);
-            z.getEquipment().setArmorContents(new ItemStack[]{boots, leggings, chestplate, helmet});
+            ItemStack[] armor = new ItemStack[]{boots, leggings, chestplate, helmet};
+            for (ItemStack item : armor){
+                if (Utils.randBool() && item != null){
+                    ItemMeta meta = item.getItemMeta();
+                    meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
+                    item.setItemMeta(meta);
+                }
+            }
+            z.getEquipment().setArmorContents(armor);
         }
     }
 }

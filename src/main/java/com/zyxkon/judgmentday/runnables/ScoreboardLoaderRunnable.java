@@ -10,6 +10,8 @@ import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
@@ -68,12 +70,14 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         }
         scores.add(status);
         scores.addAll(injuries);
-        DecimalFormat df = new DecimalFormat("#.##");
         scores.add("&8&l»&7&l☣&7Walkers killed: " + Counter.getWalkerKills(uuid));
         scores.add("&5&l»&d&l⚔&dPlayers killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
         if (plugin.hasPlugin("Vault")){
-            scores.add("&2&l»&a&l＄&aBalance: " + df.format(VaultExtension.getMoney(player)) + "$");
+            DecimalFormat df = new DecimalFormat("#.##");
+            String money = df.format(VaultExtension.getMoney(player));
+            money = String.format("%,d",Integer.parseInt(money.substring(0, money.indexOf('.'))))+money.substring(money.indexOf('.'));
+            scores.add(String.format("&2&l»&a&l＄&aBalance: %s$", money));
         }
         ArrayList<String> regions = WorldGuardExtension.getRegions(player);
         if (!regions.isEmpty()){

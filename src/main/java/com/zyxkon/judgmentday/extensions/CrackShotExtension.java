@@ -19,7 +19,9 @@ public class CrackShotExtension implements Listener {
     static Main plugin;
     public CrackShotExtension(Main plugin){
         CrackShotExtension.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(this, plugin);
+        if (plugin.hasPlugin("CrackShot")){
+            Bukkit.getPluginManager().registerEvents(this, plugin);
+        }
     }
     @EventHandler
     public void onInfection(WeaponDamageEntityEvent event){

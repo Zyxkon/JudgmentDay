@@ -18,11 +18,11 @@ public class VaultExtension implements Listener {
     private static Economy eco = null;
     public VaultExtension(Main plugin){
         VaultExtension.plugin = plugin;
-        if (Bukkit.getPluginManager().getPlugin("Vault") != null){
+        if (plugin.hasPlugin("Vault")){
             RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
             VaultExtension.eco = rsp.getProvider();
+            Bukkit.getPluginManager().registerEvents(this, plugin);
         }
-        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
     public void onKill(EntityDeathEvent event){

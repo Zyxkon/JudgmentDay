@@ -6,15 +6,20 @@ import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class WorldGuardExtension {
-    private static final Main plugin = Main.getInstance();
+public class WorldGuardExtension {
+    private static Main plugin;
+    private static File regionsFile;
+    private static FileConfiguration regionsConfig;
     private static WorldGuardPlugin getWorldGuard(){
         Plugin pl = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (!(pl instanceof WorldGuardPlugin)) return null;
@@ -43,15 +48,34 @@ public final class WorldGuardExtension {
         return array;
     }
     public static ArrayList<String> getBarracks(){
-        return new ArrayList<>(plugin.getRegionsConfig().getStringList("barracks"));
+        return new ArrayList<>(getRegionsConfig().getStringList("barracks"));
     }
     public static ArrayList<String> getSafezones(){
-        return new ArrayList<>(plugin.getRegionsConfig().getStringList("safezones"));
+        return new ArrayList<>(getRegionsConfig().getStringList("safezones"));
     }
     public static boolean isBarracks(String regionId){
         return (regionExists(regionId) && getBarracks().contains(regionId));
     }
     public static boolean isSafezone(String regionId){
         return (regionExists(regionId) && getSafezones().contains(regionId));
+    }
+    public static void load(){
+        plugin = Main.getInstance();
+        if (!plugin.hasPlugin("WorldGuard")) return;
+        regionsFile = new File(plugin.getDataFolder(), "regions.yml");
+        if (!regionsFile.exists()){
+            plugin.saveResource("regions.yml", false);
+        }
+        regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
+    }
+    public static void reload(){
+        regionsFile = new File(plugin.getDataFolder(), "regions.yml");
+        regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
+    }
+    public static File getRegionsFile(){
+        return regionsFile;
+    }
+    public static FileConfiguration getRegionsConfig(){
+        return regionsConfig;
     }
 }
