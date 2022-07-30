@@ -12,6 +12,7 @@ import com.zyxkon.judgmentday.general_listeners.CreatureSpawnListener;
 import com.zyxkon.judgmentday.general_listeners.MainListener;
 import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
+import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

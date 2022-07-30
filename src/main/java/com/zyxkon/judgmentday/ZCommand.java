@@ -56,7 +56,7 @@ public class ZCommand implements CommandExecutor {
             case "enchant": {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 ItemMeta meta = item.getItemMeta();
-                Enchantment ench = Enchantment.getByName((strings[1]).toUpperCase());
+                Enchantment ench = Enchantment.getByName((strings[1].toUpperCase()));
                 int lvl = Integer.parseInt(strings[2]);
                 meta.addEnchant(ench, lvl, true);
                 item.setItemMeta(meta);

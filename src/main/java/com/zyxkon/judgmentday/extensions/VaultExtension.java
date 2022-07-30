@@ -32,12 +32,12 @@ public class VaultExtension implements Listener {
         RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
         VaultExtension.eco = rsp.getProvider();
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        physicalDollar = makeDollar();
+        physicalDollar = getDollar();
     }
-    public static ItemStack makeDollar(){
+    public static ItemStack getDollar(){
         ItemStack dollar = new ItemStack(Material.ENDER_PEARL, 1);
         ItemMeta im = dollar.getItemMeta();
-        im.setDisplayName("$");
+        im.setDisplayName(Utils.translate("&a&l＄＄＄"));
         dollar.setItemMeta(im);
         net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(dollar);
         NBTTagCompound compound = (nmsStack.hasTag() ? nmsStack.getTag() : new NBTTagCompound());
@@ -49,7 +49,7 @@ public class VaultExtension implements Listener {
         modifier.set("Operation", new NBTTagInt(0));
         modifier.set("UUIDLeast", new NBTTagInt(123));
         modifier.set("UUIDMost", new NBTTagInt(321));
-        modifier.set("Slot", new NBTTagString("offhand"));
+        modifier.set("Slot", new NBTTagString("chest"));
         modifiers.add(modifier);
         compound.set("AttributeModifiers", modifiers);
         compound.set("Unbreakable", new NBTTagByte((byte) 1));
@@ -59,12 +59,9 @@ public class VaultExtension implements Listener {
     @EventHandler
     public void onKill(EntityDeathEvent event){
         Entity entity = event.getEntity();
-        Player player = event.getEntity().getKiller();
         if (!(entity instanceof Zombie)) return;
-        if (player == null) return;
         if (eco == null) return;
         if (!eco.isEnabled()) return;
-        if (!eco.hasAccount(player)) return;
         event.getDrops().clear();
         event.getDrops().add(physicalDollar);
     }
@@ -75,7 +72,9 @@ public class VaultExtension implements Listener {
         ItemStack item = event.getItem().getItemStack();
         Player player = (Player) entity;
         if (item.isSimilar(physicalDollar)){
-            double money = Utils.randRange(0, 300)/100.;
+            event.getItem().remove();
+            event.setCancelled(true);
+            double money = Utils.randRange(50, 300)/100.;
             DecimalFormat df = new DecimalFormat("#.##");
             Utils.sendActionBarMessage(player, Utils.translate(String.format("&a&l+&a%s&2$",df.format(money))));
             eco.depositPlayer(player, money);
