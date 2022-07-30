@@ -86,7 +86,6 @@ public class MainListener implements Listener {
     public void onEntityDeath(EntityDeathEvent event){
         Entity entity = event.getEntity();
         if (!(entity instanceof Zombie)) return;
-        event.getDrops().clear();
         event.setDroppedExp(0);
     }
 }

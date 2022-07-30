@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -23,15 +24,39 @@ import java.text.DecimalFormat;
 public class VaultExtension implements Listener {
     static Main plugin;
     private static Economy eco = null;
+    private static ItemStack physicalDollar;
+
     public VaultExtension(Main plugin){
         VaultExtension.plugin = plugin;
-        if (plugin.hasPlugin("Vault")){
-            RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
-            VaultExtension.eco = rsp.getProvider();
-            Bukkit.getPluginManager().registerEvents(this, plugin);
-        }
+        if (!plugin.hasPlugin("Vault")) return;
+        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+        VaultExtension.eco = rsp.getProvider();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+        physicalDollar = makeDollar();
     }
-    @EventHandler(priority = EventPriority.NORMAL)
+    public static ItemStack makeDollar(){
+        ItemStack dollar = new ItemStack(Material.ENDER_PEARL, 1);
+        ItemMeta im = dollar.getItemMeta();
+        im.setDisplayName("$");
+        dollar.setItemMeta(im);
+        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(dollar);
+        NBTTagCompound compound = (nmsStack.hasTag() ? nmsStack.getTag() : new NBTTagCompound());
+        NBTTagList modifiers = new NBTTagList();
+        NBTTagCompound modifier = new NBTTagCompound();
+        modifier.set("AttributeName", new NBTTagString("generic.attackSpeed"));
+        modifier.set("Name", new NBTTagString("generic.attackSpeed"));
+        modifier.set("Amount", new NBTTagDouble(1));
+        modifier.set("Operation", new NBTTagInt(0));
+        modifier.set("UUIDLeast", new NBTTagInt(123));
+        modifier.set("UUIDMost", new NBTTagInt(321));
+        modifier.set("Slot", new NBTTagString("offhand"));
+        modifiers.add(modifier);
+        compound.set("AttributeModifiers", modifiers);
+        compound.set("Unbreakable", new NBTTagByte((byte) 1));
+        nmsStack.setTag(compound);
+        return CraftItemStack.asBukkitCopy(nmsStack);
+    }
+    @EventHandler
     public void onKill(EntityDeathEvent event){
         Entity entity = event.getEntity();
         Player player = event.getEntity().getKiller();
@@ -40,56 +65,21 @@ public class VaultExtension implements Listener {
         if (eco == null) return;
         if (!eco.isEnabled()) return;
         if (!eco.hasAccount(player)) return;
-        double money = Utils.randRange(0, 300)/100.;
-        DecimalFormat df = new DecimalFormat("#.##");
-        Utils.sendActionBarMessage(player, Utils.translate(String.format("&a&l+&a%s&2$",df.format(money))));
-        eco.depositPlayer(player, money);
-//        //Normal ItemMeta stuff.
-//        ItemStack dollar = new ItemStack(Material.ENDER_PEARL, 1);
-//        ItemMeta im = dollar.getItemMeta();
-//        im.setDisplayName("5$");
-//        dollar.setItemMeta(im);
-//
-//        net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(dollar);
-//        NBTTagCompound compound = (nmsStack.hasTag() ? nmsStack.getTag() : new NBTTagCompound());
-//        NBTTagList modifiers = new NBTTagList();
-//
-////        //Attributes are set like this:
-////        NBTTagCompound damage = new NBTTagCompound();
-////        damage.set("AttributeName", new NBTTagString("generic.attackDamage"));
-////        damage.set("Name", new NBTTagString("generic.attackDamage"));
-////        damage.set("Amount", new NBTTagInt(6 /*Item damage*/));
-////        damage.set("Operation", new NBTTagInt(0));
-////        damage.set("UUIDLeast", new NBTTagInt(894654));
-////        damage.set("UUIDMost", new NBTTagInt(2872));
-////        modifiers.add(damage);
-//
-//        //What you want.
-//        NBTTagCompound speed = new NBTTagCompound();
-//        speed.set("AttributeName", new NBTTagString("generic.movementSpeed"));
-//        speed.set("Name", new NBTTagString("generic.movementSpeed"));
-//        speed.set("Amount", new NBTTagDouble(0.7));
-//        speed.set("Operation", new NBTTagInt(0));
-//        speed.set("UUIDLeast", new NBTTagInt(894654));
-//        speed.set("UUIDMost", new NBTTagInt(2872));
-//        modifiers.add(speed);
-//
-//        //Tags like Unbreakable can be set like this:
-//        compound.set("Unbreakable", new NBTTagByte((byte) 1));
-//
-//        compound.set("AttributeModifiers", modifiers);
-//        nmsStack.setTag(compound);
-//        dollar = CraftItemStack.asBukkitCopy(nmsStack);
-//        event.getDrops().add(dollar);
-//    }
-//    @EventHandler
-//    public void onPickup(EntityPickupItemEvent event){
-//        Entity entity = event.getEntity();
-//        if (!(entity instanceof Player)) return;
-//        ItemStack item = (ItemStack) event.getItem();
-////        if (item.isSimilar()){
-////
-////        }
+        event.getDrops().clear();
+        event.getDrops().add(physicalDollar);
+    }
+    @EventHandler
+    public void onPickup(EntityPickupItemEvent event){
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Player)) return;
+        ItemStack item = event.getItem().getItemStack();
+        Player player = (Player) entity;
+        if (item.isSimilar(physicalDollar)){
+            double money = Utils.randRange(0, 300)/100.;
+            DecimalFormat df = new DecimalFormat("#.##");
+            Utils.sendActionBarMessage(player, Utils.translate(String.format("&a&l+&a%s&2$",df.format(money))));
+            eco.depositPlayer(player, money);
+        }
     }
     public static double getMoney(Player player){
         return (eco != null ? eco.getBalance(player) : 0);
