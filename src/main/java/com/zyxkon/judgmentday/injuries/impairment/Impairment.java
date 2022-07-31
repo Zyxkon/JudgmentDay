@@ -2,14 +2,14 @@ package com.zyxkon.judgmentday.injuries.impairment;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.Injury;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.logging.Level;
 
-public class Impairment {
+public class Impairment extends Injury {
     static Main plugin;
     Player player;
     int process;
@@ -19,7 +19,7 @@ public class Impairment {
         this.canJump = true;
         Impairment.plugin = plugin;
         this.player = player;
-        this.normalSpeed = (!InfectionManager.isInjured(player) ? player.getWalkSpeed() : 0.2f);
+        this.normalSpeed = (!InfectionManager.getInstance().isInjured(player) ? player.getWalkSpeed() : 0.2f);
         process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             int timer = 0;
             final int stage_1 = 60*2;
@@ -59,6 +59,7 @@ public class Impairment {
             }
         }, 0L, 20L);
     }
+    @Override
     public void cancel(){
         plugin.getServer().getScheduler().cancelTask(process);
         player.setWalkSpeed(normalSpeed);

@@ -25,16 +25,7 @@ public class VaultExtension implements Listener {
     static Main plugin;
     private static Economy eco = null;
     private static ItemStack physicalDollar;
-
-    public VaultExtension(Main plugin){
-        VaultExtension.plugin = plugin;
-        if (!plugin.hasPlugin("Vault")) return;
-        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
-        VaultExtension.eco = rsp.getProvider();
-        Bukkit.getPluginManager().registerEvents(this, plugin);
-        physicalDollar = getDollar();
-    }
-    public static ItemStack getDollar(){
+    static {
         ItemStack dollar = new ItemStack(Material.ENDER_PEARL, 1);
         ItemMeta im = dollar.getItemMeta();
         im.setDisplayName(Utils.translate("&a&l＄＄＄"));
@@ -54,7 +45,14 @@ public class VaultExtension implements Listener {
         compound.set("AttributeModifiers", modifiers);
         compound.set("Unbreakable", new NBTTagByte((byte) 1));
         nmsStack.setTag(compound);
-        return CraftItemStack.asBukkitCopy(nmsStack);
+        physicalDollar = CraftItemStack.asBukkitCopy(nmsStack);
+    }
+    public VaultExtension(Main plugin){
+        VaultExtension.plugin = plugin;
+        if (!plugin.hasPlugin("Vault")) return;
+        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+        VaultExtension.eco = rsp.getProvider();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
     public void onKill(EntityDeathEvent event){

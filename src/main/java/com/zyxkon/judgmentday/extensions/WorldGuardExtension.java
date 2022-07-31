@@ -17,19 +17,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class WorldGuardExtension {
-    private static Main plugin;
+    private static final Main plugin;
     private static File regionsFile;
     private static FileConfiguration regionsConfig;
-    private static WorldGuardPlugin getWorldGuard(){
+    private static final WorldGuardPlugin worldGuard;
+    static {
+        plugin = Main.getInstance();
         Plugin pl = Bukkit.getPluginManager().getPlugin("WorldGuard");
-        if (!(pl instanceof WorldGuardPlugin)) return null;
-        return (WorldGuardPlugin) pl;
+        if (pl instanceof WorldGuardPlugin) {
+            worldGuard = (WorldGuardPlugin) pl;
+            regionsFile = new File(plugin.getDataFolder(), "regions.yml");
+            if (!regionsFile.exists()) {
+                plugin.saveResource("regions.yml", false);
+            }
+            regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
+        }
+        else {
+            worldGuard = null;
+        }
     }
     public static boolean regionExists(String regionId){
-        WorldGuardPlugin worldGuard = getWorldGuard();
         if (worldGuard == null) return false;
         Set<String> regions = new HashSet<>();
-        for (World world : Main.getInstance().getServer().getWorlds()){
+        for (World world : plugin.getServer().getWorlds()){
             RegionManager manager = worldGuard.getRegionManager(world);
             regions.addAll(manager.getRegions().keySet());
         }
@@ -39,7 +49,6 @@ public class WorldGuardExtension {
         return getRegions(player.getLocation());
     }
     public static ArrayList<String> getRegions(Location location){
-        WorldGuardPlugin worldGuard = getWorldGuard();
         ArrayList<String> array = new ArrayList<>();
         if (worldGuard == null) return array;
         RegionManager manager = worldGuard.getRegionManager(location.getWorld());
@@ -58,15 +67,6 @@ public class WorldGuardExtension {
     }
     public static boolean isSafezone(String regionId){
         return (regionExists(regionId) && getSafezones().contains(regionId));
-    }
-    public static void load(){
-        plugin = Main.getInstance();
-        if (!plugin.hasPlugin("WorldGuard")) return;
-        regionsFile = new File(plugin.getDataFolder(), "regions.yml");
-        if (!regionsFile.exists()){
-            plugin.saveResource("regions.yml", false);
-        }
-        regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
     }
     public static void reload(){
         regionsFile = new File(plugin.getDataFolder(), "regions.yml");

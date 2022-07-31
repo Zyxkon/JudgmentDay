@@ -2,9 +2,10 @@ package com.zyxkon.judgmentday.injuries.bloodloss;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.Injury;
 import org.bukkit.entity.Player;
 
-public class BloodLoss {
+public class BloodLoss extends Injury {
     static Main plugin;
     Player player;
     int process;
@@ -37,6 +38,7 @@ public class BloodLoss {
             }
         }, 0L, 20L);
     }
+    @Override
     public void cancel(){
         plugin.getServer().getScheduler().cancelTask(process);
     }

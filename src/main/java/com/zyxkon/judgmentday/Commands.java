@@ -132,27 +132,27 @@ public class Commands implements CommandExecutor {
                 UUID uuid = p.getUniqueId();
                 switch (strings[2].toLowerCase()){
                     case "bloodloss": {
-                        if (BloodLossManager.isInjured(uuid)) return true;
-                        BloodLossManager.affectPlayer(p);
+                        if (BloodLossManager.getInstance().isInjured(uuid)) return true;
+                        BloodLossManager.getInstance().affectPlayer(p);
                         p.sendMessage("You have been inflicted with blood loss!");
                         break;
                     }
                     case "impairment": {
-                        if (ImpairmentManager.isInjured(uuid)) return true;
-                        ImpairmentManager.affectPlayer(p);
+                        if (ImpairmentManager.getInstance().isInjured(uuid)) return true;
+                        ImpairmentManager.getInstance().affectPlayer(p);
                         p.sendMessage("You have been inflicted with impairment!");
                         break;
                     }
                     case "infection": {
-                        if (InfectionManager.isInjured(uuid)) return true;
-                        InfectionManager.affectPlayer(p);
+                        if (InfectionManager.getInstance().isInjured(uuid)) return true;
+                        InfectionManager.getInstance().affectPlayer(p);
                         p.sendMessage("You have been inflicted with an infection!");
                         break;
                     }
                     case "all": {
-                        if (!BloodLossManager.isInjured(uuid)) BloodLossManager.affectPlayer(p);
-                        if (!ImpairmentManager.isInjured(uuid)) ImpairmentManager.affectPlayer(p);
-                        if (!InfectionManager.isInjured(uuid)) InfectionManager.affectPlayer(p);
+                        if (!BloodLossManager.getInstance().isInjured(uuid)) BloodLossManager.getInstance().affectPlayer(p);
+                        if (!ImpairmentManager.getInstance().isInjured(uuid)) ImpairmentManager.getInstance().affectPlayer(p);
+                        if (!InfectionManager.getInstance().isInjured(uuid)) InfectionManager.getInstance().affectPlayer(p);
                         p.sendMessage("You have been inflicted with all sorts of injuries possible!");
                         break;
                     }
@@ -166,9 +166,9 @@ public class Commands implements CommandExecutor {
                 } catch (IndexOutOfBoundsException exception){
                     p = player;
                 }
-                if (BloodLossManager.isInjured(p)) BloodLossManager.healPlayer(p);
-                if (ImpairmentManager.isInjured(p)) ImpairmentManager.healPlayer(p);
-                if (InfectionManager.isInjured(p)) InfectionManager.healPlayer(p);
+                if (BloodLossManager.getInstance().isInjured(p)) BloodLossManager.getInstance().healPlayer(p);
+                if (ImpairmentManager.getInstance().isInjured(p)) ImpairmentManager.getInstance().healPlayer(p);
+                if (InfectionManager.getInstance().isInjured(p)) InfectionManager.getInstance().healPlayer(p);
                 p.sendMessage("You have been healed!");
                 return true;
             }

@@ -45,15 +45,15 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
         int count = 0;
         String status = "&6&l»&c&l❤&eStatus: &r";
         ArrayList<String> injuries = new ArrayList<>();
-        if (BloodLossManager.isInjured(player)) {
+        if (BloodLossManager.getInstance().isInjured(player)) {
             injuries.add("&c    •&nBLEEDING");
             count++;
         }
-        if (ImpairmentManager.isInjured(player)) {
+        if (ImpairmentManager.getInstance().isInjured(player)) {
             injuries.add("&6    •&nIMPAIRED");
             count++;
         }
-        if (InfectionManager.isInjured(player)) {
+        if (InfectionManager.getInstance().isInjured(player)) {
             injuries.add("&2    •&nINFECTED");
             count++;
         }
