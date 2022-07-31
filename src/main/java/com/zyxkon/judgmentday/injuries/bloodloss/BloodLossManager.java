@@ -21,7 +21,6 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     public HashMap<UUID, BloodLoss> getHashmap(){
         return affectedPlayers;
     }
-
     public static BloodLossManager getInstance(){
         return instance;
     }
@@ -31,7 +30,7 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     }
     @Override
     public BloodLoss getInjury(UUID uuid){
-        return affectedPlayers.get(uuid);
+        return getHashmap().get(uuid);
     }
     @Override
     public boolean isInjured(Player player){
@@ -39,7 +38,7 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     }
     @Override
     public boolean isInjured(UUID uuid){
-        return affectedPlayers.containsKey(uuid);
+        return getHashmap().containsKey(uuid);
     }
     @Override
     public void affectPlayer(Player player){
@@ -58,7 +57,7 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     }
     @Override
     public void shutDown(){
-        for (UUID uuid : affectedPlayers.keySet()){
+        for (UUID uuid : getHashmap().keySet()){
             if (getInjury(uuid) != null) getInjury(uuid).cancel();
         }
     }

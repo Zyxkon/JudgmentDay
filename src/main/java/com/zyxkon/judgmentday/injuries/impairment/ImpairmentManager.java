@@ -3,6 +3,7 @@ package com.zyxkon.judgmentday.injuries.impairment;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.injuries.InjuryManager;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.Hash;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 
 public class ImpairmentManager extends InjuryManager<Impairment> {
-    private static final Map<UUID, Impairment> affectedPlayers = new HashMap<>();
+    private static final HashMap<UUID, Impairment> affectedPlayers = new HashMap<>();
     static Main plugin;
     public static ImpairmentManager instance;
     public ImpairmentManager(final Main plugin){
@@ -24,7 +25,7 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
 
     @Override
     public HashMap<UUID, Impairment> getHashmap() {
-        return null;
+        return affectedPlayers;
     }
     @Override
     public void put(UUID uuid, Impairment process){
@@ -32,7 +33,7 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     }
     @Override
     public Impairment getInjury(UUID uuid){
-        return affectedPlayers.get(uuid);
+        return getHashmap().get(uuid);
     }
     @Override
     public boolean isInjured(Player player){
@@ -40,7 +41,7 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     }
     @Override
     public boolean isInjured(UUID uuid){
-        return affectedPlayers.containsKey(uuid);
+        return getHashmap().containsKey(uuid);
     }
     @Override
     public void affectPlayer(Player player){
@@ -59,7 +60,7 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     }
     @Override
     public void shutDown(){
-        for (UUID uuid : affectedPlayers.keySet()){
+        for (UUID uuid : getHashmap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             player.setWalkSpeed(getInjury(uuid).normalSpeed);
             getInjury(uuid).cancel();

@@ -21,6 +21,7 @@ public class InfectionManager extends InjuryManager<Infection> {
     public static InfectionManager getInstance(){
         return instance;
     }
+
     @Override
     public HashMap<UUID, Infection> getHashmap() {
         return affectedPlayers;
@@ -31,7 +32,7 @@ public class InfectionManager extends InjuryManager<Infection> {
     }
     @Override
     public Infection getInjury(UUID uuid){
-        return affectedPlayers.get(uuid);
+        return getHashmap().get(uuid);
     }
     @Override
     public boolean isInjured(Player player){
@@ -39,7 +40,7 @@ public class InfectionManager extends InjuryManager<Infection> {
     }
     @Override
     public boolean isInjured(UUID uuid){
-        return affectedPlayers.containsKey(uuid);
+        return getHashmap().containsKey(uuid);
     }
     @Override
     public void affectPlayer(Player player){
@@ -58,7 +59,7 @@ public class InfectionManager extends InjuryManager<Infection> {
     }
     @Override
     public void shutDown(){
-        for (UUID uuid : affectedPlayers.keySet()){
+        for (UUID uuid : getHashmap().keySet()){
             Player player = Bukkit.getPlayer(uuid);
             for(PotionEffect potion : player.getActivePotionEffects()) player.removePotionEffect(potion.getType());
             player.setWalkSpeed(getInjury(uuid).normalSpeed);
