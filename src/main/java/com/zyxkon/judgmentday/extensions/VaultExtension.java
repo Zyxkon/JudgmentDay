@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 public class VaultExtension implements Listener {
     static Main plugin;
     private static Economy eco = null;
-    private static ItemStack physicalDollar;
+    private static final ItemStack physicalDollar;
     static {
         ItemStack dollar = new ItemStack(Material.ENDER_PEARL, 1);
         ItemMeta im = dollar.getItemMeta();
