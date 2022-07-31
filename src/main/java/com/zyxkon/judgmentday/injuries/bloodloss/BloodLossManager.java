@@ -13,9 +13,9 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     private static Main plugin;
     public static BloodLossManager instance;
     public BloodLossManager(final Main plugin){
+        instance = this;
         BloodLossManager.plugin = plugin;
         new BloodLossListener(plugin);
-        instance = this;
     }
     @Override
     public HashMap<UUID, BloodLoss> getHashmap(){

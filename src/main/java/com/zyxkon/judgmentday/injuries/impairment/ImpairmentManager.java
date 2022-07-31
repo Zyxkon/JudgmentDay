@@ -13,9 +13,9 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     static Main plugin;
     public static ImpairmentManager instance;
     public ImpairmentManager(final Main plugin){
+        instance = this;
         ImpairmentManager.plugin = plugin;
         new ImpairmentListener(plugin);
-        instance = this;
     }
     public static ImpairmentManager getInstance(){
         return instance;

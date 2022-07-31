@@ -2,6 +2,8 @@ package com.zyxkon.judgmentday.injuries.infection;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.injuries.Injury;
+import com.zyxkon.judgmentday.injuries.InjuryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;

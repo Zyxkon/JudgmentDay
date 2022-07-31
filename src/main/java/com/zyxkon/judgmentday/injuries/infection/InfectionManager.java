@@ -14,9 +14,9 @@ public class InfectionManager extends InjuryManager<Infection> {
     static Main plugin;
     public static InfectionManager instance;
     public InfectionManager(final Main plugin){
+        instance = this;
         InfectionManager.plugin = plugin;
         new InfectionListener(plugin);
-        instance = this;
     }
     public static InfectionManager getInstance(){
         return instance;
