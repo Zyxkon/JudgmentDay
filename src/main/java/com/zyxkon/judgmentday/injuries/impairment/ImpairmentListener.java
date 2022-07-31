@@ -1,6 +1,8 @@
 package com.zyxkon.judgmentday.injuries.impairment;
 
+import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -23,8 +25,9 @@ import java.util.UUID;
 
 public class ImpairmentListener implements Listener {
     private static ImpairmentManager manager;
-    public ImpairmentListener(){
+    public ImpairmentListener(Main plugin){
         manager = ImpairmentManager.getInstance();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
     public void onDamage(EntityDamageEvent event){

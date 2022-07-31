@@ -13,9 +13,9 @@ public class InfectionManager extends InjuryManager<Infection> {
     private static final HashMap<UUID, Infection> affectedPlayers = new HashMap<>();
     static Main plugin;
     public static InfectionManager instance;
-    public InfectionManager(Main plugin){
+    public InfectionManager(final Main plugin){
         InfectionManager.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(new InfectionListener(), plugin);
+        new InfectionListener(plugin);
         instance = this;
     }
     public static InfectionManager getInstance(){

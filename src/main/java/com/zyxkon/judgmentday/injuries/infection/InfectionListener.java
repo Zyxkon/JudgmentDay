@@ -1,6 +1,8 @@
 package com.zyxkon.judgmentday.injuries.infection;
 
+import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,8 +23,9 @@ import java.util.UUID;
 
 public class InfectionListener implements Listener {
     private static InfectionManager manager;
-    public InfectionListener(){
+    public InfectionListener(Main plugin){
         manager = InfectionManager.getInstance();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
     public void onDamage(EntityDamageEvent event){

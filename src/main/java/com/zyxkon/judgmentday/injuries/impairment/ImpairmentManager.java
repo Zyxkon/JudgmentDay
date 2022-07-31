@@ -3,10 +3,8 @@ package com.zyxkon.judgmentday.injuries.impairment;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.injuries.InjuryManager;
 import org.bukkit.*;
-import org.bukkit.craftbukkit.libs.it.unimi.dsi.fastutil.Hash;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 
@@ -16,7 +14,7 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     public static ImpairmentManager instance;
     public ImpairmentManager(final Main plugin){
         ImpairmentManager.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(new ImpairmentListener(), plugin);
+        new ImpairmentListener(plugin);
         instance = this;
     }
     public static ImpairmentManager getInstance(){
@@ -46,7 +44,7 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     @Override
     public void affectPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new Impairment(plugin, player));
+        put(uuid, new Impairment(plugin, player));
     }
     @Override
     public boolean healPlayer(Player player){

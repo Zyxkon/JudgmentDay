@@ -12,9 +12,9 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     private static final HashMap<UUID, BloodLoss> affectedPlayers = new HashMap<>();
     private static Main plugin;
     public static BloodLossManager instance;
-    public BloodLossManager(Main plugin){
+    public BloodLossManager(final Main plugin){
         BloodLossManager.plugin = plugin;
-        Bukkit.getPluginManager().registerEvents(new BloodLossListener(), plugin);
+        new BloodLossListener(plugin);
         instance = this;
     }
     @Override
@@ -43,7 +43,7 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     @Override
     public void affectPlayer(Player player){
         UUID uuid = player.getUniqueId();
-        affectedPlayers.put(uuid, new BloodLoss(plugin, player));
+        put(uuid, new BloodLoss(plugin, player));
     }
     @Override
     public boolean healPlayer(Player player){

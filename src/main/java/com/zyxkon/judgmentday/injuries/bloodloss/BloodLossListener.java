@@ -1,6 +1,8 @@
 package com.zyxkon.judgmentday.injuries.bloodloss;
 
+import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,8 +23,9 @@ import java.util.UUID;
 
 public class BloodLossListener implements Listener {
     private static BloodLossManager manager;
-    public BloodLossListener(){
+    public BloodLossListener(Main plugin){
         manager = BloodLossManager.getInstance();
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
     @EventHandler
     public void onDamage(EntityDamageEvent event){
