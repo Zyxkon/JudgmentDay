@@ -2,7 +2,6 @@ package com.zyxkon.judgmentday.injuries.bloodloss;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.injuries.InjuryManager;
-import org.bukkit.*;
 import org.bukkit.entity.*;
 
 import java.util.*;
@@ -31,10 +30,6 @@ public class BloodLossManager extends InjuryManager<BloodLoss> {
     @Override
     public BloodLoss getInjury(UUID uuid){
         return getHashmap().get(uuid);
-    }
-    @Override
-    public boolean isInjured(Player player){
-        return isInjured(player.getUniqueId());
     }
     @Override
     public boolean isInjured(UUID uuid){

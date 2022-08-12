@@ -9,10 +9,15 @@ public class BloodLoss extends Injury {
     static Main plugin;
     Player player;
     int process;
+    Runnable runnable;
     public BloodLoss(Main plugin, Player player){
         BloodLoss.plugin = plugin;
         this.player = player;
-        process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+        runnable = getRunnable();
+        process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0L, 20L);
+    }
+    public Runnable getRunnable(){
+        return new Runnable(){
             int timer = 0;
             @Override
             public void run() {
@@ -36,7 +41,7 @@ public class BloodLoss extends Injury {
                     timer++;
                 }
             }
-        }, 0L, 20L);
+        };
     }
     @Override
     public void cancel(){

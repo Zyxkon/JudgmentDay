@@ -15,12 +15,25 @@ public class Impairment extends Injury {
     int process;
     final float normalSpeed;
     boolean canJump;
+    Runnable runnable;
     public Impairment(Main plugin, Player player){
         this.canJump = true;
         Impairment.plugin = plugin;
         this.player = player;
-        this.normalSpeed = (!InfectionManager.getInstance().isInjured(player) ? player.getWalkSpeed() : 0.2f);
-        process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+        normalSpeed = (!InfectionManager.getInstance().isInjured(player) ? player.getWalkSpeed() : 0.2f);
+        runnable = getRunnable();
+        process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0L, 20L);
+    }
+    @Override
+    public void cancel(){
+        plugin.getServer().getScheduler().cancelTask(process);
+        player.setWalkSpeed(normalSpeed);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 25*20, 0));
+    }
+
+    @Override
+    public Runnable getRunnable() {
+        return new Runnable() {
             int timer = 0;
             final int stage_1 = 60*2;
             final int stage_2 = 60*2;
@@ -57,12 +70,6 @@ public class Impairment extends Injury {
                     timer++;
                 }
             }
-        }, 0L, 20L);
-    }
-    @Override
-    public void cancel(){
-        plugin.getServer().getScheduler().cancelTask(process);
-        player.setWalkSpeed(normalSpeed);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 25*20, 0));
+        };
     }
 }

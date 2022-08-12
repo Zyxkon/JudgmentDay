@@ -10,15 +10,27 @@ import org.bukkit.potion.PotionEffectType;
 
 
 public class Infection extends Injury {
-    Main plugin;
+    static Main plugin;
     Player player;
     int process;
     float normalSpeed;
+    Runnable runnable;
     public Infection(Main plugin, Player player){
-        this.plugin = plugin;
+        Infection.plugin = plugin;
         this.player = player;
-        this.normalSpeed = (!ImpairmentManager.getInstance().isInjured(player) ? player.getWalkSpeed() : 0.2f);
-        process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
+        normalSpeed = (!ImpairmentManager.getInstance().isInjured(player) ? player.getWalkSpeed() : 0.2f);
+        runnable = getRunnable();
+        process = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, runnable, 0L, 20L);
+    }
+    @Override
+    public void cancel(){
+        plugin.getServer().getScheduler().cancelTask(process);
+        player.setWalkSpeed(normalSpeed);
+    }
+
+    @Override
+    public Runnable getRunnable() {
+        return new Runnable(){
             int timer = 0;
             @Override
             public void run() {
@@ -54,11 +66,6 @@ public class Infection extends Injury {
                     timer++;
                 }
             }
-        }, 0L, 20L);
-    }
-    @Override
-    public void cancel(){
-        plugin.getServer().getScheduler().cancelTask(process);
-        player.setWalkSpeed(normalSpeed);
+        };
     }
 }

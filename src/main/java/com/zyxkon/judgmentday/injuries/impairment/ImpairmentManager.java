@@ -34,10 +34,6 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
         return getHashmap().get(uuid);
     }
     @Override
-    public boolean isInjured(Player player){
-        return isInjured(player.getUniqueId());
-    }
-    @Override
     public boolean isInjured(UUID uuid){
         return getHashmap().containsKey(uuid);
     }
