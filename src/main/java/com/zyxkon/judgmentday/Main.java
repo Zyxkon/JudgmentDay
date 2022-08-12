@@ -84,8 +84,4 @@ public class Main extends JavaPlugin {
     public boolean hasPlugin(String name){
         return this.getServer().getPluginManager().getPlugin(name) != null;
     }
-//    public static void main(String[] args){
-//        String operatingSystem = System.getProperty("os.name");
-//        System.out.println(operatingSystem+"Windows".equals(operatingSystem));
-//    }
 }
