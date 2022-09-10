@@ -9,6 +9,7 @@ import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 
+import jdk.internal.vm.vector.VectorSupport;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
 public class CrackShotExtension implements Listener {
@@ -94,14 +96,23 @@ public class CrackShotExtension implements Listener {
 //        Entity newProj = hitLoc.getWorld().spawnEntity(hitLoc, type);
 //        player.sendMessage(projectile + " has hit!");
 //        newProj.setVelocity(new Vector(Math.random()*2-1, 0.3, Math.random()*2-1))
-        Location hitLoc = event.getHitBlock().getLocation();
+        Location hitLoc = event.getEntity().getLocation();
         if (!(event.getEntity() instanceof Arrow)) return;
         Arrow arr = (Arrow) event.getEntity();
+        ProjectileSource projSrc = arr.getShooter();
+        Player player;
         double velY = arr.getVelocity().getY();
-        if (velY <= 0) return;
+        if (projSrc instanceof Player) {
+            player = (Player) projSrc;
+            player.sendMessage("Y: "+ velY);
+        }
+        if (velY >= -0.4) return;
         arr.remove();
         Arrow arrow = (Arrow) hitLoc.getWorld().spawnEntity(hitLoc, EntityType.ARROW);
-        ( (Player) arrow.getShooter()).sendMessage("Y: "+arrow.getVelocity().getY());
-        arrow.setVelocity(new Vector(Utils.randRange(-1, 1), arrow.getVelocity().getY()-0.3, Utils.randRange(-1, 1)));
+        int vecX = Utils.randRange(3, 6);
+        int vecZ = Utils.randRange(3, 6);
+        if (Utils.randBool()) vecX *= -1;
+        if (Utils.randBool()) vecZ *= -1;
+        arrow.setVelocity(new Vector(vecX, velY+0.2, vecZ));
     }
 }
