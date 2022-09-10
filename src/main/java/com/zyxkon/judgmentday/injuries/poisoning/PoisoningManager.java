@@ -2,8 +2,6 @@
 //
 //import com.zyxkon.judgmentday.Main;
 //import com.zyxkon.judgmentday.injuries.InjuryManager;
-//import com.zyxkon.judgmentday.injuries.infection.Infection;
-//import com.zyxkon.judgmentday.injuries.infection.InfectionListener;
 //import org.bukkit.Bukkit;
 //import org.bukkit.entity.Player;
 //import org.bukkit.potion.PotionEffect;
@@ -18,7 +16,7 @@
 //    public PoisoningManager(final Main plugin){
 //        instance = this;
 //        PoisoningManager.plugin = plugin;
-//        new InfectionListener(plugin);
+//        new PoisoningListener(plugin);
 //    }
 //    public static PoisoningManager getInstance(){
 //        return instance;
