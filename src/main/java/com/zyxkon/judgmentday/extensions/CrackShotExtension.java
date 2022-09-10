@@ -86,32 +86,28 @@ public class CrackShotExtension implements Listener {
 //        return Math.random() * 2 - 1;
 //    }
     @EventHandler
-    public void onWeaponHitBlock(ProjectileHitEvent event){
-//        Entity entity = event.getEntity();
-//        if (!(entity instanceof Player)) return;
-//        Location hitLoc = event.getHitBlock().getLocation();
-//        Projectile projectile = event.getEntity();
-//        EntityType type = projectile.getType();
-//        Entity newProj = hitLoc.getWorld().spawnEntity(hitLoc, type);
-//        player.sendMessage(projectile + " has hit!");
-//        newProj.setVelocity(new Vector(Math.random()*2-1, 0.3, Math.random()*2-1))
-        Location hitLoc = event.getEntity().getLocation();
-        if (!(event.getEntity() instanceof Arrow)) return;
-        Arrow arr = (Arrow) event.getEntity();
-        ProjectileSource projSrc = arr.getShooter();
+    public void ricochet(ProjectileHitEvent event){
+        Location hitLoc = event.getHitBlock().getLocation();
+        EntityType type = event.getEntityType();
+        Projectile entity = event.getEntity();
+        ProjectileSource projSrc = entity.getShooter();
         Player player;
-        double velY = arr.getVelocity().getY();
+        Vector vector = entity.getVelocity();
+        double vecY = vector.getY();
         if (projSrc instanceof Player) {
             player = (Player) projSrc;
-            player.sendMessage("Y: "+ velY);
+            player.sendMessage("Vel: " + entity.getVelocity());
         }
-        if (velY >= -0.4) return;
-        arr.remove();
-        Arrow arrow = (Arrow) hitLoc.getWorld().spawnEntity(hitLoc, EntityType.ARROW);
-        int vecX = Utils.randRange(3, 6);
-        int vecZ = Utils.randRange(3, 6);
+        if (Math.abs(vecY) < 0.2) return;
+        entity.remove();
+        int vecX = Utils.randRange(2, 3);
+        int vecZ = Utils.randRange(2, 3);
         if (Utils.randBool()) vecX *= -1;
         if (Utils.randBool()) vecZ *= -1;
-        arrow.setVelocity(new Vector(vecX, velY+0.2, vecZ));
+//        vecX -= vecX*(35/100.);
+//        vecZ -= vecZ*(35/100.);
+        vecY *= -65./100.;
+        Entity newEnt = hitLoc.getWorld().spawnEntity(hitLoc, type);
+        newEnt.setVelocity(new Vector(vecX, vecY, vecZ));
     }
 }

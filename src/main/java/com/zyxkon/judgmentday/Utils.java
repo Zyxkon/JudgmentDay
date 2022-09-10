@@ -20,7 +20,7 @@ public final class Utils {
         Random rand = new Random();
         return rand.nextInt((b - a) + 1) + a;
     }
-    public static boolean isInRange(int n, int a, int b){
+    public static boolean isInRange(double n, double a, double b){
         return a <= n && n <= b;
     }
     public static boolean chance(float percentage){
