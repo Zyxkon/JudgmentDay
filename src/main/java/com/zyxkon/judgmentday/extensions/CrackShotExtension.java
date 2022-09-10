@@ -9,7 +9,6 @@ import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 
-import jdk.internal.vm.vector.VectorSupport;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
