@@ -11,6 +11,7 @@ import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -90,6 +91,6 @@ public class CrackShotExtension implements Listener {
         EntityType type = projectile.getType();
         Entity newProj = hitLoc.getWorld().spawnEntity(hitLoc, type);
         player.sendMessage(projectile + " has hit!");
-        newProj.setVelocity(player.getLocation().toVector());
+        newProj.setVelocity(new Vector(Math.random()*2-1, 0.3, Math.random()*2-1));
     }
 }
