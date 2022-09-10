@@ -85,9 +85,11 @@ public class CrackShotExtension implements Listener {
     @EventHandler
     public void onWeaponHitBlock(WeaponHitBlockEvent event){
         Player player = event.getPlayer();
-//        Location hitLoc = event.getBlock().getLocation();
+        Location hitLoc = event.getBlock().getLocation();
         Entity projectile = event.getProjectile();
-//        EntityType type = projectile.getType();
-        projectile.setVelocity(player.getLocation().toVector());
+        EntityType type = projectile.getType();
+        Entity newProj = hitLoc.getWorld().spawnEntity(hitLoc, type);
+        player.sendMessage(projectile + " has hit!");
+        newProj.setVelocity(player.getLocation().toVector());
     }
 }
