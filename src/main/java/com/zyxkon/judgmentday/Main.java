@@ -75,6 +75,9 @@ public class Main extends JavaPlugin {
         Counter.saveData();
         shutdownManagers();
     }
+    public void log(String str){
+        log(Level.INFO, str);
+    }
     public void log(Level level, String str){
         logger.log(level, str);
     }
