@@ -20,6 +20,16 @@ public final class Utils {
         Random rand = new Random();
         return rand.nextInt((b - a) + 1) + a;
     }
+    public static double randRange(double a, double b, double digits){
+        double mul = Math.pow(10, digits);
+        return randRange( (int) (a*mul), (int) (b*mul) )/mul;
+    }
+    public static double randRange(double a, double b){
+        return randRange(a, b, 5);
+    }
+    public static double randRange(double b){
+        return randRange(0, b);
+    }
     public static boolean isInRange(double n, double a, double b){
         return a <= n && n <= b;
     }
