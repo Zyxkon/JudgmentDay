@@ -20,7 +20,6 @@ public class ImpairmentManager extends InjuryManager<Impairment> {
     public static ImpairmentManager getInstance(){
         return instance;
     }
-
     @Override
     public HashMap<UUID, Impairment> getHashmap() {
         return affectedPlayers;

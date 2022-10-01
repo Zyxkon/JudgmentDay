@@ -46,14 +46,22 @@ public class Main extends JavaPlugin {
             }
         }
         setupManagers();
+        setupCommands();
+        setupListeners();
+        setupRunnables();
+        new Counter(this);
+
+    }
+    private void setupCommands(){
         new Commands(this);
         new ZCommand(this);
-
-        new Counter(this);
+    }
+    private void setupListeners(){
         new MainListener(this);
         new CreatureSpawnListener(this);
         new PlayerDeathListener(this);
-
+    }
+    private void setupRunnables(){
         new ScoreboardLoaderRunnable(this);
         new ZombieSpawnRunnable(this);
         new BarbedWireRunnable(this);
