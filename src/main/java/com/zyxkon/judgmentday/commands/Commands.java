@@ -1,5 +1,8 @@
-package com.zyxkon.judgmentday;
+package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.Counter;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.thirst.ThirstManager;

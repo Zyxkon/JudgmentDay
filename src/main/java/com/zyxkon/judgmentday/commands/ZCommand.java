@@ -1,5 +1,7 @@
-package com.zyxkon.judgmentday;
+package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import org.apache.commons.lang.SystemUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +16,6 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 
 public class ZCommand implements CommandExecutor {

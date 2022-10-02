@@ -1,4 +1,6 @@
 package com.zyxkon.judgmentday;
+import com.zyxkon.judgmentday.commands.*;
+import com.zyxkon.judgmentday.commands.cmds.*;
 import com.zyxkon.judgmentday.extensions.VaultExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
@@ -24,8 +26,10 @@ public class Main extends JavaPlugin {
     public static ImpairmentManager impairmentManager;
     public static InfectionManager infectionManager;
     public static ThirstManager thirstManager;
+    public static String commandName;
     @Override
     public void onEnable(){
+        commandName = "judgementday";
         Main.logger = this.getLogger();
         instance = this;
         File file = new File(getDataFolder() + File.separator);
@@ -55,6 +59,10 @@ public class Main extends JavaPlugin {
     private void setupCommands(){
         new Commands(this);
         new ZCommand(this);
+        new testActualCommand(this);
+    }
+    public String getCommandName(){
+        return commandName;
     }
     private void setupListeners(){
         new MainListener(this);
@@ -82,9 +90,6 @@ public class Main extends JavaPlugin {
         ThirstManager.saveData();
         Counter.saveData();
         shutdownManagers();
-    }
-    public void log(String str){
-        log(Level.INFO, str);
     }
     public void log(Level level, String str){
         logger.log(level, str);

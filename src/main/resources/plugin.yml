@@ -12,3 +12,7 @@ commands:
     aliases: [jd, judgmentday]
     usage: /judgmentday
     description: Command for the JudgmentDay plugin.
+  prob:
+    aliases: prob
+    usage: /prob
+    description: acronym for probably
