@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class StatResetCmd extends SubCommand {
     static Main plugin;
-    private final String cmdName = "reset";
+    private final static String cmdName = "reset";
     public StatResetCmd(Main plugin){
         StatResetCmd.plugin = plugin;
     }

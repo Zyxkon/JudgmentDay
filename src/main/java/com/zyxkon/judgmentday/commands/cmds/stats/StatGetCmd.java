@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 public class StatGetCmd extends SubCommand {
     static Main plugin;
-    private final String cmdName = "get";
+    private final static String cmdName = "get";
     public StatGetCmd(Main plugin){
         StatGetCmd.plugin = plugin;
     }
@@ -31,7 +31,7 @@ public class StatGetCmd extends SubCommand {
             }
         }
         commandSender.sendMessage(Utils.group("\n",
-                              "Player %s has:",
+                String.format("Player %s has:", p.getName()),
                 String.format("   Killed: %d walkers", Counter.getWalkerKills(p)),
                 String.format("   Killed: %d players", Counter.getPlayerKills(p)),
                 String.format("   Died: %d times", Counter.getDeaths(p))
