@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public class MaybeSubcommand extends SubCommand {
     static Main plugin;
-    private final String cmdName = "kingbreaker";
+    private final static String cmdName = "kingbreaker";
     public MaybeSubcommand(Main plugin){
         MaybeSubcommand.plugin = plugin;
     }

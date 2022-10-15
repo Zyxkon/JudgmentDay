@@ -7,10 +7,8 @@ import org.bukkit.command.CommandSender;
 
 public class anotherSubCmd extends SubCommand {
     static Main plugin;
-    private final String cmdName = "ballsbreaker";
-    public anotherSubCmd(Main plugin){
-        MaybeSubcommand.plugin = plugin;
-    }
+    private final static String cmdName = "ballsbreaker";
+    public anotherSubCmd(Main plugin){anotherSubCmd.plugin = plugin;}
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         commandSender.sendMessage("hello! this is uhmm yet another subcommand, except this time its called "+cmdName+" lol");

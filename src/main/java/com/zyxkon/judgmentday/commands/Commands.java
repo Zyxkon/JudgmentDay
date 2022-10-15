@@ -22,7 +22,7 @@ public class Commands implements CommandExecutor {
     static Main plugin;
     public Commands(Main plugin){
         Commands.plugin = plugin;
-        plugin.getCommand("judgmentday").setExecutor(this);
+        plugin.getCommand("judgmentda").setExecutor(this);
     }
 
     @Override
@@ -40,55 +40,55 @@ public class Commands implements CommandExecutor {
         }
         Player player = (Player) commandSender;
         switch (strings[0].toLowerCase()) {
-            case "stats":{
-                switch (strings[1].toLowerCase()){
-                    case "reset": {
-                        Player p;
-                        try {
-                            p = Bukkit.getPlayer(strings[2]);
-                        } catch (IndexOutOfBoundsException exception) {
-                            p = player;
-                        }
-                        Counter.resetStats(p);
-                        p.sendMessage("Your stats have been resetted!");
-                        break;
-                    }
-                    case "get":{
-                        int counts = 0;
-                        String str = "count";
-                        Player p;
-                        try {
-                            p = Bukkit.getPlayer(strings[3]);
-                        }
-                        catch (IndexOutOfBoundsException exception){
-                            p = player;
-                        }
-                        switch (strings[2].toLowerCase()){
-                            case "d":
-                            case "deaths":{
-                                str = "death";
-                                counts = Counter.getDeaths(p);
-                                break;
-                            }
-                            case "pk":
-                            case "player_kills":{
-                                str = "player kills";
-                                counts = Counter.getPlayerKills(p);
-                                break;
-                            }
-                            case "wk":
-                            case "walker_kills":{
-                                str = "walker kills";
-                                counts = Counter.getWalkerKills(p);
-                                break;
-                            }
-                        }
-                        player.sendMessage(String.format("%s's %s is %s ", p.getName(), str, counts));
-                        break;
-                    }
-                }
-                return true;
-            }
+//            case "stats":{
+//                switch (strings[1].toLowerCase()){
+//                    case "reset": {
+//                        Player p;
+//                        try {
+//                            p = Bukkit.getPlayer(strings[2]);
+//                        } catch (IndexOutOfBoundsException exception) {
+//                            p = player;
+//                        }
+//                        Counter.resetStats(p);
+//                        p.sendMessage("Your stats have been resetted!");
+//                        break;
+//                    }
+//                    case "get":{
+//                        int counts = 0;
+//                        String str = "count";
+//                        Player p;
+//                        try {
+//                            p = Bukkit.getPlayer(strings[3]);
+//                        }
+//                        catch (IndexOutOfBoundsException exception){
+//                            p = player;
+//                        }
+//                        switch (strings[2].toLowerCase()){
+//                            case "d":
+//                            case "deaths":{
+//                                str = "death";
+//                                counts = Counter.getDeaths(p);
+//                                break;
+//                            }
+//                            case "pk":
+//                            case "player_kills":{
+//                                str = "player kills";
+//                                counts = Counter.getPlayerKills(p);
+//                                break;
+//                            }
+//                            case "wk":
+//                            case "walker_kills":{
+//                                str = "walker kills";
+//                                counts = Counter.getWalkerKills(p);
+//                                break;
+//                            }
+//                        }
+//                        player.sendMessage(String.format("%s's %s is %s ", p.getName(), str, counts));
+//                        break;
+//                    }
+//                }
+//                return true;
+//            }
             case "thirst": {
                 switch (strings[1].toLowerCase()){
                     case "get":{
