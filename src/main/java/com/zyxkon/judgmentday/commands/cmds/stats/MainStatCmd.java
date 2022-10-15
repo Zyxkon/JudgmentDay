@@ -30,16 +30,7 @@ public class MainStatCmd extends CommandGroup {
         commandSender.sendMessage("why?");
         return super.onCommand(sCmds, commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
     }
-    public void addCommand(SubCommand command){
-        sCmds.put(command.getName(), command);
-    }
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean check(String[] strings) {
-        return strings[0].equals(name);
-    }
+    @Override public void addCommand(SubCommand command){ sCmds.put(command.getName(), command); }
+    @Override public String getName() {return name;}
+    @Override public boolean check(String[] strings) {return strings[0].equals(name);}
 }
