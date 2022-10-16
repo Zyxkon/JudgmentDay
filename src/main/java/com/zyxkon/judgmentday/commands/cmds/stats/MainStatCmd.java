@@ -21,16 +21,14 @@ public class MainStatCmd extends CommandGroup {
     }
     @Override
     public boolean execute(CommandSender commandSender, Command command, String s, String[] strings){
-        commandSender.sendMessage("yea sure");
         return true;
     }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (!check(strings)) return true;
-        commandSender.sendMessage("why?");
         return super.onCommand(sCmds, commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
     }
     @Override public void addCommand(SubCommand command){ sCmds.put(command.getName(), command); }
-    @Override public String getName() {return name;}
-    @Override public boolean check(String[] strings) {return strings[0].equals(name);}
+    @Override public String getName() { return name; }
+    @Override public boolean check(String[] strings) { return strings[0].equals(name); }
 }
