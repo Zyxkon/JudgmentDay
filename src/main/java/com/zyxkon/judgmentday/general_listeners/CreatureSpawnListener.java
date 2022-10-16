@@ -46,7 +46,6 @@ public class CreatureSpawnListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        if (event.getEntity() instanceof Zombie) return;
         if (!(event.getEntity() instanceof Zombie)){
             if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
                 if (event.getEntity() instanceof Chicken) {

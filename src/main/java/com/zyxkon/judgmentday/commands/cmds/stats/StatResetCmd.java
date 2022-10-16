@@ -29,6 +29,7 @@ public class StatResetCmd extends SubCommand {
         }
         Counter.resetStats(p);
         p.sendMessage("Your stats have been reset!");
+        commandSender.sendMessage(String.format("%s's stats have been reset!", p.getName()));
         return true;
     }
     public String getName(){

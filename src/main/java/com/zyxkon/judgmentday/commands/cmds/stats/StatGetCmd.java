@@ -17,23 +17,15 @@ public class StatGetCmd extends SubCommand {
     }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Player p;
-        try {
-            p = Bukkit.getPlayer(strings[0]);
-        }
-        catch (IndexOutOfBoundsException exception){
-            try {
-                p = (Player) commandSender;
-            }
-            catch (ClassCastException e){
-                commandSender.sendMessage("You are not a player so you don't have any stats!");
-                return true;
-            }
+        Player p = Bukkit.getPlayer(strings[0]);
+        if (p == null) {
+            commandSender.sendMessage(String.format("Player '%s' not found!", strings[0]));
+            return true;
         }
         commandSender.sendMessage(Utils.group("\n",
-                String.format("Player %s has:", p.getName()),
+                String.format("%s has:", p.getName()),
                 String.format("   Killed: %d walkers", Counter.getWalkerKills(p)),
-                String.format("   Killed: %d players", Counter.getPlayerKills(p)),
+                String.format("   Murdered: %d players", Counter.getPlayerKills(p)),
                 String.format("   Died: %d times", Counter.getDeaths(p))
         ));
         return true;

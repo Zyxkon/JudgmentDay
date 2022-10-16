@@ -12,7 +12,7 @@ public abstract class CommandGroup implements CommandExecutor {
 
     //    @Override
     public boolean onCommand(HashMap<String, SubCommand> hash, CommandSender commandSender, Command command, String s, String[] strings) {
-        if (strings.length == 0) return execute(commandSender, command, s, strings);
+//        if (strings.length == 0) return execute(commandSender, command, s, strings);
         String firstArg = strings[0];
         if (hash.containsKey(firstArg)){
             return hash.get(firstArg).onCommand(
