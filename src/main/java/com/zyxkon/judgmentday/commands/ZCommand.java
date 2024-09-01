@@ -2,7 +2,6 @@ package com.zyxkon.judgmentday.commands;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
-import org.apache.commons.lang.SystemUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

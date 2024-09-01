@@ -4,12 +4,10 @@ import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
-import org.bukkit.Bukkit;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Banner;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
@@ -23,7 +21,10 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class CreatureSpawnListener implements Listener {
     Main plugin;
@@ -33,35 +34,21 @@ public class CreatureSpawnListener implements Listener {
     }
     @EventHandler
     public void onCreatureSpawn(CreatureSpawnEvent event) {
+//        plugin.log(Level.WARNING, String.format("A %s just spawned because of %s", event.getEntity().getName(), event.getSpawnReason().toString()));
+        Entity ent = event.getEntity();
+        World w = event.getLocation().getWorld();
         Location loc = event.getEntity().getLocation();
-        if (Utils.isSolid(loc)) {
-            event.setCancelled(true);
-            return;
-        }
-        if (Utils.isSolid(loc.getBlock().getRelative(BlockFace.UP))) {
-            event.setCancelled(true);
-            return;
-        }
-        if (!Utils.isSolid(loc.getBlock().getRelative(BlockFace.DOWN))){
-            event.setCancelled(true);
-            return;
-        }
-        if (!(event.getEntity() instanceof Zombie)){
-            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
-                if (event.getEntity() instanceof Chicken) {
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-            else if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL){
+        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL){
+            if (ent instanceof Monster || ent instanceof Animals){
                 event.setCancelled(true);
+                w.spawnEntity(loc, EntityType.ZOMBIE);
                 return;
             }
         }
-        float lChance = 1/6f*100;
-        float gChance = 1/12f*100;
-        float cChance = 1/18f*100;
-        float iChance = 1/10f;
+        float lChance = 1/2f*100;
+        float gChance = 1/3f*100;
+        float cChance = 1/4f*100;
+        float iChance = 1/5f;
         boolean isBarracks = false;
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
             ArrayList<String> regions = WorldGuardExtension.getRegions(loc);
@@ -81,17 +68,15 @@ public class CreatureSpawnListener implements Listener {
         }
         if (event.getEntity() instanceof Zombie){
             Zombie z = (Zombie) event.getEntity();
-            z.setBaby(false);
             z.setHealth(15d);
             z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100d);
-            z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.3d);
+            z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.4d);
             z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4d);
             ItemStack helmet, chestplate, leggings, boots;
             ArrayList<ItemStack> helmetList = new ArrayList<>();
             ArrayList<ItemStack> chestplateList = new ArrayList<>();
             ArrayList<ItemStack> leggingsList = new ArrayList<>();
             ArrayList<ItemStack> bootsList = new ArrayList<>();
-            ItemStack[] armor;
             if (Utils.randBool()) {
                 if (Utils.chance(iChance)) helmetList.add(new ItemStack(Material.IRON_HELMET));
                 if (Utils.chance(cChance)) helmetList.add(new ItemStack(Material.CHAINMAIL_HELMET));
@@ -120,7 +105,8 @@ public class CreatureSpawnListener implements Listener {
             chestplate = Utils.randElement(chestplateList);
             leggings = Utils.randElement(leggingsList);
             boots = Utils.randElement(bootsList);
-            armor = new ItemStack[]{boots, leggings, chestplate, helmet};
+            ItemStack[] armor = new ItemStack[]{boots, leggings, chestplate, helmet};
+            // armor order is ALWAYS boots, leggings, chestplate, helmet
             if (isBarracks){
                 if (Utils.chance(10)) {
                     armor = new ItemStack[]{
@@ -148,7 +134,7 @@ public class CreatureSpawnListener implements Listener {
             }
             for (ItemStack item : armor){
                 if (item != null){
-                    item.setDurability((short) 10);
+                    item.setDurability((short) 3);
                     if (Utils.randBool()) {
                         ItemMeta meta = item.getItemMeta();
                         meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true);
@@ -156,6 +142,8 @@ public class CreatureSpawnListener implements Listener {
                     }
                 }
             }
+//            plugin.getServer().getConsoleSender().sendMessage(String.format("A %s has been detected! A zombie though",
+//                    event.getEntity().getName()));
             z.getEquipment().setArmorContents(armor);
         }
     }

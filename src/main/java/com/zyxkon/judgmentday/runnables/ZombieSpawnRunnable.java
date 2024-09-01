@@ -6,6 +6,8 @@ import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -17,23 +19,29 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
     final Main plugin;
     public ZombieSpawnRunnable(Main plugin){
         this.plugin = plugin;
-        this.runTaskTimer(plugin, 0L, 20L);
+        this.runTaskTimer(plugin, 0L, 5L);
+        // this is based on the minecraft time unit: tick, 20 tick equates to 1 second
     }
     @Override
     public void run(){
         for (Player p: plugin.getServer().getOnlinePlayers()) {
-            List<Entity> ents = p.getNearbyEntities(30, 10, 30);
-            int limit = 40;
-            if (ents.stream().anyMatch(e -> e instanceof Player)) limit *=
-                    (ents.stream().filter(e -> e instanceof Player)).toArray().length;
+            int x_range = 40;
+            int y_range = 15;
+            int z_range = 40;
+            List<Entity> ents = p.getNearbyEntities(x_range, y_range, z_range);
+            int limit = 100;
+//            if (ents.stream().anyMatch(e -> e instanceof Player)) {
+//                limit *= (ents.stream().filter(e -> e instanceof Player)).toArray().length;
+//            }
+            // makes zombies spawn according to the number of players within each others radius
             ents = ents.stream().filter((e) -> e.getType() == EntityType.ZOMBIE).collect(Collectors.toList());
             if (ents.size() > limit) return;
             World w = p.getWorld();
             Random random = new Random();
-            for (int i = 0; i<Utils.randRange(0, 10); i++){
-                int x = Utils.randRange(15, 40);
-                int y = Utils.randRange(-3, 3);
-                int z = Utils.randRange(15, 40);
+            for (int i = 0; i<10; i++){
+                int x = Utils.randRange(x_range /2,x_range*3/2);
+                int y = Utils.randRange(-y_range/2, y_range/2);
+                int z = Utils.randRange(z_range /2,z_range*3/2);
                 if (random.nextBoolean()) x = -x;
                 if (random.nextBoolean()) z = -z;
                 Location loc = p.getLocation().add(x, y, z);
@@ -41,8 +49,14 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
                 int z_offset = Utils.randRange(-4, 4);
                 loc.add(x_offset, 0, z_offset);
                 EntityType ent = EntityType.ZOMBIE;
-                if (Utils.chance(1)) ent = EntityType.HUSK;
-                else if (Utils.chance(5)) ent = EntityType.ZOMBIE_VILLAGER;
+                if (Utils.chance(10)) ent = EntityType.HUSK;
+                else if (Utils.chance(20)) ent = EntityType.ZOMBIE_VILLAGER;
+                Block bl = loc.getBlock();
+                if (Utils.isSolid(bl.getRelative(BlockFace.UP))
+                        || Utils.isSolid(bl)
+                        || !Utils.isSolid(bl.getRelative(BlockFace.DOWN))) {
+                    continue;
+                }
                 w.spawnEntity(loc, ent);
             }
         }

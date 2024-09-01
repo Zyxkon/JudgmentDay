@@ -1,8 +1,8 @@
-package com.zyxkon.judgmentday.commands;
+package com.zyxkon.judgmentday;
 
-import com.zyxkon.judgmentday.Counter;
-import com.zyxkon.judgmentday.Main;
-import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.commands.InjuryCommand;
+import com.zyxkon.judgmentday.commands.StatsCommand;
+import com.zyxkon.judgmentday.commands.ThirstCommand;
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
@@ -15,18 +15,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Level;
 
 public class Commands implements CommandExecutor {
     static Main plugin;
+    static String cmdName;
     public Commands(Main plugin){
         Commands.plugin = plugin;
-        plugin.getCommand("judgmentda").setExecutor(this);
+        Commands.cmdName = plugin.getName();
+        plugin.getCommand(cmdName).setExecutor(this);
     }
-
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
+        for (int i = 0;i < strings.length; i++){
+            plugin.log(Level.INFO, String.format("%d %s", i, strings[i]));
+        }
         if (strings.length == 0){
             String space = new String(new char[6]).replace("\0", "-");
             String msg = Utils.group("\n",
@@ -38,146 +42,27 @@ public class Commands implements CommandExecutor {
             commandSender.sendMessage(Utils.translate(msg));
             return true;
         }
-        Player player = (Player) commandSender;
+        // Arrays.copyOfRange doesn't copy the element at the ending index, strings.length lies outside the boundary
+        // of the `strings` array
+        String[] args = Arrays.copyOfRange(strings, 1, strings.length);
+        commandSender.sendMessage("Args:\n");
+        Arrays.asList(args).forEach(commandSender::sendMessage);
+        if (Utils.equatesTo(strings[0].toLowerCase(), "stats")) {
+            return stats(commandSender, args);
+        }
+        else if (Utils.equatesTo(strings[0].toLowerCase(), "thirst")) {
+            return thirst(commandSender, args);
+        }
+        else if (Utils.equatesTo(strings[0].toLowerCase(), "injury")) {
+            return injury(commandSender, args);
+        }
         switch (strings[0].toLowerCase()) {
-//            case "stats":{
-//                switch (strings[1].toLowerCase()){
-//                    case "reset": {
-//                        Player p;
-//                        try {
-//                            p = Bukkit.getPlayer(strings[2]);
-//                        } catch (IndexOutOfBoundsException exception) {
-//                            p = player;
-//                        }
-//                        Counter.resetStats(p);
-//                        p.sendMessage("Your stats have been resetted!");
-//                        break;
-//                    }
-//                    case "get":{
-//                        int counts = 0;
-//                        String str = "count";
-//                        Player p;
-//                        try {
-//                            p = Bukkit.getPlayer(strings[3]);
-//                        }
-//                        catch (IndexOutOfBoundsException exception){
-//                            p = player;
-//                        }
-//                        switch (strings[2].toLowerCase()){
-//                            case "d":
-//                            case "deaths":{
-//                                str = "death";
-//                                counts = Counter.getDeaths(p);
-//                                break;
-//                            }
-//                            case "pk":
-//                            case "player_kills":{
-//                                str = "player kills";
-//                                counts = Counter.getPlayerKills(p);
-//                                break;
-//                            }
-//                            case "wk":
-//                            case "walker_kills":{
-//                                str = "walker kills";
-//                                counts = Counter.getWalkerKills(p);
-//                                break;
-//                            }
-//                        }
-//                        player.sendMessage(String.format("%s's %s is %s ", p.getName(), str, counts));
-//                        break;
-//                    }
-//                }
-//                return true;
-//            }
-            case "thirst": {
-                switch (strings[1].toLowerCase()){
-                    case "get":{
-                        Player p;
-                        try {
-                            p = Bukkit.getPlayer(strings[3]);
-                        } catch (IndexOutOfBoundsException exception){
-                            p = player;
-                        }
-                        player.sendMessage(String.format("%s's hydration is %d", p.getName(), ThirstManager.getThirst(p))+"%");
-                        return true;
-                    }
-                    case "set":{
-                        /*
-                         * 2     3        4
-                         * set <player> <thirst>
-                         * set <thirst>
-                         * set 223 // sets the player's thirst to 223
-                         * set 223 223 // sets the thirst of the player called 223 to 223
-                         *
-                         *
-                         */
-                        Player p;
-                        int thirst;
-                        try {
-                            thirst = Integer.parseInt(strings[3]);
-                            p = player;
-                        } catch (NumberFormatException exception){
-                            p = Bukkit.getPlayer(strings[3]);
-                            thirst = Integer.parseInt(strings[4]);
-                        }
-                        ThirstManager.setThirst(p, thirst);
-                        p.sendMessage(String.format("Your hydration is now %s", thirst)+"%");
-                        return true;
-                    }
-                }
-//                Player p = Bukkit.getPlayer(strings[1]);
-//                int thirst = Integer.parseInt(strings[2]);
-//                ThirstManager.setThirst(p, thirst);
-                return true;
-            }
-            case "injure": {
-                Player p = Bukkit.getPlayer(strings[1]);
-                UUID uuid = p.getUniqueId();
-                switch (strings[2].toLowerCase()){
-                    case "bloodloss": {
-                        if (BloodLossManager.getInstance().isInjured(uuid)) return true;
-                        BloodLossManager.getInstance().affectPlayer(p);
-                        p.sendMessage("You have been inflicted with blood loss!");
-                        break;
-                    }
-                    case "impairment": {
-                        if (ImpairmentManager.getInstance().isInjured(uuid)) return true;
-                        ImpairmentManager.getInstance().affectPlayer(p);
-                        p.sendMessage("You have been inflicted with impairment!");
-                        break;
-                    }
-                    case "infection": {
-                        if (InfectionManager.getInstance().isInjured(uuid)) return true;
-                        InfectionManager.getInstance().affectPlayer(p);
-                        p.sendMessage("You have been inflicted with an infection!");
-                        break;
-                    }
-                    case "all": {
-                        if (!BloodLossManager.getInstance().isInjured(uuid)) BloodLossManager.getInstance().affectPlayer(p);
-                        if (!ImpairmentManager.getInstance().isInjured(uuid)) ImpairmentManager.getInstance().affectPlayer(p);
-                        if (!InfectionManager.getInstance().isInjured(uuid)) InfectionManager.getInstance().affectPlayer(p);
-                        p.sendMessage("You have been inflicted with all sorts of injuries possible!");
-                        break;
-                    }
-                }
-                return true;
-            }
-            case "heal":{
-                Player p;
-                try {
-                    p = Bukkit.getPlayer(strings[1]);
-                } catch (IndexOutOfBoundsException exception){
-                    p = player;
-                }
-                if (BloodLossManager.getInstance().isInjured(p)) BloodLossManager.getInstance().healPlayer(p);
-                if (ImpairmentManager.getInstance().isInjured(p)) ImpairmentManager.getInstance().healPlayer(p);
-                if (InfectionManager.getInstance().isInjured(p)) InfectionManager.getInstance().healPlayer(p);
-                p.sendMessage("You have been healed!");
-                return true;
-            }
+            // having variable i obviates the need to remember what arg you are on: i+1 becomes the next arg instead
+            // in the above statement, i is still = 0, i++ technically increases i by one the next time its used, but
+            // not in the first time
             case "r": case "regions":{
                 if (Bukkit.getPluginManager().getPlugin("WorldGuard") == null){
-                    player.sendMessage("WorldGuard isn't installed, you can't use this subcommand!");
+                    commandSender.sendMessage("WorldGuard isn't installed, you can't use this subcommand!");
                     return true;
                 }
                 switch (strings[1].toLowerCase()){
@@ -301,6 +186,106 @@ public class Commands implements CommandExecutor {
                 break;
             }
         }
+        plugin.log(Level.INFO, String.format("couldn't find any case for strings[0] which is %s, returning false", strings[0]));
+        return false;
+    }
+    public static boolean stats(CommandSender sender, String[] args) {
+        StatsCommand statsCmd = new StatsCommand(sender);
+        ArrayList <String> subCmds = new ArrayList<>();
+        for (StatsCommand.SUBCOMMAND sub : StatsCommand.SUBCOMMAND.values()) {
+            subCmds.add(sub.name().toLowerCase());
+        }
+        String usage = String.format(
+                "/%s %s (%s) [name]",
+                plugin.getName(), "stats", String.join("/", subCmds)
+        );
+        if (args.length == 0){
+            sender.sendMessage("No arguments provided. Usage:"+usage);
+            return false;
+        }
+        if (Utils.equatesTo(args[0], StatsCommand.SUBCOMMAND.RESET.toString().toLowerCase())) {
+            try {
+                // if there is a subject to reset the stats of
+                return statsCmd.reset(Bukkit.getPlayer(args[1]));
+            } catch (IndexOutOfBoundsException exc) {
+                // if there is no subject to reset the stats of
+                return statsCmd.reset();
+            }
+        } else if (Utils.equatesTo(args[0], StatsCommand.SUBCOMMAND.GET.toString().toLowerCase())) {
+            try {
+                return statsCmd.get(Bukkit.getPlayer(args[1]));
+            } catch (IndexOutOfBoundsException exc) {
+                // no subject found
+                return statsCmd.get();
+            }
+        }
+        sender.sendMessage(String.format("Illegal arguments. Usage: /%s (get/reset) [name]", cmdName));
+        return false;
+    }
+    public static boolean thirst(CommandSender sender, String[] args){
+        ThirstCommand thirstCmd = new ThirstCommand(sender);
+        if (args.length == 0){
+            sender.sendMessage(String.format("Insufficient arguments. Usage: /%s thirst (get/set) (thirst) [name]", cmdName));
+            return false;
+        }
+        if (Utils.equatesTo(args[0], "get")) {
+            try {
+                // if there is a subject to reset the stats of
+                return thirstCmd.get(Bukkit.getPlayer(args[1]));
+            } catch (IndexOutOfBoundsException exc) {
+                // if there is no subject to reset the stats of
+                return thirstCmd.get();
+            }
+        } else if (Utils.equatesTo(args[0], "set")) {
+            try {
+                return thirstCmd.set(Bukkit.getPlayer(args[2]), Integer.parseInt(args[1]));
+            } catch (IndexOutOfBoundsException exc) {
+                // no subject found
+                return thirstCmd.set(Integer.parseInt(args[1]));
+            }
+        }
+        else if (Utils.equatesTo(args[0], "list")){
+            return thirstCmd.sendThirstList();
+        }
+        sender.sendMessage(String.format("Illegal arguments. Usage: /%s thirst (get/set) (thirst) [name]", cmdName));
+        return false;
+    }
+    public static boolean injury(CommandSender sender, String[] args){
+        String cmd = "injury";
+        String[] subCmds = {"check", "inflict", "heal"};
+        String usage = String.format("/%s %s (%s) (injury_type) [name]", cmdName, cmd, String.join("/", subCmds));
+        InjuryCommand injuryCmd = new InjuryCommand(sender);
+        if (args.length == 0){
+            sender.sendMessage(
+                    "Not enough arguments. Usage:"+usage
+            );
+            return false;
+        }
+        if (Utils.equatesTo(args[0], "check")) {
+            try {
+                // if there is a subject to reset the stats of
+                return injuryCmd.check(Bukkit.getPlayer(args[1]));
+            } catch (IndexOutOfBoundsException exc) {
+                // if there is no subject to reset the stats of
+                return injuryCmd.check();
+            }
+        } else if (Utils.equatesTo(args[0], "inflict")) {
+            try {
+                return injuryCmd.inflict(InjuryCommand.INJURIES.valueOf(args[1]),Bukkit.getPlayer(args[2]));
+            } catch (IndexOutOfBoundsException exc) {
+                // no subject found
+                return injuryCmd.inflict(InjuryCommand.INJURIES.valueOf(args[1]));
+            }
+        }
+        else if (Utils.equatesTo(args[0], "heal")){
+            try {
+                return injuryCmd.heal(Bukkit.getPlayer(args[2]));
+            } catch (IndexOutOfBoundsException exc) {
+                // no subject found
+                return injuryCmd.heal();
+            }
+        }
+        sender.sendMessage("Illegal arguments. Usage:"+usage);
         return false;
     }
 }

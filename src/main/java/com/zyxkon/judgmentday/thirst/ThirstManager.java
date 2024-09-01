@@ -160,6 +160,9 @@ public class ThirstManager extends BukkitRunnable implements Listener {
             e.printStackTrace();
         }
     }
+    public static HashMap<UUID, Integer> getHash(){
+        return thirstPlayers;
+    }
     @EventHandler
     public void onDrink(PlayerItemConsumeEvent event){
         Player player = event.getPlayer();

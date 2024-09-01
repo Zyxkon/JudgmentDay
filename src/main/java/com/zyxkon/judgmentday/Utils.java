@@ -94,4 +94,25 @@ public final class Utils {
         Random random = new Random();
         return arrayList.get(random.nextInt(size));
     }
+    public static boolean equatesTo(String s1, String s2){
+        if (s1.length() > s2.length()){
+//            throw new IllegalArgumentException(String.format("The length of s1 (\"%s\") surpasses that of s2 (\"%s\")",
+//                    s1, s2));
+//            Main.getInstance().getServer().getConsoleSender().sendMessage(
+//                    String.format(
+//                            "IllegalArgumentException: The length of s1 (\"%s\") surpasses that of s2 (\"%s\")", s1, s2
+//                    )
+//            );
+            return false;
+        }
+        for (int i = 0; i<s1.length(); i++){
+            if (s1.charAt(i) != s2.charAt(i)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean isValidPlayer(Player p){
+        return Arrays.stream(Main.getInstance().getServer().getOfflinePlayers()).anyMatch(s -> s == p);
+    }
 }

@@ -1,6 +1,7 @@
 package com.zyxkon.judgmentday.injuries.bloodloss;
 
 import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.injuries.Injury;
 import com.zyxkon.judgmentday.injuries.InjuryManager;
 import org.bukkit.entity.*;
 

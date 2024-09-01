@@ -1,19 +1,17 @@
 package com.zyxkon.judgmentday;
-import com.zyxkon.judgmentday.commands.*;
-import com.zyxkon.judgmentday.commands.cmds.*;
-import com.zyxkon.judgmentday.commands.cmds.stats.MainStatCmd;
-import com.zyxkon.judgmentday.extensions.VaultExtension;
-import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
-import com.zyxkon.judgmentday.thirst.ThirstManager;
+import com.zyxkon.judgmentday.commands.ZCommand;
 import com.zyxkon.judgmentday.extensions.CrackShotExtension;
-import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
-import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
-import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
-import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
+import com.zyxkon.judgmentday.extensions.VaultExtension;
 import com.zyxkon.judgmentday.general_listeners.CreatureSpawnListener;
 import com.zyxkon.judgmentday.general_listeners.MainListener;
 import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
+import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
+import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
+import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
+import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
+import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
+import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -57,10 +55,8 @@ public class Main extends JavaPlugin {
 
     }
     private void setupCommands(){
-//        new Commands(this);
+        new Commands(this);
         new ZCommand(this);
-        new testActualCommand(this);
-        new MainStatCmd(this);
     }
     public String getCommandName(){
         return commandName;
@@ -100,5 +96,10 @@ public class Main extends JavaPlugin {
     }
     public boolean hasPlugin(String name){
         return this.getServer().getPluginManager().getPlugin(name) != null;
+    }
+    public static void main(String[] args){
+        int i = 0;
+        System.out.printf("i: %d\n",i++);
+        System.out.printf("i: %d\n",i);
     }
 }
