@@ -4,6 +4,7 @@ import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.extensions.VaultExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
+import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
@@ -53,8 +54,13 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
             injuries.add("&6    •&nIMPAIRED");
             count++;
         }
+
         if (InfectionManager.getInstance().isInjured(player)) {
             injuries.add("&2    •&nINFECTED");
+            count++;
+
+        }if (PoisoningManager.getInstance().isInjured(player)) {
+            injuries.add("&5    •&nPOISONED");
             count++;
         }
         switch (count){

@@ -1,6 +1,7 @@
 package com.zyxkon.judgmentday.commands;
 
 import com.zyxkon.judgmentday.Counter;
+import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

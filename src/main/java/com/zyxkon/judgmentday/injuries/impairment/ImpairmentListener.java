@@ -102,6 +102,6 @@ public class ImpairmentListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        if (manager.healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
+        if (manager.isInjured(player) && manager.healPlayer(player)) event.setDeathMessage(String.format("%s walked with a broken bone for too long.", player.getName()));
     }
 }

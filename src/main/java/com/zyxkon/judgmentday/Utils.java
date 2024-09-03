@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 public final class Utils {
@@ -114,5 +115,25 @@ public final class Utils {
     }
     public static boolean isValidPlayer(Player p){
         return Arrays.stream(Main.getInstance().getServer().getOfflinePlayers()).anyMatch(s -> s == p);
+    }
+    public static Object getPrivateField(String fieldName, Class<?> clazz, Object object)
+    {
+        Field field;
+        Object o = null;
+
+        try
+        {
+            field = clazz.getDeclaredField(fieldName);
+
+            field.setAccessible(true);
+
+            o = field.get(object);
+        }
+        catch(NoSuchFieldException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+
+        return o;
     }
 }

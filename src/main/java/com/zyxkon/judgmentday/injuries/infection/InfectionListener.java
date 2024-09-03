@@ -98,6 +98,6 @@ public class InfectionListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        if (manager.healPlayer(player)) event.setDeathMessage(String.format("%s succumbed to the infection.", player.getName()));
+        if (manager.isInjured(player) && manager.healPlayer(player)) event.setDeathMessage(String.format("%s succumbed to the infection.", player.getName()));
     }
 }

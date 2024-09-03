@@ -1,5 +1,8 @@
 package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.JDCommand;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.injuries.Injury;
 import com.zyxkon.judgmentday.injuries.InjuryManager;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLoss;
@@ -8,30 +11,25 @@ import com.zyxkon.judgmentday.injuries.impairment.Impairment;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.Infection;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
+import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class InjuryCommand extends JDCommand{
-    public enum INJURIES {
-        BLOODLOSS, IMPAIRMENT, INFECTION
-    }
+public class InjuryCommand extends JDCommand {
     public enum SUBCOMMAND
     {
         CHECK, INFLICT, HEAL
     }
-    static InjuryManager<BloodLoss> instance1 = BloodLossManager.getInstance();
-    static InjuryManager<Impairment> instance2 = ImpairmentManager.getInstance();
-    static InjuryManager<Infection> instance3 = InfectionManager.getInstance();
-    ArrayList<InjuryManager<? extends Injury>> managers = new ArrayList<>();
+    BloodLossManager bloodMan = Main.bloodLossManager;
+    ImpairmentManager impaMan = Main.impairmentManager;
+    InfectionManager infecMan = Main.infectionManager;
+    PoisoningManager poisoMan = Main.poisoningManager;
     public InjuryCommand(CommandSender sender) {
         super(sender);
-        managers.add(instance1);
-        managers.add(instance2);
-        managers.add(instance3);
     }
     public boolean check(){
         if (!isPlayer){
@@ -42,14 +40,17 @@ public class InjuryCommand extends JDCommand{
     }
     public boolean check(Player p){
         sender.sendMessage(String.format("%s's status:", p.getName()));
-        if (instance1.isInjured(p)) {
+        if (Main.bloodLossManager.isInjured(p)) {
             sender.sendMessage("Bleeding");
         }
-        if (instance2.isInjured(p)) {
+        if (Main.impairmentManager.isInjured(p)) {
             sender.sendMessage("Impaired");
         }
-        if (instance3.isInjured(p)) {
+        if (Main.infectionManager.isInjured(p)) {
             sender.sendMessage("Infected");
+        }
+        if (Main.poisoningManager.isInjured(p)) {
+            sender.sendMessage("Poisoned");
         }
         sender.sendMessage("\n");
         return true;
@@ -62,50 +63,66 @@ public class InjuryCommand extends JDCommand{
         return heal(pSender);
     }
     public boolean heal(Player player){
-        for (InjuryManager<? extends Injury> man : managers){
+        for (InjuryManager<?> man : Main.injuryManagers){
             if (man.isInjured(player)){
                 man.healPlayer(player);
             }
         }
         return true;
     }
-    public boolean inflict(INJURIES injury){
+    public Injury.INJURIES getInjury(String string) throws IllegalArgumentException{
+        for (Injury.INJURIES inj : Injury.INJURIES.values()){
+            if (Utils.equatesTo(string, inj.toString())){
+                return inj;
+            }
+            else return Injury.INJURIES.ALL;
+        }
+        throw new IllegalArgumentException(String.format("%s is not a valid injury", string));
+    }
+    public boolean inflict(Injury.INJURIES injury){
         if (!isPlayer) {
             sender.sendMessage("You are not a player. You cannot suffer from injuries.");
             return false;
         }
         return inflict(injury, pSender);
     }
-    public boolean inflict(INJURIES injury, Player player){
+    public boolean inflict(Injury.INJURIES injury, Player player){
         switch (injury){
             case BLOODLOSS:
-                if (!instance1.isInjured(player)) {
-                    instance1.affectPlayer(player);
+                if (!Main.bloodLossManager.isInjured(player)) {
+                    bloodMan.affectPlayer(player);
                     return true;
                 }
                 sender.sendMessage(String.format("Player %s is already bleeding.", player.getName()));
                 return false;
             case IMPAIRMENT:
-                if (!instance2.isInjured(player)) {
-                    instance2.affectPlayer(player);
+                if (!impaMan.isInjured(player)) {
+                    impaMan.affectPlayer(player);
                     return true;
                 }
                 sender.sendMessage(String.format("Player %s is already physically impaired.", player.getName()));
                 return false;
             case INFECTION:
-                if (!instance3.isInjured(player)) {
-                    instance3.affectPlayer(player);
+                if (!infecMan.isInjured(player)) {
+                    infecMan.affectPlayer(player);
                     return true;
                 }
                 sender.sendMessage(String.format("Player %s is already infected.", player.getName()));
                 return false;
-            default:
-                managers.forEach( inst -> {
-                    if (!inst.isInjured(player)) {
-                        inst.affectPlayer(player);
+            case POISONING:
+                if (!poisoMan.isInjured(player)) {
+                    poisoMan.affectPlayer(player);
+                    return true;
+                }
+                sender.sendMessage(String.format("Player %s is already poisoned.", player.getName()));
+                return false;
+            case ALL:
+                Arrays.asList(Main.injuryManagers).forEach(inj -> {
+                    if (!inj.isInjured(player)) {
+                        inj.affectPlayer(player);
                     }
                 });
-                return false;
         }
+        return false;
     }
 }

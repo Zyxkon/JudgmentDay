@@ -1,5 +1,6 @@
 package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -8,14 +9,14 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class ThirstCommand extends JDCommand{
+public class ThirstCommand extends JDCommand {
 
     public ThirstCommand(CommandSender sender) {
         super(sender);
     }
     public enum SUBCOMMAND
     {
-        RESET, GET
+        RESET, GET, SET, LIST
     }
     public boolean get(Player p){
         int t = ThirstManager.getThirst(p);

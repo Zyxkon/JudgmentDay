@@ -1,13 +1,16 @@
 package com.zyxkon.judgmentday;
+import com.zyxkon.judgmentday.commands.StatsCommand;
 import com.zyxkon.judgmentday.commands.ZCommand;
 import com.zyxkon.judgmentday.extensions.CrackShotExtension;
 import com.zyxkon.judgmentday.extensions.VaultExtension;
 import com.zyxkon.judgmentday.general_listeners.CreatureSpawnListener;
 import com.zyxkon.judgmentday.general_listeners.MainListener;
 import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
+import com.zyxkon.judgmentday.injuries.InjuryManager;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
+import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
 import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
@@ -24,8 +27,11 @@ public class Main extends JavaPlugin {
     public static BloodLossManager bloodLossManager;
     public static ImpairmentManager impairmentManager;
     public static InfectionManager infectionManager;
+    public static PoisoningManager poisoningManager;
     public static ThirstManager thirstManager;
+    public static InjuryManager<?>[] injuryManagers;
     public static final String commandName = "judgmentday";
+
     @Override
     public void onEnable(){
         Main.logger = this.getLogger();
@@ -58,9 +64,6 @@ public class Main extends JavaPlugin {
         new Commands(this);
         new ZCommand(this);
     }
-    public String getCommandName(){
-        return commandName;
-    }
     private void setupListeners(){
         new MainListener(this);
         new CreatureSpawnListener(this);
@@ -75,12 +78,17 @@ public class Main extends JavaPlugin {
         bloodLossManager = new BloodLossManager(this);
         impairmentManager = new ImpairmentManager(this);
         infectionManager = new InfectionManager(this);
+        poisoningManager = new PoisoningManager(this);
         thirstManager = new ThirstManager(this);
+        injuryManagers = new InjuryManager[]{
+                bloodLossManager, impairmentManager, infectionManager, poisoningManager
+        };
     }
     private void shutdownManagers(){
         bloodLossManager.shutDown();
         impairmentManager.shutDown();
         infectionManager.shutDown();
+        poisoningManager.shutDown();
     }
     @Override
     public void onDisable(){
@@ -101,5 +109,6 @@ public class Main extends JavaPlugin {
         int i = 0;
         System.out.printf("i: %d\n",i++);
         System.out.printf("i: %d\n",i);
+        System.out.printf("%s", StatsCommand.SUBCOMMAND.GET);
     }
 }

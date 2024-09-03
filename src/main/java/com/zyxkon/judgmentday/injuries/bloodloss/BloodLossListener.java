@@ -100,6 +100,6 @@ public class BloodLossListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
-        if (manager.healPlayer(player)) event.setDeathMessage(String.format("%s lost too much blood.", player.getName()));
+        if (manager.isInjured(player) && manager.healPlayer(player)) event.setDeathMessage(String.format("%s lost too much blood.", player.getName()));
     }
 }

@@ -1,6 +1,5 @@
 package com.zyxkon.judgmentday.extensions;
 
-import com.shampaggon.crackshot.CSUtility;
 import com.shampaggon.crackshot.events.WeaponDamageEntityEvent;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
@@ -13,9 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,12 +21,11 @@ public class CrackShotExtension implements Listener {
     static Main plugin;
     private static BloodLossManager bloodLossManager;
     private static InfectionManager infectionManager;
-    private static CSUtility utility;
+
     public CrackShotExtension(Main plugin){
         CrackShotExtension.plugin = plugin;
         bloodLossManager = BloodLossManager.getInstance();
         infectionManager = InfectionManager.getInstance();
-        utility = new CSUtility();
         if (plugin.hasPlugin("CrackShot")){
             Bukkit.getPluginManager().registerEvents(this, plugin);
         }

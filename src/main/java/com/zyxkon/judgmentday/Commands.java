@@ -4,19 +4,17 @@ import com.zyxkon.judgmentday.commands.InjuryCommand;
 import com.zyxkon.judgmentday.commands.StatsCommand;
 import com.zyxkon.judgmentday.commands.ThirstCommand;
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
-import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
-import com.zyxkon.judgmentday.thirst.ThirstManager;
-import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
-import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
+import com.zyxkon.judgmentday.injuries.Injury;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
 
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class Commands implements CommandExecutor {
     static Main plugin;
@@ -223,12 +221,21 @@ public class Commands implements CommandExecutor {
         return false;
     }
     public static boolean thirst(CommandSender sender, String[] args){
+        String cmd = "Thirst";
+        List<ThirstCommand.SUBCOMMAND> sCmds = Arrays.asList(ThirstCommand.SUBCOMMAND.values());
+        String usage = String.format(
+                // /jd thirst (set/get) (thirst) [name]
+                "/%s %s (%s) (thirst) [name]",
+                cmdName, cmd, sCmds.stream().map(s ->
+                        s.toString().toLowerCase()).collect(Collectors.joining("/"))
+        );
         ThirstCommand thirstCmd = new ThirstCommand(sender);
         if (args.length == 0){
-            sender.sendMessage(String.format("Insufficient arguments. Usage: /%s thirst (get/set) (thirst) [name]", cmdName));
+            sender.sendMessage("Insufficient arguments. Usage: "+usage);
             return false;
         }
-        if (Utils.equatesTo(args[0], "get")) {
+        if (Utils.equatesTo(args[0].toLowerCase(),
+                ThirstCommand.SUBCOMMAND.GET.name().toLowerCase())) {
             try {
                 // if there is a subject to reset the stats of
                 return thirstCmd.get(Bukkit.getPlayer(args[1]));
@@ -236,7 +243,8 @@ public class Commands implements CommandExecutor {
                 // if there is no subject to reset the stats of
                 return thirstCmd.get();
             }
-        } else if (Utils.equatesTo(args[0], "set")) {
+        } else if (Utils.equatesTo(args[0].toLowerCase(),
+                ThirstCommand.SUBCOMMAND.SET.name().toLowerCase())) {
             try {
                 return thirstCmd.set(Bukkit.getPlayer(args[2]), Integer.parseInt(args[1]));
             } catch (IndexOutOfBoundsException exc) {
@@ -244,16 +252,23 @@ public class Commands implements CommandExecutor {
                 return thirstCmd.set(Integer.parseInt(args[1]));
             }
         }
-        else if (Utils.equatesTo(args[0], "list")){
+        else if  (Utils.equatesTo(args[0].toLowerCase(),
+                ThirstCommand.SUBCOMMAND.LIST.name().toLowerCase())){
             return thirstCmd.sendThirstList();
         }
-        sender.sendMessage(String.format("Illegal arguments. Usage: /%s thirst (get/set) (thirst) [name]", cmdName));
+        sender.sendMessage("Illegal arguments. Usage:"+usage);
         return false;
     }
     public static boolean injury(CommandSender sender, String[] args){
         String cmd = "injury";
-        String[] subCmds = {"check", "inflict", "heal"};
-        String usage = String.format("/%s %s (%s) (injury_type) [name]", cmdName, cmd, String.join("/", subCmds));
+        List<InjuryCommand.SUBCOMMAND> sCmds = Arrays.asList(InjuryCommand.SUBCOMMAND.values());
+        String usage = String.format(
+                "/%s %s (%s) (%s) [name]",
+                cmdName, cmd, sCmds.stream().map(s ->
+                s.toString().toLowerCase()).collect(Collectors.joining("/")),
+                Arrays.stream(Injury.INJURIES.values()).map(s ->
+                        s.toString().toLowerCase()).collect(Collectors.joining("/"))
+        );
         InjuryCommand injuryCmd = new InjuryCommand(sender);
         if (args.length == 0){
             sender.sendMessage(
@@ -261,28 +276,39 @@ public class Commands implements CommandExecutor {
             );
             return false;
         }
-        if (Utils.equatesTo(args[0], "check")) {
+        if (Utils.equatesTo(args[0].toLowerCase(),
+                InjuryCommand.SUBCOMMAND.CHECK.toString().toLowerCase())) {
             try {
-                // if there is a subject to reset the stats of
+                // if there is a subject
                 return injuryCmd.check(Bukkit.getPlayer(args[1]));
             } catch (IndexOutOfBoundsException exc) {
-                // if there is no subject to reset the stats of
+                // if there is no subject
                 return injuryCmd.check();
             }
-        } else if (Utils.equatesTo(args[0], "inflict")) {
-            try {
-                return injuryCmd.inflict(InjuryCommand.INJURIES.valueOf(args[1]),Bukkit.getPlayer(args[2]));
-            } catch (IndexOutOfBoundsException exc) {
-                // no subject found
-                return injuryCmd.inflict(InjuryCommand.INJURIES.valueOf(args[1]));
-            }
         }
-        else if (Utils.equatesTo(args[0], "heal")){
+        else if (Utils.equatesTo(args[0].toLowerCase(),
+                InjuryCommand.SUBCOMMAND.HEAL.toString().toLowerCase())){
             try {
                 return injuryCmd.heal(Bukkit.getPlayer(args[2]));
             } catch (IndexOutOfBoundsException exc) {
                 // no subject found
                 return injuryCmd.heal();
+            }
+        }
+        else if (Utils.equatesTo(args[0].toLowerCase(),
+                InjuryCommand.SUBCOMMAND.INFLICT.toString().toLowerCase())) {
+            try {
+                Injury.INJURIES inj = injuryCmd.getInjury(args[1]);
+                    try {
+                        return injuryCmd.inflict(inj, Bukkit.getPlayer(args[2]));
+                    } catch (IndexOutOfBoundsException exc) {
+                        // no subject found
+                        return injuryCmd.inflict(inj);
+                    }
+                }
+            catch (IndexOutOfBoundsException | IllegalArgumentException ignored){
+                sender.sendMessage("Unknown injury.");
+                return false;
             }
         }
         sender.sendMessage("Illegal arguments. Usage:"+usage);
