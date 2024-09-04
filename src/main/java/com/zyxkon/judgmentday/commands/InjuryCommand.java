@@ -70,14 +70,13 @@ public class InjuryCommand extends JDCommand {
         }
         return true;
     }
-    public Injury.INJURIES getInjury(String string) throws IllegalArgumentException{
+    public Injury.INJURIES getInjury(String s) throws IllegalArgumentException{
         for (Injury.INJURIES inj : Injury.INJURIES.values()){
-            if (Utils.equatesTo(string, inj.toString())){
+            if (Utils.equatesTo(s.toUpperCase(), inj.name())){
                 return inj;
             }
-            else return Injury.INJURIES.ALL;
         }
-        throw new IllegalArgumentException(String.format("%s is not a valid injury", string));
+        return Injury.INJURIES.ALL;
     }
     public boolean inflict(Injury.INJURIES injury){
         if (!isPlayer) {

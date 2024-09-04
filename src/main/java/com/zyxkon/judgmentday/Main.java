@@ -11,6 +11,9 @@ import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
+//import com.zyxkon.judgmentday.mobs.MobManager;
+import com.zyxkon.judgmentday.mobs.MobManager;
+import com.zyxkon.judgmentday.mobs.zombies.Runner;
 import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
@@ -30,10 +33,12 @@ public class Main extends JavaPlugin {
     public static PoisoningManager poisoningManager;
     public static ThirstManager thirstManager;
     public static InjuryManager<?>[] injuryManagers;
+    public static MobManager mobManager;
     public static final String commandName = "judgmentday";
 
     @Override
     public void onEnable(){
+        MobManager.registerCustomEntity(54, "Runner", Runner.class);
         Main.logger = this.getLogger();
         instance = this;
         File file = new File(getDataFolder() + File.separator);
@@ -79,10 +84,11 @@ public class Main extends JavaPlugin {
         impairmentManager = new ImpairmentManager(this);
         infectionManager = new InfectionManager(this);
         poisoningManager = new PoisoningManager(this);
-        thirstManager = new ThirstManager(this);
         injuryManagers = new InjuryManager[]{
                 bloodLossManager, impairmentManager, infectionManager, poisoningManager
         };
+        thirstManager = new ThirstManager(this);
+        mobManager = MobManager.getInstance();
     }
     private void shutdownManagers(){
         bloodLossManager.shutDown();

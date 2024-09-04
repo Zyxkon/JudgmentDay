@@ -276,8 +276,8 @@ public class Commands implements CommandExecutor {
             );
             return false;
         }
-        if (Utils.equatesTo(args[0].toLowerCase(),
-                InjuryCommand.SUBCOMMAND.CHECK.toString().toLowerCase())) {
+        if (Utils.equatesTo(args[0].toUpperCase(),
+                InjuryCommand.SUBCOMMAND.CHECK.name())) {
             try {
                 // if there is a subject
                 return injuryCmd.check(Bukkit.getPlayer(args[1]));
@@ -286,8 +286,8 @@ public class Commands implements CommandExecutor {
                 return injuryCmd.check();
             }
         }
-        else if (Utils.equatesTo(args[0].toLowerCase(),
-                InjuryCommand.SUBCOMMAND.HEAL.toString().toLowerCase())){
+        else if (Utils.equatesTo(args[0].toUpperCase(),
+                InjuryCommand.SUBCOMMAND.HEAL.name())){
             try {
                 return injuryCmd.heal(Bukkit.getPlayer(args[2]));
             } catch (IndexOutOfBoundsException exc) {
@@ -295,10 +295,11 @@ public class Commands implements CommandExecutor {
                 return injuryCmd.heal();
             }
         }
-        else if (Utils.equatesTo(args[0].toLowerCase(),
-                InjuryCommand.SUBCOMMAND.INFLICT.toString().toLowerCase())) {
+        else if (Utils.equatesTo(args[0].toUpperCase(),
+                InjuryCommand.SUBCOMMAND.INFLICT.name())) {
             try {
-                Injury.INJURIES inj = injuryCmd.getInjury(args[1]);
+                Injury.INJURIES inj = injuryCmd.getInjury(args[1].toUpperCase());
+                System.out.println(args[1].toUpperCase());
                     try {
                         return injuryCmd.inflict(inj, Bukkit.getPlayer(args[2]));
                     } catch (IndexOutOfBoundsException exc) {

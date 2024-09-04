@@ -4,14 +4,13 @@ import java.util.stream.Collectors;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
-import com.zyxkon.judgmentday.zombies.Runner;
+import com.zyxkon.judgmentday.mobs.zombies.Runner;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
@@ -60,10 +59,12 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
                         || !Utils.isSolid(bl.getRelative(BlockFace.DOWN))) {
                     continue;
                 }
-                Runner r = new Runner(loc.getWorld());
-                r.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-                ((CraftWorld)loc.getWorld()).addEntity(r, CreatureSpawnEvent.SpawnReason.CUSTOM);
                 w.spawnEntity(loc, ent);
+                Runner r = new Runner(w);
+                r.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+                ((CraftWorld) w).getHandle().addEntity(
+                        r
+                );
             }
         }
     }
