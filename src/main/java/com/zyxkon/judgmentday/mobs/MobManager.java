@@ -13,7 +13,6 @@ import com.zyxkon.judgmentday.mobs.zombies.Runner;
 import net.minecraft.server.v1_12_R1.*;
 
 public class MobManager extends RegistryMaterials {
-
     private static MobManager instance = null;
 
     private final BiMap<MinecraftKey, Class<? extends Entity>> customEntities = HashBiMap.create();
@@ -27,6 +26,10 @@ public class MobManager extends RegistryMaterials {
     }
     public void init(){
         MobManager.registerCustomEntity(54, "Runner", Runner.class);
+    }
+    public void close(){
+        MobManager.unregisterCustomEntity(54, "Runner", Runner.class);
+        Runner.killAll();
     }
     public static MobManager getInstance() {
         if (instance != null) {
@@ -60,12 +63,25 @@ public class MobManager extends RegistryMaterials {
         );
         getInstance().putCustomEntity(entityId, entityName, entityClass);
     }
+    public static void unregisterCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
+        Main.getInstance().log(Level.INFO, String.format(
+                        "Unregistered entity %s (%s) with ID %d", entityName, entityClass.getName(),entityId
+                )
+        );
+        getInstance().removeCustomEntity(entityId, entityName, entityClass);
+    }
 
     public void putCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
         MinecraftKey minecraftKey = new MinecraftKey(entityName);
-
+        Main.broadcast(minecraftKey.toString());
         this.customEntities.put(minecraftKey, entityClass);
         this.customEntityIds.put(entityClass, entityId);
+    }
+    public void removeCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
+        MinecraftKey minecraftKey = new MinecraftKey(entityName);
+
+        this.customEntities.remove(minecraftKey, entityClass);
+        this.customEntityIds.remove(entityClass, entityId);
     }
 
     @Override

@@ -2,11 +2,18 @@ package com.zyxkon.judgmentday.general_listeners;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import net.minecraft.server.v1_12_R1.AttributeInstance;
+import net.minecraft.server.v1_12_R1.EntityZombie;
+import net.minecraft.server.v1_12_R1.GenericAttributes;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftZombie;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
@@ -90,5 +97,17 @@ public class MainListener implements Listener {
         Entity entity = event.getEntity();
         if (!(entity instanceof Zombie)) return;
         event.setDroppedExp(0);
+    }
+    @EventHandler
+    public void onEntityKillByPlayer(EntityDeathEvent event){
+        LivingEntity ent = event.getEntity();
+        if (event.getEntity().getKiller() == null || !(ent instanceof Zombie)){
+            return;
+        }
+        EntityZombie _ent = ((CraftZombie) ent).getHandle();
+        Main.broadcast("%s:"+ChatColor.RESET+" Speed, Dmg: %f, %f", _ent.getName(),
+                _ent.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue(),
+                _ent.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue()
+        );
     }
 }

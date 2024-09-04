@@ -18,9 +18,12 @@ import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +45,7 @@ public class Main extends JavaPlugin {
         instance = this;
         File file = new File(getDataFolder() + File.separator);
         if (!file.exists()) file.mkdir();
-        String[] externalPlugins = {"CrackShot", "WorldGuard", "WorldEdit", "Vault"};
+        List<String> externalPlugins = this.getDescription().getSoftDepend();
         for (String str : externalPlugins){
             if (!hasPlugin(str)) log(Level.WARNING, String.format("Plugin %s is not installed!", str));
             else {
@@ -58,10 +61,15 @@ public class Main extends JavaPlugin {
             }
         }
         setupManagers();
+        log(Level.INFO, ChatColor.GREEN +"Set up managers!");
         setupCommands();
+        log(Level.INFO, ChatColor.GREEN +"Set up commands!");
         setupListeners();
+        log(Level.INFO, ChatColor.GREEN +"Set up listeners!");
         setupRunnables();
+        log(Level.INFO, ChatColor.GREEN +"Set up runnables!");
         new Counter(this);
+        log(Level.INFO, ChatColor.GREEN +"Set up counter!");
     }
     private void setupManagers(){
         mobManager.init();
@@ -89,6 +97,7 @@ public class Main extends JavaPlugin {
         new BarbedWireRunnable(this);
     }
     private void shutdownManagers(){
+        mobManager.close();
         bloodLossManager.shutDown();
         impairmentManager.shutDown();
         infectionManager.shutDown();
@@ -97,22 +106,25 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable(){
         ThirstManager.saveData();
+        log(Level.INFO, "Saving Thirst data...");
         Counter.saveData();
+        log(Level.INFO, "Saving Counter data...");
         shutdownManagers();
+        log(Level.INFO, "Shutting down Managers...");
     }
     public void log(Level level, String str){
         logger.log(level, str);
+    }
+    public static void broadcast(String str, Object... strs){
+        for (Player p : Main.getInstance().getServer().getOnlinePlayers()){
+            String fm = String.format(str, strs);
+            p.sendMessage(fm);
+        }
     }
     public static Main getInstance(){
         return instance;
     }
     public boolean hasPlugin(String name){
         return this.getServer().getPluginManager().getPlugin(name) != null;
-    }
-    public static void main(String[] args){
-        int i = 0;
-        System.out.printf("i: %d\n",i++);
-        System.out.printf("i: %d\n",i);
-        System.out.printf("%s", StatsCommand.SUBCOMMAND.GET);
     }
 }

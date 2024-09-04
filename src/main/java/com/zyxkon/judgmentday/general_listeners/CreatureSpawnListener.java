@@ -14,6 +14,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftZombie;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,8 @@ public class CreatureSpawnListener implements Listener {
         World w = ent.getWorld();
         Location loc = ent.getLocation();
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
-        if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG && ent instanceof Zombie){
+        if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG && ent instanceof Stray){
+            event.setCancelled(true);
             WorldServer nmsWorld = ((CraftWorld) w).getHandle();
             Runner r = new Runner(w);
             r.setPosition(loc.getX(), loc.getY(), loc.getZ());
@@ -83,12 +85,16 @@ public class CreatureSpawnListener implements Listener {
                 }
             }
         }
-        if (event.getEntity() instanceof Zombie){
+        if (ent instanceof Zombie && !( ((CraftZombie) ent).getHandle() instanceof Runner)){
             Zombie z = (Zombie) event.getEntity();
             z.setHealth(15d);
             z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100d);
-            z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.4d);
-            z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(4d);
+            z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(
+                    z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()*2
+            );
+            z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(
+                    z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()*2
+            );
             ItemStack helmet, chestplate, leggings, boots;
             ArrayList<ItemStack> helmetList = new ArrayList<>();
             ArrayList<ItemStack> chestplateList = new ArrayList<>();
