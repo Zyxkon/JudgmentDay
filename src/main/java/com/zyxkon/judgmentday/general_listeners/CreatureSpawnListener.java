@@ -4,6 +4,8 @@ import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
+import com.zyxkon.judgmentday.mobs.zombies.Runner;
+import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Banner;
@@ -11,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -36,9 +39,23 @@ public class CreatureSpawnListener implements Listener {
     public void onCreatureSpawn(CreatureSpawnEvent event) {
 //        plugin.log(Level.WARNING, String.format("A %s just spawned because of %s", event.getEntity().getName(), event.getSpawnReason().toString()));
         Entity ent = event.getEntity();
-        World w = event.getLocation().getWorld();
-        Location loc = event.getEntity().getLocation();
-        if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL){
+        World w = ent.getWorld();
+        Location loc = ent.getLocation();
+        CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
+        if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG && ent instanceof Zombie){
+            WorldServer nmsWorld = ((CraftWorld) w).getHandle();
+            Runner r = new Runner(w);
+            r.setPosition(loc.getX(), loc.getY(), loc.getZ());
+            nmsWorld.addEntity(r);
+//            for (Player pl : w.getPlayers()) {
+//                pl.sendMessage(
+//                        String.format("Spawned a runner at %s, %s, %s",
+//                                loc.getX(), loc.getY(), loc.getZ())
+//                );
+//            }
+            w.spawnParticle(Particle.BARRIER, loc, 100);
+        }
+        if (reason == CreatureSpawnEvent.SpawnReason.NATURAL){
             if (ent instanceof Monster || ent instanceof Animals){
                 event.setCancelled(true);
                 w.spawnEntity(loc, EntityType.ZOMBIE);

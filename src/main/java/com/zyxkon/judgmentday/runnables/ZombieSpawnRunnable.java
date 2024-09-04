@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.mobs.zombies.Runner;
+import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -60,11 +62,17 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
                     continue;
                 }
                 w.spawnEntity(loc, ent);
+                WorldServer nmsWorld = ((CraftWorld) w).getHandle();
                 Runner r = new Runner(w);
-                r.setLocation(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
-                ((CraftWorld) w).getHandle().addEntity(
-                        r
-                );
+                r.setPosition(loc.getX(), loc.getY(), loc.getZ());
+                nmsWorld.addEntity(r);
+//                for (Player pl : w.getPlayers()) {
+//                    pl.sendMessage(
+//                            String.format("Spawned a runner at %s, %s, %s",
+//                                    loc.getX(), loc.getY(), loc.getZ())
+//                    );
+//                }
+                w.spawnParticle(Particle.BARRIER, loc, 100);
             }
         }
     }

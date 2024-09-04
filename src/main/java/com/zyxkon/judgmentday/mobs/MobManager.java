@@ -6,7 +6,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
+import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.mobs.zombies.Runner;
 import net.minecraft.server.v1_12_R1.*;
 
@@ -23,7 +25,9 @@ public class MobManager extends RegistryMaterials {
     private MobManager(RegistryMaterials original) {
         this.wrapped = original;
     }
-
+    public void init(){
+        MobManager.registerCustomEntity(54, "Runner", Runner.class);
+    }
     public static MobManager getInstance() {
         if (instance != null) {
             return instance;
@@ -46,11 +50,14 @@ public class MobManager extends RegistryMaterials {
 
             throw new RuntimeException("Unable to override the old entity RegistryMaterials", e);
         }
-
         return instance;
     }
 
     public static void registerCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
+        Main.getInstance().log(Level.INFO, String.format(
+                "Registered entity %s (%s) with ID %d", entityName, entityClass.getName(),entityId
+                )
+        );
         getInstance().putCustomEntity(entityId, entityName, entityClass);
     }
 

@@ -19,6 +19,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
@@ -73,9 +74,11 @@ public class MainListener implements Listener {
         World w = loc.getWorld();
         loc.add(0, 1, 0);
         w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, new MaterialData(Material.REDSTONE_WIRE));
+        MaterialData glass = new MaterialData(Material.STAINED_GLASS, (byte) 14);
+        w.spawnParticle(Particle.BLOCK_CRACK, loc, 150, 0.2, 0.2, 0.2, glass);
     }
     @EventHandler
-    public void onDamage(EntityDamageEvent event){
+    public void onFallDamage(EntityDamageEvent event){
         Entity victim = event.getEntity();
         if (victim instanceof Zombie && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
             event.setCancelled(true);

@@ -33,12 +33,11 @@ public class Main extends JavaPlugin {
     public static PoisoningManager poisoningManager;
     public static ThirstManager thirstManager;
     public static InjuryManager<?>[] injuryManagers;
-    public static MobManager mobManager;
+    public static MobManager mobManager = MobManager.getInstance();
     public static final String commandName = "judgmentday";
 
     @Override
     public void onEnable(){
-        MobManager.registerCustomEntity(54, "Runner", Runner.class);
         Main.logger = this.getLogger();
         instance = this;
         File file = new File(getDataFolder() + File.separator);
@@ -63,7 +62,17 @@ public class Main extends JavaPlugin {
         setupListeners();
         setupRunnables();
         new Counter(this);
-
+    }
+    private void setupManagers(){
+        mobManager.init();
+        bloodLossManager = new BloodLossManager(this);
+        impairmentManager = new ImpairmentManager(this);
+        infectionManager = new InfectionManager(this);
+        poisoningManager = new PoisoningManager(this);
+        injuryManagers = new InjuryManager[]{
+                bloodLossManager, impairmentManager, infectionManager, poisoningManager
+        };
+        thirstManager = new ThirstManager(this);
     }
     private void setupCommands(){
         new Commands(this);
@@ -78,17 +87,6 @@ public class Main extends JavaPlugin {
         new ScoreboardLoaderRunnable(this);
         new ZombieSpawnRunnable(this);
         new BarbedWireRunnable(this);
-    }
-    private void setupManagers(){
-        bloodLossManager = new BloodLossManager(this);
-        impairmentManager = new ImpairmentManager(this);
-        infectionManager = new InfectionManager(this);
-        poisoningManager = new PoisoningManager(this);
-        injuryManagers = new InjuryManager[]{
-                bloodLossManager, impairmentManager, infectionManager, poisoningManager
-        };
-        thirstManager = new ThirstManager(this);
-        mobManager = MobManager.getInstance();
     }
     private void shutdownManagers(){
         bloodLossManager.shutDown();

@@ -18,8 +18,16 @@ public class Runner extends EntityZombie {
         this.goalSelector.a(8, new PathfinderGoalRandomLookaround(this));
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, true));
         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityZombie.class, true));
-        this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityZombieVillager.class, true));
         this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget<>(this, EntityCow.class, true));
+//        this.goalSelector.a(0, new PathfinderGoalFloat(this));
+//        this.goalSelector.a(0, new PathfinderGoalMoveTowardsRestriction(this, 1.0D));
+//        this.goalSelector.a(0, new PathfinderGoalMoveThroughVillage(this, 1.0D, false));
+//        this.goalSelector.a(0, new PathfinderGoalRandomStroll(this, 1.0D));
+//        this.goalSelector.a(0, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
+//        this.goalSelector.a(0, new PathfinderGoalRandomLookaround(this));
+//        this.targetSelector.a(0, new PathfinderGoalHurtByTarget(this, true));
+//        this.targetSelector.a(0, new PathfinderGoalNearestAttackableTarget<>(this, EntityZombie.class, true));
+//        this.targetSelector.a(0, new PathfinderGoalNearestAttackableTarget<>(this, EntityCow.class, true));
     }
 }
 
