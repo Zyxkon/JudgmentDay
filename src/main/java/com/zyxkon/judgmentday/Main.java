@@ -19,6 +19,7 @@ import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -70,6 +71,7 @@ public class Main extends JavaPlugin {
         log(Level.INFO, ChatColor.GREEN +"Set up runnables!");
         new Counter(this);
         log(Level.INFO, ChatColor.GREEN +"Set up counter!");
+        chunkReload();
     }
     private void setupManagers(){
         mobManager.init();
@@ -102,6 +104,13 @@ public class Main extends JavaPlugin {
         impairmentManager.shutDown();
         infectionManager.shutDown();
         poisoningManager.shutDown();
+    }
+    private void chunkReload(){
+        for (Player p : this.getServer().getOnlinePlayers()){
+            Chunk c = p.getLocation().getChunk();
+            c.unload();
+            c.load();
+        }
     }
     @Override
     public void onDisable(){

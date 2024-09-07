@@ -1,12 +1,10 @@
 package com.zyxkon.judgmentday;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Objective;
 
@@ -114,5 +112,27 @@ public final class Utils {
     }
     public static boolean isValidPlayer(Player p){
         return Arrays.stream(Main.getInstance().getServer().getOfflinePlayers()).anyMatch(s -> s == p);
+    }
+    public static boolean isValidSpawnPosition(Location loc){
+        Block bl = loc.getBlock();
+        return !Utils.isSolid(bl.getRelative(BlockFace.UP))
+                && !Utils.isSolid(bl)
+                && Utils.isSolid(bl.getRelative(BlockFace.DOWN));
+    }
+    public static Location getRandomLocationWithinRange(
+            Location centerLocation, int x_range, int y_range, int z_range,
+            int horizontalDistanceFromCenter,
+            int verticalDistanceFromCenter){
+        World world = centerLocation.getWorld();
+        int randXoffset = Utils.randRange(horizontalDistanceFromCenter,x_range);
+        int randYoffset = Utils.randRange(verticalDistanceFromCenter, y_range);
+        int randZoffset = Utils.randRange(horizontalDistanceFromCenter,z_range);
+        if (randBool()) randXoffset *= -1;
+        if (randBool()) randYoffset *= -1;
+        if (randBool()) randZoffset *= -1;
+        double x = centerLocation.getX();
+        double y = centerLocation.getY();
+        double z = centerLocation.getZ();
+        return new Location(world, x+randXoffset, y+randYoffset, z+randZoffset);
     }
 }

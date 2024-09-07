@@ -4,6 +4,7 @@ import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
+import com.zyxkon.judgmentday.mobs.CustomEntitySkeleton;
 import com.zyxkon.judgmentday.mobs.zombies.Runner;
 import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.*;
@@ -43,19 +44,16 @@ public class CreatureSpawnListener implements Listener {
         World w = ent.getWorld();
         Location loc = ent.getLocation();
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
-        if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG && ent instanceof Stray){
-            event.setCancelled(true);
-            WorldServer nmsWorld = ((CraftWorld) w).getHandle();
-            Runner r = new Runner(w);
-            r.setPosition(loc.getX(), loc.getY(), loc.getZ());
-            nmsWorld.addEntity(r);
-//            for (Player pl : w.getPlayers()) {
-//                pl.sendMessage(
-//                        String.format("Spawned a runner at %s, %s, %s",
-//                                loc.getX(), loc.getY(), loc.getZ())
-//                );
-//            }
-            w.spawnParticle(Particle.BARRIER, loc, 100);
+        if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG){
+            if (ent instanceof Skeleton){
+                event.setCancelled(true);
+                WorldServer nmsWorld = ((CraftWorld) w).getHandle();
+                CustomEntitySkeleton r = new CustomEntitySkeleton(w);
+                r.setPosition(loc.getX(), loc.getY(), loc.getZ());
+                nmsWorld.addEntity(r);
+                w.spawnParticle(Particle.BARRIER, loc, 100);
+                Main.broadcast("new %s at (%d, %d, %d)", r.getBukkitEntity().getName(),(int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+            }
         }
         if (reason == CreatureSpawnEvent.SpawnReason.NATURAL){
             if (ent instanceof Monster || ent instanceof Animals){
@@ -67,7 +65,7 @@ public class CreatureSpawnListener implements Listener {
         float lChance = 1/2f*100;
         float gChance = 1/3f*100;
         float cChance = 1/4f*100;
-        float iChance = 1/5f;
+        float iChance = 1/5f*100;
         boolean isBarracks = false;
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
             ArrayList<String> regions = WorldGuardExtension.getRegions(loc);
@@ -89,9 +87,11 @@ public class CreatureSpawnListener implements Listener {
             Zombie z = (Zombie) event.getEntity();
             z.setHealth(15d);
             z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100d);
-            z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(
-                    z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()*2
-            );
+            if (!z.isBaby()) {
+                    z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(
+                        z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()*2
+                );
+            }
             z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(
                     z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()*2
             );

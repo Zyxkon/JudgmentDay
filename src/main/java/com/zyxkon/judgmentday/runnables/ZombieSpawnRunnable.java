@@ -33,7 +33,9 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
             int y_range = 15;
             int z_range = 40;
             List<Entity> ents = p.getNearbyEntities(x_range, y_range, z_range);
-            int limit = 100;
+            int limit = 101;
+            int horizontalDistance = 10;
+            int verticalDistance = 0;
 //            if (ents.stream().anyMatch(e -> e instanceof Player)) {
 //                limit *= (ents.stream().filter(e -> e instanceof Player)).toArray().length;
 //            }
@@ -41,38 +43,26 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
             ents = ents.stream().filter((e) -> e.getType() == EntityType.ZOMBIE).collect(Collectors.toList());
             if (ents.size() > limit) return;
             World w = p.getWorld();
-            Random random = new Random();
-            for (int i = 0; i<10; i++){
-                int x = Utils.randRange(x_range /2,x_range*3/2);
-                int y = Utils.randRange(-y_range/2, y_range/2);
-                int z = Utils.randRange(z_range /2,z_range*3/2);
-                if (random.nextBoolean()) x = -x;
-                if (random.nextBoolean()) z = -z;
-                Location loc = p.getLocation().add(x, y, z);
-                int x_offset = Utils.randRange(-4, 4);
-                int z_offset = Utils.randRange(-4, 4);
-                loc.add(x_offset, 0, z_offset);
+            for (int i = 0; i< 10; i++){
+                Location loca = Utils.getRandomLocationWithinRange(
+                        p.getLocation(), x_range, y_range, z_range,
+                        horizontalDistance, verticalDistance);
+                if (!Utils.isValidSpawnPosition(loca)) continue;
                 EntityType ent = EntityType.ZOMBIE;
                 if (Utils.chance(10)) ent = EntityType.HUSK;
                 else if (Utils.chance(20)) ent = EntityType.ZOMBIE_VILLAGER;
-                Block bl = loc.getBlock();
-                if (Utils.isSolid(bl.getRelative(BlockFace.UP))
-                        || Utils.isSolid(bl)
-                        || !Utils.isSolid(bl.getRelative(BlockFace.DOWN))) {
-                    continue;
-                }
-                w.spawnEntity(loc, ent);
+                w.spawnEntity(loca, ent);
                 WorldServer nmsWorld = ((CraftWorld) w).getHandle();
                 Runner r = new Runner(w);
-                r.setPosition(loc.getX(), loc.getY(), loc.getZ());
+                r.setPosition(loca.getX(), loca.getY(), loca.getZ());
                 nmsWorld.addEntity(r);
+                w.spawnParticle(Particle.BARRIER, loca, 100);
 //                for (Player pl : w.getPlayers()) {
 //                    pl.sendMessage(
 //                            String.format("Spawned a runner at %s, %s, %s",
 //                                    loc.getX(), loc.getY(), loc.getZ())
 //                    );
 //                }
-                w.spawnParticle(Particle.BARRIER, loc, 100);
             }
         }
     }

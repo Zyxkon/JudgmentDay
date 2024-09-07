@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class PoisoningListener implements Listener {
     private static PoisoningManager manager;
@@ -18,13 +19,18 @@ public class PoisoningListener implements Listener {
     }
     @EventHandler
     public void onEat(PlayerItemConsumeEvent event){
-        Material food = event.getItem().getType();
+        Player p = event.getPlayer();
+        ItemStack food = event.getItem();
         float chance = 0;
-        switch (food){
+        Main.broadcast("%s just ate %s with: getDurability(): %d",
+                p.getName(), food.getType(), food.getDurability()
+        );
+        switch (food.getType()){
             case POISONOUS_POTATO:
             case ROTTEN_FLESH:
-            case SPIDER_EYE: {
-                chance += 50;
+            case SPIDER_EYE:
+            {
+                chance += 35;
                 break;
             }
             case RAW_BEEF:
@@ -37,9 +43,8 @@ public class PoisoningListener implements Listener {
                 break;
             }
             default:
-                chance = 5;
+                chance = 1;
         }
-        Player p = event.getPlayer();
         if (Utils.chance(chance) && !manager.isInjured(p)) manager.affectPlayer(p);
     }
     @EventHandler
