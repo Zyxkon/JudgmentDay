@@ -1,7 +1,12 @@
 package com.zyxkon.judgmentday.extensions;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.extent.Extent;
+import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,8 +26,12 @@ public class WorldGuardExtension {
     private static File regionsFile;
     private static FileConfiguration regionsConfig;
     private static final WorldGuardPlugin worldGuard;
+    static WorldGuard wgInstance;
+    static RegionContainer container;
     static {
         plugin = Main.getInstance();
+        wgInstance = WorldGuard.getInstance();
+        container = wgInstance.getPlatform().getRegionContainer();
         Plugin pl = Bukkit.getPluginManager().getPlugin("WorldGuard");
         if (pl instanceof WorldGuardPlugin) {
             worldGuard = (WorldGuardPlugin) pl;
@@ -40,7 +49,9 @@ public class WorldGuardExtension {
         if (worldGuard == null) return false;
         Set<String> regions = new HashSet<>();
         for (World world : plugin.getServer().getWorlds()){
-            RegionManager manager = worldGuard.getRegionManager(world);
+            RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(
+                    (com.sk89q.worldedit.world.World) world
+            );
             regions.addAll(manager.getRegions().keySet());
         }
         return regions.contains(regionId);
@@ -49,10 +60,14 @@ public class WorldGuardExtension {
         return getRegions(player.getLocation());
     }
     public static ArrayList<String> getRegions(Location location){
+        com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(location.getWorld());
         ArrayList<String> array = new ArrayList<>();
         if (worldGuard == null) return array;
-        RegionManager manager = worldGuard.getRegionManager(location.getWorld());
-        ApplicableRegionSet set = manager.getApplicableRegions(location);
+
+        RegionContainer container = wgInstance.getPlatform().getRegionContainer();
+        RegionManager regions = container.get(world);
+        assert regions != null;
+        ApplicableRegionSet set = regions.getApplicableRegions(BukkitAdapter.adapt(location).toVector().toBlockPoint());
         set.forEach(r -> array.add(r.getId()));
         return array;
     }

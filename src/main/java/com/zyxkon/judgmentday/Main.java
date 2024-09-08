@@ -1,5 +1,4 @@
 package com.zyxkon.judgmentday;
-import com.zyxkon.judgmentday.commands.StatsCommand;
 import com.zyxkon.judgmentday.commands.ZCommand;
 import com.zyxkon.judgmentday.extensions.CrackShotExtension;
 import com.zyxkon.judgmentday.extensions.VaultExtension;
@@ -11,15 +10,12 @@ import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
-//import com.zyxkon.judgmentday.mobs.MobManager;
-import com.zyxkon.judgmentday.mobs.MobManager;
-import com.zyxkon.judgmentday.mobs.zombies.Runner;
+//import com.zyxkon.judgmentday.MobManager;
 import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
 import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -71,7 +67,9 @@ public class Main extends JavaPlugin {
         log(Level.INFO, ChatColor.GREEN +"Set up runnables!");
         new Counter(this);
         log(Level.INFO, ChatColor.GREEN +"Set up counter!");
-        chunkReload();
+        MobManager.registerCustomEntity(54, "Runner", Runner.class);
+        MobManager.registerCustomEntity(51, "Skeletor", CustomEntitySkeleton.class);
+        MobManager.registerCustomEntity(92, "MadCow", MadCow.class);
     }
     private void setupManagers(){
         mobManager.init();
@@ -105,13 +103,7 @@ public class Main extends JavaPlugin {
         infectionManager.shutDown();
         poisoningManager.shutDown();
     }
-    private void chunkReload(){
-        for (Player p : this.getServer().getOnlinePlayers()){
-            Chunk c = p.getLocation().getChunk();
-            c.unload();
-            c.load();
-        }
-    }
+
     @Override
     public void onDisable(){
         ThirstManager.saveData();
@@ -121,15 +113,15 @@ public class Main extends JavaPlugin {
         shutdownManagers();
         log(Level.INFO, "Shutting down Managers...");
     }
-    public void log(Level level, String str){
+    public static void log(Level level, String str){
         logger.log(level, str);
     }
-    public static void broadcast(String str, Object... strs){
-        for (Player p : Main.getInstance().getServer().getOnlinePlayers()){
-            String fm = String.format(str, strs);
-            p.sendMessage(fm);
-        }
-    }
+//    public static void broadcast(String str, Object... strs){
+//        for (Player p : Main.getInstance().getServer().getOnlinePlayers()){
+//            String fm = String.format(str, strs);
+//            p.sendMessage(fm);
+//        }
+//    }
     public static Main getInstance(){
         return instance;
     }

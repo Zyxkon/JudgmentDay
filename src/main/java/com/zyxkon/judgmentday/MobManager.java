@@ -1,18 +1,13 @@
-package com.zyxkon.judgmentday.mobs;
+package com.zyxkon.judgmentday;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.zyxkon.judgmentday.Main;
-import com.zyxkon.judgmentday.mobs.zombies.Runner;
 import net.minecraft.server.v1_12_R1.*;
 
 public class MobManager extends RegistryMaterials {
@@ -28,8 +23,7 @@ public class MobManager extends RegistryMaterials {
         this.wrapped = original;
     }
     public void init(){
-        MobManager.registerCustomEntity(54, "Runner", Runner.class);
-        MobManager.registerCustomEntity(51, "Skeletor", CustomEntitySkeleton.class);
+
     }
     public void close(){
         MobManager.unregisterCustomEntity(54, "Runner", Runner.class);
@@ -78,7 +72,7 @@ public class MobManager extends RegistryMaterials {
 
     public void putCustomEntity(int entityId, String entityName, Class<? extends Entity> entityClass) {
         MinecraftKey minecraftKey = new MinecraftKey(entityName);
-        Main.broadcast("Put custom entity: "+minecraftKey.toString());
+//        Main.broadcast("Put custom entity: "+minecraftKey.toString());
         this.customEntities.put(minecraftKey, entityClass);
         this.customEntityIds.put(entityClass, entityId);
     }

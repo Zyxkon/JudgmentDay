@@ -1,4 +1,4 @@
-package com.zyxkon.judgmentday.mobs;
+package com.zyxkon.judgmentday;
 
 import com.zyxkon.judgmentday.Main;
 import net.md_5.bungee.api.ChatColor;

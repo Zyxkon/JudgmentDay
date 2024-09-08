@@ -184,7 +184,7 @@ public class Commands implements CommandExecutor {
                 break;
             }
         }
-        plugin.log(Level.INFO, String.format("couldn't find any case for strings[0] which is %s, returning false", strings[0]));
+        Main.log(Level.INFO, String.format("couldn't find any case for strings[0] which is %s, returning false", strings[0]));
         return false;
     }
     public static boolean stats(CommandSender sender, String[] args) {

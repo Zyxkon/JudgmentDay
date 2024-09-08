@@ -103,20 +103,20 @@ public class ZCommand implements CommandExecutor {
                 }
                 return true;
             }
-            case "iteminfo":{
-                ItemStack item = player.getInventory().getItemInMainHand();
-                Main.broadcast("Item info for %s's %s:", player.getName(), item.getItemMeta().getDisplayName());
-                Main.broadcast("ItemStack.class.getMethods(): ");
-                for (Method m : ItemStack.class.getMethods()){
-                    Main.broadcast(".%s()", m.getName());
-                }
-                Main.broadcast("ItemMeta.class.getMethods(): ");
-                for (Method m : ItemStack.class.getMethods()){
-                    Main.broadcast(".%s()", m.getName());
-                }
-                Main.broadcast("Durability: %d", item.getDurability());
-
-            }
+//            case "iteminfo":{
+//                ItemStack item = player.getInventory().getItemInMainHand();
+//                Main.broadcast("Item info for %s's %s:", player.getName(), item.getItemMeta().getDisplayName());
+//                Main.broadcast("ItemStack.class.getMethods(): ");
+//                for (Method m : ItemStack.class.getMethods()){
+//                    Main.broadcast(".%s()", m.getName());
+//                }
+//                Main.broadcast("ItemMeta.class.getMethods(): ");
+//                for (Method m : ItemStack.class.getMethods()){
+//                    Main.broadcast(".%s()", m.getName());
+//                }
+//                Main.broadcast("Durability: %d", item.getDurability());
+//
+//            }
         }
         return false;
     }

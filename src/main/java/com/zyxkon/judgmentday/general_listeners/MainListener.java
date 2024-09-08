@@ -23,9 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -104,11 +102,27 @@ public class MainListener implements Listener {
     public void onEntityKillByPlayer(EntityDeathEvent event){
         LivingEntity ent = event.getEntity();
         if (ent.getKiller() == null) return;
-//        EntityZombie _ent = ((CraftZombie) ent).getHandle();
         EntityLiving _ent = ((CraftLivingEntity) ent).getHandle();
-        Main.broadcast("%s:"+ChatColor.RESET+" Speed, Dmg: %f, %f", _ent.getName(),
-                _ent.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue(),
-                _ent.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue()
-        );
+//        Main.broadcast("%s:"+ChatColor.RESET+" Speed(%f) and Dmg(%f)", _ent.getName(),
+//                _ent.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue(),
+//                _ent.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue()
+//        );
+    }
+    @EventHandler
+    public void onPlayerDamageByEntity(EntityDamageByEntityEvent event){
+        if (!(event.getEntity() instanceof Player)) return;
+        Player p = (Player) event.getEntity();
+        double dmg = event.getDamage();
+        Entity attacker = event.getDamager();
+//        Main.broadcast("%s got damaged (%f) by %s because of %s", p.getName(), dmg, attacker.getName(),
+//                event.getCause());
+    }
+    @EventHandler
+    public void onTarget(EntityTargetEvent event){
+        Entity target = event.getTarget();
+        Entity e = event.getEntity();
+        if (!(target instanceof Player)) return;
+        Player p = (Player) target;
+//        Main.broadcast("%s has been targeted by %s", p.getName(), e.getName());
     }
 }

@@ -22,9 +22,9 @@ public class PoisoningListener implements Listener {
         Player p = event.getPlayer();
         ItemStack food = event.getItem();
         float chance = 0;
-        Main.broadcast("%s just ate %s with: getDurability(): %d",
-                p.getName(), food.getType(), food.getDurability()
-        );
+//        Main.broadcast("%s just ate %s with: getDurability(): %d",
+//                p.getName(), food.getType(), food.getDurability()
+//        );
         switch (food.getType()){
             case POISONOUS_POTATO:
             case ROTTEN_FLESH:
@@ -43,7 +43,7 @@ public class PoisoningListener implements Listener {
                 break;
             }
             default:
-                chance = 1;
+                chance += 0.5;
         }
         if (Utils.chance(chance) && !manager.isInjured(p)) manager.affectPlayer(p);
     }

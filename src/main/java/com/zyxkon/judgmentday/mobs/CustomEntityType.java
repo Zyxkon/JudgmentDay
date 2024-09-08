@@ -5,7 +5,7 @@
 //import org.bukkit.entity.EntityType;
 //
 //public enum CustomEntityType {
-//    CUSTOM_ENTITY_TYPE("Skeleton", 51, EntityType.SKELETON, EntitySkeleton.class, CustomEntitySkeleton.class);
+//    CUSTOMSKELETON("Skeleton", 51, EntityType.SKELETON, EntitySkeleton.class, CustomEntitySkeleton.class);
 //
 //    private String name;
 //    private int id;

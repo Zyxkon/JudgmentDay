@@ -20,6 +20,7 @@ import org.bukkit.scoreboard.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class ScoreboardLoaderRunnable extends BukkitRunnable {
@@ -87,7 +88,7 @@ public class ScoreboardLoaderRunnable extends BukkitRunnable {
                 index = money.length()-1;
             }
             String format = money.substring(0, index);
-            money = String.format("%,d",Integer.parseInt(format))+money.substring(index);
+            if (VaultExtension.getMoney(player) != 0) money = String.format("%,d",Integer.parseInt(format))+money.substring(index);
             scores.add(String.format("&2&l»&a&l＄&aBalance: %s$", money));
         }
         ArrayList<String> regions = WorldGuardExtension.getRegions(player);

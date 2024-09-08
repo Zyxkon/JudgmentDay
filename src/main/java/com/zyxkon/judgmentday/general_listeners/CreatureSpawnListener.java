@@ -1,17 +1,16 @@
 package com.zyxkon.judgmentday.general_listeners;
 
+import com.zyxkon.judgmentday.MadCow;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
-import com.zyxkon.judgmentday.mobs.CustomEntitySkeleton;
-import com.zyxkon.judgmentday.mobs.zombies.Runner;
+import com.zyxkon.judgmentday.CustomEntitySkeleton;
+import com.zyxkon.judgmentday.Runner;
 import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Banner;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -24,12 +23,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Stream;
 
 public class CreatureSpawnListener implements Listener {
     Main plugin;
@@ -45,14 +42,31 @@ public class CreatureSpawnListener implements Listener {
         Location loc = ent.getLocation();
         CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
         if (reason == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG){
-            if (ent instanceof Skeleton){
+            WorldServer nmsWorld = ((CraftWorld) w).getHandle();
+            if (ent instanceof Skeleton && !(ent instanceof Stray)){
                 event.setCancelled(true);
-                WorldServer nmsWorld = ((CraftWorld) w).getHandle();
                 CustomEntitySkeleton r = new CustomEntitySkeleton(w);
                 r.setPosition(loc.getX(), loc.getY(), loc.getZ());
-                nmsWorld.addEntity(r);
+                nmsWorld.addEntity(r, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                r.setInvisible(true);
                 w.spawnParticle(Particle.BARRIER, loc, 100);
-                Main.broadcast("new %s at (%d, %d, %d)", r.getBukkitEntity().getName(),(int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+//                Main.broadcast("new %s at (%d, %d, %d)", r.getBukkitEntity().getName(),(int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+            }
+            if (ent instanceof Stray){
+                event.setCancelled(true);
+                Runner r = new Runner(w);
+                r.setPosition(loc.getX(), loc.getY(), loc.getZ());
+                nmsWorld.addEntity(r, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                w.spawnParticle(Particle.BARRIER, loc, 100);
+//                Main.broadcast("new %s at (%d, %d, %d)", r.getBukkitEntity().getName(),(int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
+            }
+            if (ent instanceof Cow){
+                event.setCancelled(true);
+                MadCow c = new MadCow(w);
+                c.setPosition(loc.getX(), loc.getY(), loc.getZ());
+                nmsWorld.addEntity(c, CreatureSpawnEvent.SpawnReason.CUSTOM);
+                w.spawnParticle(Particle.CRIT_MAGIC, loc, 100);
+//                Main.broadcast("new mad ass cow %s at (%d, %d, %d)", c.getBukkitEntity().getName(),(int) loc.getX(), (int) loc.getY(), (int) loc.getZ());
             }
         }
         if (reason == CreatureSpawnEvent.SpawnReason.NATURAL){
@@ -63,8 +77,8 @@ public class CreatureSpawnListener implements Listener {
             }
         }
         float lChance = 1/2f*100;
-        float gChance = 1/3f*100;
-        float cChance = 1/4f*100;
+        float cChance = 1/3f*100;
+        float gChance = 1/4f*100;
         float iChance = 1/5f*100;
         boolean isBarracks = false;
         if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
@@ -89,46 +103,54 @@ public class CreatureSpawnListener implements Listener {
             z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100d);
             if (!z.isBaby()) {
                     z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(
-                        z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()*2
+                        z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getValue()*1.5
                 );
             }
             z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(
-                    z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()*2
+                    z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getValue()*1.5
             );
-            ItemStack helmet, chestplate, leggings, boots;
             ArrayList<ItemStack> helmetList = new ArrayList<>();
             ArrayList<ItemStack> chestplateList = new ArrayList<>();
             ArrayList<ItemStack> leggingsList = new ArrayList<>();
             ArrayList<ItemStack> bootsList = new ArrayList<>();
+            ItemStack lHelmet = new ItemStack(Material.LEATHER_HELMET);
+            ItemStack lChestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+            ItemStack lLeggings = new ItemStack(Material.LEATHER_LEGGINGS);
+            ItemStack lBoots = new ItemStack(Material.LEATHER_BOOTS);
+            ItemStack[] lArmor = {lBoots, lLeggings, lChestplate, lHelmet};
+            for (ItemStack a : lArmor){
+                LeatherArmorMeta l = (LeatherArmorMeta)(a.getItemMeta());
+                l.setColor(Utils.randColor(2));
+                a.setItemMeta(l);
+            }
             if (Utils.randBool()) {
                 if (Utils.chance(iChance)) helmetList.add(new ItemStack(Material.IRON_HELMET));
                 if (Utils.chance(cChance)) helmetList.add(new ItemStack(Material.CHAINMAIL_HELMET));
                 if (Utils.chance(gChance)) helmetList.add(new ItemStack(Material.GOLD_HELMET));
-                if (Utils.chance(lChance)) helmetList.add(new ItemStack(Material.LEATHER_HELMET));
+                if (Utils.chance(lChance)) helmetList.add(lHelmet);
             }
             if (Utils.randBool()) {
                 if (Utils.chance(iChance)) chestplateList.add(new ItemStack(Material.IRON_CHESTPLATE));
                 if (Utils.chance(cChance)) chestplateList.add(new ItemStack(Material.CHAINMAIL_CHESTPLATE));
                 if (Utils.chance(gChance)) chestplateList.add(new ItemStack(Material.GOLD_CHESTPLATE));
-                if (Utils.chance(lChance)) chestplateList.add(new ItemStack(Material.LEATHER_CHESTPLATE));
+                if (Utils.chance(lChance)) chestplateList.add(lChestplate);
             }
             if (Utils.randBool()) {
                 if (Utils.chance(iChance)) leggingsList.add(new ItemStack(Material.IRON_LEGGINGS));
                 if (Utils.chance(cChance)) leggingsList.add(new ItemStack(Material.CHAINMAIL_LEGGINGS));
                 if (Utils.chance(gChance)) leggingsList.add(new ItemStack(Material.GOLD_LEGGINGS));
-                if (Utils.chance(lChance)) leggingsList.add(new ItemStack(Material.LEATHER_LEGGINGS));
+                if (Utils.chance(lChance)) leggingsList.add(lLeggings);
             }
             if (Utils.randBool()) {
                 if (Utils.chance(iChance)) bootsList.add(new ItemStack(Material.IRON_BOOTS));
                 if (Utils.chance(cChance)) bootsList.add(new ItemStack(Material.CHAINMAIL_BOOTS));
                 if (Utils.chance(gChance)) bootsList.add(new ItemStack(Material.GOLD_BOOTS));
-                if (Utils.chance(lChance)) bootsList.add(new ItemStack(Material.LEATHER_BOOTS));
+                if (Utils.chance(lChance)) bootsList.add(lBoots);
             }
-            helmet = Utils.randElement(helmetList);
-            chestplate = Utils.randElement(chestplateList);
-            leggings = Utils.randElement(leggingsList);
-            boots = Utils.randElement(bootsList);
-            ItemStack[] armor = new ItemStack[]{boots, leggings, chestplate, helmet};
+            ItemStack[] armor = new ItemStack[]{
+                    Utils.randElement(bootsList), Utils.randElement(leggingsList),
+                    Utils.randElement(chestplateList), Utils.randElement(helmetList)
+            };
             // armor order is ALWAYS boots, leggings, chestplate, helmet
             if (isBarracks){
                 if (Utils.chance(10)) {

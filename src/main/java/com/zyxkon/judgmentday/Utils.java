@@ -6,6 +6,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Objective;
 
 import java.util.*;
@@ -134,5 +135,35 @@ public final class Utils {
         double y = centerLocation.getY();
         double z = centerLocation.getZ();
         return new Location(world, x+randXoffset, y+randYoffset, z+randZoffset);
+    }
+    public static Color randColor(int nCombination){
+        Color[] colors = {
+                Color.WHITE, Color.SILVER, Color.GRAY, Color.BLACK, Color.RED, Color.MAROON, Color.YELLOW,
+                Color.OLIVE, Color.LIME, Color.GREEN, Color.AQUA, Color.TEAL, Color.BLUE, Color.NAVY, Color.FUCHSIA,
+                Color.PURPLE, Color.ORANGE
+        };
+        Color r = colors[(int) Utils.randRange(colors.length)];
+        for (int i = 0; i < nCombination; i++){
+            r = r.mixColors(colors[(int) Utils.randRange(colors.length)]);
+        }
+        //    1 public static final Color WHITE = fromRGB(16777215);
+        //    2 public static final Color SILVER = fromRGB(12632256);
+        //    3 public static final Color GRAY = fromRGB(8421504);
+        //    4 public static final Color BLACK = fromRGB(0);
+        //    5 public static final Color RED = fromRGB(16711680);
+        //    6 public static final Color MAROON = fromRGB(8388608);
+        //    7 public static final Color YELLOW = fromRGB(16776960);
+
+        //    8 public static final Color OLIVE = fromRGB(8421376);
+        //    9 public static final Color LIME = fromRGB(65280);
+        //    10 public static final Color GREEN = fromRGB(32768);
+        //    11 public static final Color AQUA = fromRGB(65535);
+        //    12 public static final Color TEAL = fromRGB(32896);
+        //    13 public static final Color BLUE = fromRGB(255);
+        //    14 public static final Color NAVY = fromRGB(128);
+        //    15 public static final Color FUCHSIA = fromRGB(16711935);
+        //    16 public static final Color PURPLE = fromRGB(8388736);
+        //    17 public static final Color ORANGE = fromRGB(16753920);
+        return r;
     }
 }
