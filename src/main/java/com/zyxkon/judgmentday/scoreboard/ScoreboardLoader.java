@@ -2,6 +2,7 @@ package com.zyxkon.judgmentday.scoreboard;
 import com.zyxkon.judgmentday.Counter;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.extensions.Extension;
 import com.zyxkon.judgmentday.extensions.VaultExtension;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
@@ -33,7 +34,7 @@ public class ScoreboardLoader {
                     loadStats(p);
                 }
             }
-        }).runTaskTimer(plugin, 0L, 1L);
+        }).runTaskTimer(plugin, 0L, 5L);
     }
     public static void loadStats(Player player){
         UUID uuid = player.getUniqueId();
@@ -79,7 +80,7 @@ public class ScoreboardLoader {
         scores.add("&8&l»&7&l☣&7Walkers killed: " + Counter.getWalkerKills(uuid));
         scores.add("&5&l»&d&l⚔&dPlayers killed: " + Counter.getPlayerKills(uuid));
         scores.add("&4&l»&c&l✞&cDeaths: " + Counter.getDeaths(uuid));
-        if (Main.hasPlugin("Vault")){
+        if (Extension.VAULT.isLoaded()){
             DecimalFormat df = new DecimalFormat("#.##");
             String money = df.format(VaultExtension.getMoney(player));
             int index = money.indexOf('.');
@@ -90,7 +91,7 @@ public class ScoreboardLoader {
             if (VaultExtension.getMoney(player) != 0) money = String.format("%,d",Integer.parseInt(format))+money.substring(index);
             scores.add(String.format("&2&l»&a&l＄&aBalance: %s$", money));
         }
-        if (Main.hasPlugin("WorldGuard")){
+        if (Extension.WORLDGUARD.isLoaded()){
             ArrayList<String> regions = WorldGuardExtension.getRegions(player);
             if (!regions.isEmpty()){
                 for (int i = 0; i<regions.size(); i++) {

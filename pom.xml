@@ -3,11 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.zyxkon</groupId>
     <artifactId>JudgmentDay</artifactId>
     <version>1.0</version>
-
     <repositories>
         <!-- This adds the Spigot Maven repository to the build -->
         <repository>
@@ -61,8 +59,8 @@
         <!-- WORLDGUARD API -->
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.0</version>
+            <artifactId>worldguard-legacy</artifactId>
+            <version>6.2</version>
             <scope>provided</scope>
         </dependency>
 
@@ -78,7 +76,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.2.9</version>
+            <version>6.1.4-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -88,5 +86,5 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
-    
+
 </project>

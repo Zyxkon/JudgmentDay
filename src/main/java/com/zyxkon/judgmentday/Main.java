@@ -39,25 +39,30 @@ public class Main extends JavaPlugin {
         instance = this;
         File file = new File(getDataFolder() + File.separator);
         if (!file.exists()) file.mkdir();
-        List<String> externalPlugins = this.getDescription().getSoftDepend();
         for (Extension ext : Extension.values() ){
             if (!hasPlugin(ext.pluginName))
                 log(Level.WARNING, String.format("Plugin %s is not installed!", ext.pluginName));
             else {
-                log(Level.INFO, String.format("Plugin %s found! Begin loading...", ext.pluginName));
-                switch (ext){
-                    case CRACKSHOT:
-                        new CrackShotExtension();
-                        break;
-                    case VAULT:
-                        new VaultExtension();
-                        break;
-                    case WORLDGUARD:
-                        new WorldGuardExtension();
-                        break;
-                    case MYTHICMOBS:
-                        new MythicMobsExtension();
-                        break;
+                try {
+                    log(Level.INFO, String.format("Plugin %s found! Begin loading...", ext.pluginName));
+                    switch (ext) {
+                        case CRACKSHOT:
+                            new CrackShotExtension();
+                            break;
+                        case VAULT:
+                            new VaultExtension();
+                            break;
+                        case WORLDGUARD:
+                            new WorldGuardExtension();
+                            break;
+                        case MYTHICMOBS:
+                            new MythicMobsExtension();
+                            break;
+                    }
+                    ext.loadStatus(true);
+                } catch (NoClassDefFoundError | ExceptionInInitializerError | Exception e){
+                    e.printStackTrace();
+                    ext.loadStatus(false);
                 }
             }
         }
