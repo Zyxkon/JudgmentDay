@@ -29,10 +29,10 @@ public class PlayerDeathListener implements Listener {
         if (armorContents != null) z.getEquipment().setArmorContents(armorContents);
         z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(150d);
         z.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.34d);
-        z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(3d);
+        z.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(5d);
         z.getAttribute(Attribute.ZOMBIE_SPAWN_REINFORCEMENTS).setBaseValue(100d);
         z.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(40d);
-        z.setHealth(30d);
+        z.setHealth(player.getMaxHealth()*5);
         z.setCustomName(Utils.translate(String.format("&4&l☣&c&n%s&4&l☣", player.getName())));
         z.setCustomNameVisible(true);
     }

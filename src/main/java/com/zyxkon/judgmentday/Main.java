@@ -10,11 +10,11 @@ import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
-//import com.zyxkon.judgmentday.MobManager;
 import com.zyxkon.judgmentday.runnables.BarbedWireRunnable;
-import com.zyxkon.judgmentday.runnables.ScoreboardLoaderRunnable;
+import com.zyxkon.judgmentday.scoreboard.ScoreboardLoader;
 import com.zyxkon.judgmentday.runnables.ZombieSpawnRunnable;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,8 +33,8 @@ public class Main extends JavaPlugin {
     public static PoisoningManager poisoningManager;
     public static ThirstManager thirstManager;
     public static InjuryManager<?>[] injuryManagers;
-    public static MobManager mobManager = MobManager.getInstance();
     public static final String commandName = "judgmentday";
+    public static boolean testing = true;
 
     @Override
     public void onEnable(){
@@ -67,12 +67,8 @@ public class Main extends JavaPlugin {
         log(Level.INFO, ChatColor.GREEN +"Set up runnables!");
         new Counter(this);
         log(Level.INFO, ChatColor.GREEN +"Set up counter!");
-        MobManager.registerCustomEntity(54, "Runner", Runner.class);
-        MobManager.registerCustomEntity(51, "Skeletor", CustomEntitySkeleton.class);
-        MobManager.registerCustomEntity(92, "MadCow", MadCow.class);
     }
     private void setupManagers(){
-        mobManager.init();
         bloodLossManager = new BloodLossManager(this);
         impairmentManager = new ImpairmentManager(this);
         infectionManager = new InfectionManager(this);
@@ -92,12 +88,11 @@ public class Main extends JavaPlugin {
         new PlayerDeathListener(this);
     }
     private void setupRunnables(){
-        new ScoreboardLoaderRunnable(this);
+        new ScoreboardLoader(this);
         new ZombieSpawnRunnable(this);
         new BarbedWireRunnable(this);
     }
     private void shutdownManagers(){
-        mobManager.close();
         bloodLossManager.shutDown();
         impairmentManager.shutDown();
         infectionManager.shutDown();
@@ -116,16 +111,29 @@ public class Main extends JavaPlugin {
     public static void log(Level level, String str){
         logger.log(level, str);
     }
-//    public static void broadcast(String str, Object... strs){
-//        for (Player p : Main.getInstance().getServer().getOnlinePlayers()){
-//            String fm = String.format(str, strs);
-//            p.sendMessage(fm);
-//        }
-//    }
+    private static void broadcast(String str, Object... strs){
+        for (Player p : Main.getInstance().getServer().getOnlinePlayers()){
+            String fm = String.format(str, strs);
+            p.sendMessage(fm);
+        }
+    }
+    public static void testBroadcast(String str, Object... strs){
+        if (testing) {
+            broadcast(str, strs);
+            return;
+        }
+        for (String name : getInstance().getDescription().getAuthors()){
+            Player p = Bukkit.getPlayer(name);
+            if (p != null) {
+                String fm = String.format(str, strs);
+                p.sendMessage(fm);
+            }
+        }
+    }
     public static Main getInstance(){
         return instance;
     }
-    public boolean hasPlugin(String name){
-        return this.getServer().getPluginManager().getPlugin(name) != null;
+    public static boolean hasPlugin(String name){
+        return instance.getServer().getPluginManager().getPlugin(name) != null;
     }
 }

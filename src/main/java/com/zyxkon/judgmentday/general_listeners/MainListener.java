@@ -103,10 +103,10 @@ public class MainListener implements Listener {
         LivingEntity ent = event.getEntity();
         if (ent.getKiller() == null) return;
         EntityLiving _ent = ((CraftLivingEntity) ent).getHandle();
-//        Main.broadcast("%s:"+ChatColor.RESET+" Speed(%f) and Dmg(%f)", _ent.getName(),
-//                _ent.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue(),
-//                _ent.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue()
-//        );
+        Main.testBroadcast("%s:"+ChatColor.RESET+" Speed(%f) and Dmg(%f)", _ent.getName(),
+                _ent.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).getValue(),
+                _ent.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue()
+        );
     }
     @EventHandler
     public void onPlayerDamageByEntity(EntityDamageByEntityEvent event){
@@ -114,8 +114,8 @@ public class MainListener implements Listener {
         Player p = (Player) event.getEntity();
         double dmg = event.getDamage();
         Entity attacker = event.getDamager();
-//        Main.broadcast("%s got damaged (%f) by %s because of %s", p.getName(), dmg, attacker.getName(),
-//                event.getCause());
+        Main.testBroadcast("%s got damaged (%f) by %s because of %s", p.getName(), dmg, attacker.getName(),
+                event.getCause());
     }
     @EventHandler
     public void onTarget(EntityTargetEvent event){
@@ -123,6 +123,6 @@ public class MainListener implements Listener {
         Entity e = event.getEntity();
         if (!(target instanceof Player)) return;
         Player p = (Player) target;
-//        Main.broadcast("%s has been targeted by %s", p.getName(), e.getName());
+        Main.testBroadcast("%s has been targeted by %s", p.getName(), e.getName());
     }
 }

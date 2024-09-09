@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -28,6 +29,9 @@ public class WorldGuardExtension {
     private static final WorldGuardPlugin worldGuard;
     static WorldGuard wgInstance;
     static RegionContainer container;
+    public WorldGuardExtension(Main plugin){
+
+    }
     static {
         plugin = Main.getInstance();
         wgInstance = WorldGuard.getInstance();
@@ -93,4 +97,7 @@ public class WorldGuardExtension {
     public static FileConfiguration getRegionsConfig(){
         return regionsConfig;
     }
+}
+class WorldGuardListener implements Listener{
+
 }

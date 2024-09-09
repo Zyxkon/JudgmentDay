@@ -4,12 +4,9 @@ import java.util.stream.Collectors;
 
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
-import com.zyxkon.judgmentday.Runner;
-import net.minecraft.server.v1_12_R1.WorldServer;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -49,17 +46,6 @@ public class ZombieSpawnRunnable extends BukkitRunnable {
                 if (Utils.chance(10)) ent = EntityType.HUSK;
                 else if (Utils.chance(20)) ent = EntityType.ZOMBIE_VILLAGER;
                 w.spawnEntity(loca, ent);
-//                WorldServer nmsWorld = ((CraftWorld) w).getHandle();
-//                Runner r = new Runner(w);
-//                r.setPosition(loca.getX(), loca.getY(), loca.getZ());
-//                nmsWorld.addEntity(r);
-//                w.spawnParticle(Particle.BARRIER, loca, 100);
-//                for (Player pl : w.getPlayers()) {
-//                    pl.sendMessage(
-//                            String.format("Spawned a runner at %s, %s, %s",
-//                                    loc.getX(), loc.getY(), loc.getZ())
-//                    );
-//                }
             }
         }
     }
