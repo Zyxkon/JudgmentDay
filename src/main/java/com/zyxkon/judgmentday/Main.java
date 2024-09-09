@@ -142,7 +142,7 @@ public class Main extends JavaPlugin {
     }
     public static void consoleSend(String str, Object... strs){
         Bukkit.getServer().getConsoleSender().sendMessage(
-                String.format("[%s]", instance.getName()) + String.format(str,strs)
+                String.format("[%s] ", instance.getName()) + String.format(str,strs)
         );
     }
     public static Main getInstance(){
