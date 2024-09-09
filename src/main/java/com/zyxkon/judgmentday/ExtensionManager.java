@@ -1,5 +1,11 @@
 package com.zyxkon.judgmentday;
+public class ExtensionManager {
 
-public enum ExtensionManager {
-    CRACKSHOT, MYTHICMOBS, VAULT, WORLDGUARD, WORLDEDIT
+    //    static {
+    //        CRACKSHOT
+    //    }
+    //    public {
+    //
+    //    }
 }
+

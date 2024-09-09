@@ -1,12 +1,10 @@
 package com.zyxkon.judgmentday.extensions;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 import com.zyxkon.judgmentday.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -14,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
@@ -23,20 +22,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class WorldGuardExtension {
-    private static final Main plugin;
     private static File regionsFile;
+    static Main plugin;
     private static FileConfiguration regionsConfig;
     private static final WorldGuardPlugin worldGuard;
     static WorldGuard wgInstance;
     static RegionContainer container;
-    public WorldGuardExtension(Main plugin){
-
+    public WorldGuardExtension(){
+        plugin = Main.getInstance();
     }
     static {
-        plugin = Main.getInstance();
         wgInstance = WorldGuard.getInstance();
         container = wgInstance.getPlatform().getRegionContainer();
-        Plugin pl = Bukkit.getPluginManager().getPlugin("WorldGuard");
+        Plugin pl = Bukkit.getPluginManager().getPlugin(Extension.WORLDGUARD.pluginName);
         if (pl instanceof WorldGuardPlugin) {
             worldGuard = (WorldGuardPlugin) pl;
             regionsFile = new File(plugin.getDataFolder(), "regions.yml");
@@ -56,6 +54,9 @@ public class WorldGuardExtension {
             RegionManager manager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(
                     (com.sk89q.worldedit.world.World) world
             );
+            if (manager == null) {
+                return false;
+            }
             regions.addAll(manager.getRegions().keySet());
         }
         return regions.contains(regionId);
@@ -97,7 +98,4 @@ public class WorldGuardExtension {
     public static FileConfiguration getRegionsConfig(){
         return regionsConfig;
     }
-}
-class WorldGuardListener implements Listener{
-
 }

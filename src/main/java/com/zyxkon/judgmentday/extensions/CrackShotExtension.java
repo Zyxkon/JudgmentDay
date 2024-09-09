@@ -18,16 +18,14 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class CrackShotExtension implements Listener {
-    static Main plugin;
     private static BloodLossManager bloodLossManager;
     private static InfectionManager infectionManager;
 
-    public CrackShotExtension(Main plugin){
-        CrackShotExtension.plugin = plugin;
+    public CrackShotExtension(){
         bloodLossManager = BloodLossManager.getInstance();
         infectionManager = InfectionManager.getInstance();
-        if (plugin.hasPlugin("CrackShot")){
-            Bukkit.getPluginManager().registerEvents(this, plugin);
+        if (Main.hasPlugin(Extension.CRACKSHOT)){
+            Bukkit.getPluginManager().registerEvents(this, Main.getInstance());
         }
     }
     @EventHandler

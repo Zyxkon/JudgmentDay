@@ -47,9 +47,9 @@ public class VaultExtension implements Listener {
         nmsStack.setTag(compound);
         physicalDollar = CraftItemStack.asBukkitCopy(nmsStack);
     }
-    public VaultExtension(Main plugin){
-        VaultExtension.plugin = plugin;
-        if (!plugin.hasPlugin("Vault")) return;
+    public VaultExtension(){
+        VaultExtension.plugin = Main.getInstance();
+        if (!Main.hasPlugin(Extension.VAULT)) return;
         RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
         VaultExtension.eco = rsp.getProvider();
         Bukkit.getPluginManager().registerEvents(this, plugin);

@@ -1,11 +1,8 @@
 package com.zyxkon.judgmentday;
 import com.zyxkon.judgmentday.commands.ZCommand;
-import com.zyxkon.judgmentday.extensions.CrackShotExtension;
-import com.zyxkon.judgmentday.extensions.VaultExtension;
-import com.zyxkon.judgmentday.general_listeners.CreatureSpawnListener;
-import com.zyxkon.judgmentday.general_listeners.MainListener;
-import com.zyxkon.judgmentday.general_listeners.PlayerDeathListener;
-import com.zyxkon.judgmentday.injuries.InjuryManager;
+import com.zyxkon.judgmentday.extensions.*;
+import com.zyxkon.judgmentday.general_listeners.*;
+import com.zyxkon.judgmentday.injuries.*;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
@@ -43,16 +40,23 @@ public class Main extends JavaPlugin {
         File file = new File(getDataFolder() + File.separator);
         if (!file.exists()) file.mkdir();
         List<String> externalPlugins = this.getDescription().getSoftDepend();
-        for (String str : externalPlugins){
-            if (!hasPlugin(str)) log(Level.WARNING, String.format("Plugin %s is not installed!", str));
+        for (Extension ext : Extension.values() ){
+            if (!hasPlugin(ext.pluginName))
+                log(Level.WARNING, String.format("Plugin %s is not installed!", ext.pluginName));
             else {
-                log(Level.INFO, String.format("Plugin %s found! Begin loading...", str));
-                switch (str){
-                    case "CrackShot":
-                        new CrackShotExtension(this);
+                log(Level.INFO, String.format("Plugin %s found! Begin loading...", ext.pluginName));
+                switch (ext){
+                    case CRACKSHOT:
+                        new CrackShotExtension();
                         break;
-                    case "Vault":
-                        new VaultExtension(this);
+                    case VAULT:
+                        new VaultExtension();
+                        break;
+                    case WORLDGUARD:
+                        new WorldGuardExtension();
+                        break;
+                    case MYTHICMOBS:
+                        new MythicMobsExtension();
                         break;
                 }
             }
@@ -132,6 +136,9 @@ public class Main extends JavaPlugin {
     }
     public static Main getInstance(){
         return instance;
+    }
+    public static boolean hasPlugin(Extension ext){
+        return hasPlugin(ext.pluginName);
     }
     public static boolean hasPlugin(String name){
         return instance.getServer().getPluginManager().getPlugin(name) != null;
