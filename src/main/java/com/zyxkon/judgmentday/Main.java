@@ -45,21 +45,27 @@ public class Main extends JavaPlugin {
             else {
                 try {
                     log(Level.INFO, String.format("Plugin %s found! Begin loading...", ext.pluginName));
-                    switch (ext) {
-                        case CRACKSHOT:
-                            new CrackShotExtension();
-                            break;
-                        case VAULT:
-                            new VaultExtension();
-                            break;
-                        case WORLDGUARD:
-                            new WorldGuardExtension();
-                            break;
-                        case MYTHICMOBS:
-                            new MythicMobsExtension();
-                            break;
+                    if (Bukkit.getPluginManager().getPlugin(ext.pluginName).isEnabled()){
+                        log(Level.INFO, String.format("Plugin %s enabled! Begin loading...", ext.pluginName));
+                        switch (ext) {
+                            case CRACKSHOT:
+                                new CrackShotExtension();
+                                break;
+                            case VAULT:
+                                new VaultExtension();
+                                break;
+                            case WORLDGUARD:
+                                new WorldGuardExtension();
+                                break;
+                            case MYTHICMOBS:
+                                new MythicMobsExtension();
+                                break;
+                        }
+                        ext.loadStatus(true);
                     }
-                    ext.loadStatus(true);
+                    else {
+                        log(Level.INFO, String.format("Plugin %s not enabled...", ext.pluginName));
+                    }
                 } catch (NoClassDefFoundError | ExceptionInInitializerError | Exception e){
                     e.printStackTrace();
                     consoleSend(ChatColor.RED+"Plugin %s could NOT be loaded!", ext.pluginName);

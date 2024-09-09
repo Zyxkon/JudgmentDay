@@ -94,7 +94,12 @@ public class CreatureSpawnListener implements Listener {
                 }
             }
         }
-        Zombie z = (Zombie) event.getEntity();
+        Zombie z;
+        try {
+            z = (Zombie) event.getEntity();
+        } catch (ClassCastException ignored) {
+            return;
+        }
         z.setHealth(15d);
         z.getAttribute(Attribute.GENERIC_FOLLOW_RANGE).setBaseValue(100d);
         if (!z.isBaby()) {

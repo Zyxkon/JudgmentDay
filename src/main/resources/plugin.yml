@@ -3,7 +3,7 @@ name: JudgmentDay
 version: 2.0
 description: A zombie apocalypse plugin.
 author: Zyxkon
-softdepend: [WorldGuard, CrackShot, WorldEdit, Vault]
+softdepend: [WorldGuard, CrackShot, WorldEdit, Vault, MythicMobs]
 commands:
   zyxkon:
     usage: /zyxkon

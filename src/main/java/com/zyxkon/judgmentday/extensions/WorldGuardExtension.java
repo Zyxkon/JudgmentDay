@@ -23,24 +23,20 @@ public class WorldGuardExtension {
     private static File regionsFile;
     static Main plugin;
     private static FileConfiguration regionsConfig;
-    private static final WorldGuardPlugin worldGuard;
+    private static WorldGuardPlugin worldGuard = null;
     static RegionContainer container;
     public WorldGuardExtension(){
         plugin = Main.getInstance();
-    }
-    static {
         Plugin pl = Bukkit.getPluginManager().getPlugin(Extension.WORLDGUARD.pluginName);
         if (pl instanceof WorldGuardPlugin) {
+            regionsFile = new File(plugin.getDataFolder(), "regions.yml");
             worldGuard = (WorldGuardPlugin) pl;
             container = worldGuard.getRegionContainer();
-            regionsFile = new File(plugin.getDataFolder(), "regions.yml");
             if (!regionsFile.exists()) {
                 plugin.saveResource("regions.yml", false);
+                regionsFile = new File(plugin.getDataFolder(), "regions.yml");
             }
             regionsConfig = YamlConfiguration.loadConfiguration(regionsFile);
-        }
-        else {
-            worldGuard = null;
         }
     }
     public static boolean regionExists(String regionId){
