@@ -12,6 +12,7 @@ import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.text.DecimalFormat;
@@ -23,6 +24,16 @@ public class ScoreboardLoader {
     static ScoreboardManager manager = Bukkit.getScoreboardManager();
     public ScoreboardLoader(Main plugin){
         Bukkit.getPluginManager().registerEvents(new ScoreboardListener(plugin), plugin);
+        (new BukkitRunnable(){
+
+            @Override
+            public void run() {
+                for (Player p : Bukkit.getOnlinePlayers()){
+                    Main.testBroadcast("%s's scoreboard updated", p.getName());
+                    loadStats(p);
+                }
+            }
+        }).runTaskTimer(plugin, 0L, 1L);
     }
     public static void loadStats(Player player){
         UUID uuid = player.getUniqueId();
@@ -89,8 +100,6 @@ public class ScoreboardLoader {
             }
             scores.add("&1&l»&9&l۩&9Location: &r" + (regions.isEmpty() ? "Unknown" : String.join("-", regions)));
         }
-
-
         scores.add("&3&l»&b&nHydration&r&b: " + ThirstManager.formatThirst(thirst) + ChatColor.BOLD + thirst + "%");
         scores = (ArrayList<String>) scores.stream().map(Utils::translate).collect(Collectors.toList());
         Utils.addScore(objective, scores);

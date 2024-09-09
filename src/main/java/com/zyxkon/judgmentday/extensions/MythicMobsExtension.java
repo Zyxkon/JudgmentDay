@@ -1,12 +1,11 @@
 package com.zyxkon.judgmentday.extensions;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
-import io.lumine.mythic.api.MythicPlugin;
-import io.lumine.mythic.api.mobs.MobManager;
-import io.lumine.mythic.api.mobs.MythicMob;
-import io.lumine.mythic.bukkit.BukkitAdapter;
-import io.lumine.mythic.bukkit.MythicBukkit;
-import io.lumine.mythic.core.mobs.ActiveMob;
+import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
+import io.lumine.xikage.mythicmobs.mobs.ActiveMob;
+import io.lumine.xikage.mythicmobs.mobs.MobManager;
+import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -22,7 +21,8 @@ import java.util.List;
 
 public class MythicMobsExtension {
     Main plugin;
-    static MythicPlugin mythicPlugin = MythicBukkit.inst();
+
+    static MythicMobs mythicPlugin = MythicMobs.inst();
     static MobManager mobManager = mythicPlugin.getMobManager();
     static List<String> mobsName = new ArrayList<>(mobManager.getMobNames());
 
@@ -33,7 +33,7 @@ public class MythicMobsExtension {
         }
     }
     public static void spawnMob(String name, Location location){
-        MythicMob mMob = mobManager.getMythicMob(name).orElse(null);
+        MythicMob mMob = mobManager.getMythicMob(name);
         assert mMob != null;
         ActiveMob aMob = mMob.spawn(BukkitAdapter.adapt(location), 1);
         Main.testBroadcast("Spawned mythic mob %s at (%d, %d, %d)", aMob.getDisplayName(),
