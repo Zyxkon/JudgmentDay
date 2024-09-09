@@ -1,6 +1,7 @@
 package com.zyxkon.judgmentday.extensions;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.scoreboard.ScoreboardLoader;
 import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
@@ -80,6 +81,7 @@ public class VaultExtension implements Listener {
             Utils.sendActionBarMessage(player, Utils.translate(String.format("&a&l+&a%s&2$",df.format(money))));
             eco.depositPlayer(player, money);
         }
+        ScoreboardLoader.loadStats(player);
     }
     public static double getMoney(Player player){
         return (eco != null ? eco.getBalance(player) : 0);

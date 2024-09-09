@@ -25,16 +25,15 @@ public class ScoreboardLoader {
     static ScoreboardManager manager = Bukkit.getScoreboardManager();
     public ScoreboardLoader(Main plugin){
         Bukkit.getPluginManager().registerEvents(new ScoreboardListener(plugin), plugin);
-        (new BukkitRunnable(){
-
-            @Override
-            public void run() {
-                for (Player p : Bukkit.getOnlinePlayers()){
-                    Main.testBroadcast("%s's scoreboard updated", p.getName());
-                    loadStats(p);
-                }
-            }
-        }).runTaskTimer(plugin, 0L, 5L);
+//        (new BukkitRunnable(){
+//
+//            @Override
+//            public void run() {
+//                for (Player p : Bukkit.getOnlinePlayers()){
+//                    loadStats(p);
+//                }
+//            }
+//        }).runTaskTimer(plugin, 0L, 5L);
     }
     public static void loadStats(Player player){
         UUID uuid = player.getUniqueId();

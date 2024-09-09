@@ -62,20 +62,21 @@ public class Main extends JavaPlugin {
                     ext.loadStatus(true);
                 } catch (NoClassDefFoundError | ExceptionInInitializerError | Exception e){
                     e.printStackTrace();
+                    consoleSend(ChatColor.RED+"Plugin %s could NOT be loaded!", ext.pluginName);
                     ext.loadStatus(false);
                 }
             }
         }
         setupManagers();
-        log(Level.INFO, ChatColor.GREEN +"Set up managers!");
+        consoleSend(ChatColor.GREEN +"Set up managers!");
         setupCommands();
-        log(Level.INFO, ChatColor.GREEN +"Set up commands!");
+        consoleSend(ChatColor.GREEN +"Set up commands!");
         setupListeners();
-        log(Level.INFO, ChatColor.GREEN +"Set up listeners!");
+        consoleSend(ChatColor.GREEN +"Set up listeners!");
         setupRunnables();
-        log(Level.INFO, ChatColor.GREEN +"Set up runnables!");
+        consoleSend(ChatColor.GREEN +"Set up runnables!");
         new Counter(this);
-        log(Level.INFO, ChatColor.GREEN +"Set up counter!");
+        consoleSend(ChatColor.GREEN +"Set up counter!");
     }
     private void setupManagers(){
         bloodLossManager = new BloodLossManager(this);
@@ -138,6 +139,11 @@ public class Main extends JavaPlugin {
                 p.sendMessage(fm);
             }
         }
+    }
+    public static void consoleSend(String str, Object... strs){
+        Bukkit.getServer().getConsoleSender().sendMessage(
+                String.format("[%s]", instance.getName()) + String.format(str,strs)
+        );
     }
     public static Main getInstance(){
         return instance;

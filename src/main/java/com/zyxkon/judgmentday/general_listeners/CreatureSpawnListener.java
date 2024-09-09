@@ -3,6 +3,7 @@ package com.zyxkon.judgmentday.general_listeners;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 
+import com.zyxkon.judgmentday.extensions.Extension;
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -77,7 +78,7 @@ public class CreatureSpawnListener implements Listener {
         float gChance = 1/4f*100;
         float iChance = 1/5f*100;
         boolean isBarracks = false;
-        if (Bukkit.getPluginManager().getPlugin("WorldGuard") != null){
+        if (Extension.WORLDGUARD.isLoaded()){
             ArrayList<String> regions = WorldGuardExtension.getRegions(loc);
             for (String r : regions){
                 if (WorldGuardExtension.isSafezone(r) && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM) {
