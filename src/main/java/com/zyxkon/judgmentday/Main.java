@@ -44,9 +44,9 @@ public class Main extends JavaPlugin {
                 log(Level.WARNING, String.format("Plugin %s is not installed!", ext.pluginName));
             else {
                 try {
-                    log(Level.INFO, String.format("Plugin %s found! Begin loading...", ext.pluginName));
+                    log(Level.INFO, String.format("Plugin %s found! Attempting hooking...", ext.pluginName));
                     if (Bukkit.getPluginManager().getPlugin(ext.pluginName).isEnabled()){
-                        log(Level.INFO, String.format("Plugin %s enabled! Begin loading...", ext.pluginName));
+                        log(Level.INFO, String.format("Plugin %s is ENABLED! Commencing hooking.", ext.pluginName));
                         switch (ext) {
                             case CRACKSHOT:
                                 new CrackShotExtension();
@@ -62,9 +62,10 @@ public class Main extends JavaPlugin {
                                 break;
                         }
                         ext.loadStatus(true);
+                        consoleSend(ChatColor.GREEN+"Successfully hooked into %s plugin!", ext.pluginName);
                     }
                     else {
-                        log(Level.INFO, String.format("Plugin %s not enabled...", ext.pluginName));
+                        consoleSend(ChatColor.RED+"Plugin %s is NOT ENABLED. Hooking failed.", ext.pluginName);
                     }
                 } catch (NoClassDefFoundError | ExceptionInInitializerError | Exception e){
                     e.printStackTrace();

@@ -55,7 +55,6 @@ public class WorldGuardExtension {
         return getRegions(player.getLocation());
     }
     public static ArrayList<String> getRegions(Location location){
-//        com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(location.getWorld());
         ArrayList<String> array = new ArrayList<>();
         if (worldGuard == null) return array;
 
