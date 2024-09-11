@@ -2,6 +2,7 @@ package com.zyxkon.judgmentday.extensions;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.adapters.AbstractLocation;
 import io.lumine.xikage.mythicmobs.adapters.bukkit.BukkitAdapter;
 import io.lumine.xikage.mythicmobs.mobs.MobManager;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
@@ -42,9 +43,13 @@ public class MythicMobsExtension {
         }
     }
     public static void spawnMob(String name, Location location){
-//        MythicMob mob = mobManager.getMythicMob(name);
         mobManager.spawnMob(name, location);
-//        mob.spawn(BukkitAdapter.adapt(location), 1);
+        try {
+            MythicMob mob = mobManager.getMythicMob(name);
+            mob.spawn(BukkitAdapter.adapt(location), 1);
+        } catch (NoSuchMethodError e){
+            e.printStackTrace();
+        }
     }
 }
 class MythicMobsListener implements Listener {

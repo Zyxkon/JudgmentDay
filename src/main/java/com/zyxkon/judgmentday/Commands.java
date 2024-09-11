@@ -13,9 +13,93 @@ import org.bukkit.command.CommandSender;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
+class CommandType {
+    enum INJURY {
+        CHECK(),
+        INFLICT(Injury.INJURIES.class),
+        HEAL();
+        // boilerplate
+        List<String> params = new ArrayList<>();
+        String usage;
+        INJURY(Class<?>... args) {
+            Arrays.stream(args).forEach(
+                    arg -> params
+                            .add(
+                                    arg.isEnum()
+                                            ? Arrays.stream(arg.getEnumConstants())
+                                            .map(Object::toString)
+                                            .collect(Collectors.joining("|"))
+                                            : arg.getName()
+                            )
+            );
+            usage = (params.stream()
+                    .map(s -> "[" + s + "]"))
+                    .collect(Collectors.joining(" "))
+                    .concat(" <player>")
+                    .toLowerCase();
+        }
+    }
+
+
+
+    enum STATS {
+        GET();
+        // boilerplate
+        List<String> params = new ArrayList<>();
+        String usage;
+        STATS(Class<?>... args) {
+            Arrays.stream(args).forEach(
+                    arg -> params
+                            .add(
+                                    arg.isEnum()
+                                            ? Arrays.stream(arg.getEnumConstants())
+                                            .map(Object::toString)
+                                            .collect(Collectors.joining("|"))
+                                            : arg.getName()
+                            )
+            );
+            usage = (params.stream()
+                    .map(s -> "[" + s + "]"))
+                    .collect(Collectors.joining(" "))
+                    .concat(" <player>")
+                    .toLowerCase();
+        }
+    }
+    enum THIRST {
+        SET(int.class), GET();
+        // boilerplate
+        List<String> params = new ArrayList<>();
+        String usage;
+        THIRST(Class<?>... args) {
+            Arrays.stream(args).forEach(
+                    arg -> params
+                            .add(
+                                    arg.isEnum()
+                                            ? Arrays.stream(arg.getEnumConstants())
+                                            .map(Object::toString)
+                                            .collect(Collectors.joining("|"))
+                                            : arg.getName()
+                            )
+            );
+            usage = (params.stream()
+                    .map(s -> "[" + s + "]"))
+                    .collect(Collectors.joining(" "))
+                    .concat(" <player>")
+                    .toLowerCase();
+        }
+    }
+
+//    Class<? extends JDCommand> jd;
+//    CommandType(Class<? extends JDCommand> jd) {
+//        this.jd = jd;
+//
+//    }
+
+}
 public class Commands implements CommandExecutor {
     static Main plugin;
     static String cmdName;
@@ -27,7 +111,7 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         for (int i = 0;i < strings.length; i++){
-            plugin.log(Level.INFO, String.format("%d %s", i, strings[i]));
+            Main.log(Level.INFO, String.format("%d %s", i, strings[i]));
         }
         if (strings.length == 0){
             String space = new String(new char[6]).replace("\0", "-");
@@ -45,14 +129,25 @@ public class Commands implements CommandExecutor {
         String[] args = Arrays.copyOfRange(strings, 1, strings.length);
         commandSender.sendMessage("Args:\n");
         Arrays.asList(args).forEach(commandSender::sendMessage);
-        if (Utils.equatesTo(strings[0].toLowerCase(), "stats")) {
-            return stats(commandSender, args);
-        }
-        else if (Utils.equatesTo(strings[0].toLowerCase(), "thirst")) {
-            return thirst(commandSender, args);
-        }
-        else if (Utils.equatesTo(strings[0].toLowerCase(), "injury")) {
-            return injury(commandSender, args);
+        HashMap<String, Callable<Boolean>> commands = new HashMap<>();
+        commands.put("stats",
+                () -> stats(commandSender, args)
+        );
+        commands.put("thirst",
+                () -> thirst(commandSender, args)
+        );
+        commands.put("injury",
+                () -> injury(commandSender, args)
+        );
+        for (String str : commands.keySet()){
+            if (Utils.equatesTo(strings[0].toLowerCase(), str)){
+                try {
+                    return commands.get(str).call();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
         }
         switch (strings[0].toLowerCase()) {
             // having variable i obviates the need to remember what arg you are on: i+1 becomes the next arg instead
@@ -222,16 +317,13 @@ public class Commands implements CommandExecutor {
     }
     public static boolean thirst(CommandSender sender, String[] args){
         String cmd = "Thirst";
-        List<ThirstCommand.SUBCOMMAND> sCmds = Arrays.asList(ThirstCommand.SUBCOMMAND.values());
-        String usage = String.format(
-                // /jd thirst (set/get) (thirst) [name]
-                "/%s %s (%s) (thirst) [name]",
-                cmdName, cmd, sCmds.stream().map(s ->
-                        s.toString().toLowerCase()).collect(Collectors.joining("/"))
-        );
         ThirstCommand thirstCmd = new ThirstCommand(sender);
         if (args.length == 0){
-            sender.sendMessage("Insufficient arguments. Usage: "+usage);
+            StringBuilder message = new StringBuilder("Insufficient, usage:\n");
+            for (CommandType.STATS com : CommandType.STATS.values()){
+                message.append(String.format("/%s %s %s\n", cmd, com.toString(), com.usage).toLowerCase());
+            }
+            sender.sendMessage(message.toString());
             return false;
         }
         if (Utils.equatesTo(args[0].toLowerCase(),
@@ -256,24 +348,29 @@ public class Commands implements CommandExecutor {
                 ThirstCommand.SUBCOMMAND.LIST.name().toLowerCase())){
             return thirstCmd.sendThirstList();
         }
-        sender.sendMessage("Illegal arguments. Usage:"+usage);
+        StringBuilder message = new StringBuilder("Insufficient, usage:\n");
+        for (CommandType.STATS com : CommandType.STATS.values()){
+            message.append(String.format("/%s %s %s %s\n", Main.commandName, cmd, com.toString(), com.usage).toLowerCase());
+        }
+        sender.sendMessage(message.toString());
         return false;
     }
     public static boolean injury(CommandSender sender, String[] args){
         String cmd = "injury";
-        List<InjuryCommand.SUBCOMMAND> sCmds = Arrays.asList(InjuryCommand.SUBCOMMAND.values());
-        String usage = String.format(
-                "/%s %s (%s) (%s) [name]",
-                cmdName, cmd, sCmds.stream().map(s ->
-                s.toString().toLowerCase()).collect(Collectors.joining("/")),
-                Arrays.stream(Injury.INJURIES.values()).map(s ->
-                        s.toString().toLowerCase()).collect(Collectors.joining("/"))
-        );
+//        String usage = String.format(
+//                "/%s %s (%s) (%s) [name]",
+//                cmdName, cmd, sCmds.stream().map(s ->
+//                s.toString().toLowerCase()).collect(Collectors.joining("/")),
+//                Arrays.stream(Injury.INJURIES.values()).map(s ->
+//                        s.toString().toLowerCase()).collect(Collectors.joining("/"))
+//        );
         InjuryCommand injuryCmd = new InjuryCommand(sender);
         if (args.length == 0){
-            sender.sendMessage(
-                    "Not enough arguments. Usage:"+usage
-            );
+            StringBuilder message = new StringBuilder("Insufficient args, usage:\n");
+            for (CommandType.INJURY com : CommandType.INJURY.values()){
+                message.append(String.format("/%s %s %s %s\n", Main.commandName, cmd, com.toString(), com.usage).toLowerCase());
+            }
+            sender.sendMessage(message.toString());
             return false;
         }
         if (Utils.equatesTo(args[0].toUpperCase(),
@@ -312,7 +409,11 @@ public class Commands implements CommandExecutor {
                 return false;
             }
         }
-        sender.sendMessage("Illegal arguments. Usage:"+usage);
+        StringBuilder message = new StringBuilder("Not enough arguments, usage:\n");
+        for (CommandType.INJURY inj : CommandType.INJURY.values()){
+            message.append(String.format("/%s %s %s %s\n", Main.commandName, cmd, inj.toString(), inj.usage));
+        }
+        sender.sendMessage(message.toString());
         return false;
     }
 }

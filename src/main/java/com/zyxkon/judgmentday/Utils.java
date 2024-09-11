@@ -95,14 +95,7 @@ public final class Utils {
     }
     public static boolean equatesTo(String s1, String s2){
         if (s1.length() > s2.length()){
-//            throw new IllegalArgumentException(String.format("The length of s1 (\"%s\") surpasses that of s2 (\"%s\")",
-//                    s1, s2));
-//            Main.getInstance().getServer().getConsoleSender().sendMessage(
-//                    String.format(
-//                            "IllegalArgumentException: The length of s1 (\"%s\") surpasses that of s2 (\"%s\")", s1, s2
-//                    )
-//            );
-            return false;
+            return equatesTo(s2, s1);
         }
         for (int i = 0; i<s1.length(); i++){
             if (s1.charAt(i) != s2.charAt(i)){

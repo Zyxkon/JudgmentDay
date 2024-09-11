@@ -7,6 +7,8 @@ public abstract class JDCommand {
     public CommandSender sender;
     public Player pSender;
     public boolean isPlayer;
+
+    public enum SUBCOMMAND{}
     public JDCommand(CommandSender sender){
         this.sender = sender;
         try {
@@ -15,5 +17,8 @@ public abstract class JDCommand {
         } catch (ClassCastException exc){
             this.isPlayer = false;
         }
+    }
+    public SUBCOMMAND[] getSubcommands(){
+        return SUBCOMMAND.values();
     }
 }
