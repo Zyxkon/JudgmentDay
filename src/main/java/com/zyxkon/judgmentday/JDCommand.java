@@ -4,11 +4,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public abstract class JDCommand {
+    static String name;
     public CommandSender sender;
     public Player pSender;
     public boolean isPlayer;
 
-    public enum SUBCOMMAND{}
     public JDCommand(CommandSender sender){
         this.sender = sender;
         try {
@@ -18,7 +18,6 @@ public abstract class JDCommand {
             this.isPlayer = false;
         }
     }
-    public SUBCOMMAND[] getSubcommands(){
-        return SUBCOMMAND.values();
-    }
+    public String getName(){ return name;}
+    public void setName(String n){ name = n;}
 }

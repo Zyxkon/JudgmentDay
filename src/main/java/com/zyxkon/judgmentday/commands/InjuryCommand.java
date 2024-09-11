@@ -1,35 +1,28 @@
 package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.CommandType;
 import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.injuries.Injury;
 import com.zyxkon.judgmentday.injuries.InjuryManager;
-import com.zyxkon.judgmentday.injuries.bloodloss.BloodLoss;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
-import com.zyxkon.judgmentday.injuries.impairment.Impairment;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
-import com.zyxkon.judgmentday.injuries.infection.Infection;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
 import com.zyxkon.judgmentday.injuries.poisoning.PoisoningManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class InjuryCommand extends JDCommand {
-    public enum SUBCOMMAND
-    {
-        CHECK, INFLICT, HEAL
-    }
     BloodLossManager bloodMan = Main.bloodLossManager;
     ImpairmentManager impaMan = Main.impairmentManager;
     InfectionManager infecMan = Main.infectionManager;
     PoisoningManager poisoMan = Main.poisoningManager;
     public InjuryCommand(CommandSender sender) {
         super(sender);
+        this.setName("injury");
     }
     public boolean check(){
         if (!isPlayer){
@@ -123,5 +116,8 @@ public class InjuryCommand extends JDCommand {
                 });
         }
         return false;
+    }
+    public CommandType.INJURY[] getSubcommands(){
+        return CommandType.INJURY.values();
     }
 }

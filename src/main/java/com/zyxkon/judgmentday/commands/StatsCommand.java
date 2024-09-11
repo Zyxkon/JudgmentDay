@@ -1,5 +1,6 @@
 package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.CommandType;
 import com.zyxkon.judgmentday.Counter;
 import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.Utils;
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player;
 public class StatsCommand extends JDCommand {
     public StatsCommand(CommandSender sender) {
         super(sender);
+        this.setName("stats");
     }
     public enum SUBCOMMAND
     {
@@ -48,6 +50,9 @@ public class StatsCommand extends JDCommand {
                         "Walkers killed: %d\n",
                 Counter.getDeaths(p), Counter.getPlayerKills(p), Counter.getWalkerKills(p)
         );
+    }
+    public CommandType.STATS[] getSubcommands(){
+        return CommandType.STATS.values();
     }
 }
 

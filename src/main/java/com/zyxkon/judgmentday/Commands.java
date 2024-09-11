@@ -17,89 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
-class CommandType {
-    enum INJURY {
-        CHECK(),
-        INFLICT(Injury.INJURIES.class),
-        HEAL();
-        // boilerplate
-        List<String> params = new ArrayList<>();
-        String usage;
-        INJURY(Class<?>... args) {
-            Arrays.stream(args).forEach(
-                    arg -> params
-                            .add(
-                                    arg.isEnum()
-                                            ? Arrays.stream(arg.getEnumConstants())
-                                            .map(Object::toString)
-                                            .collect(Collectors.joining("|"))
-                                            : arg.getName()
-                            )
-            );
-            usage = (params.stream()
-                    .map(s -> "[" + s + "]"))
-                    .collect(Collectors.joining(" "))
-                    .concat(" <player>")
-                    .toLowerCase();
-        }
-    }
 
-
-
-    enum STATS {
-        GET();
-        // boilerplate
-        List<String> params = new ArrayList<>();
-        String usage;
-        STATS(Class<?>... args) {
-            Arrays.stream(args).forEach(
-                    arg -> params
-                            .add(
-                                    arg.isEnum()
-                                            ? Arrays.stream(arg.getEnumConstants())
-                                            .map(Object::toString)
-                                            .collect(Collectors.joining("|"))
-                                            : arg.getName()
-                            )
-            );
-            usage = (params.stream()
-                    .map(s -> "[" + s + "]"))
-                    .collect(Collectors.joining(" "))
-                    .concat(" <player>")
-                    .toLowerCase();
-        }
-    }
-    enum THIRST {
-        SET(int.class), GET();
-        // boilerplate
-        List<String> params = new ArrayList<>();
-        String usage;
-        THIRST(Class<?>... args) {
-            Arrays.stream(args).forEach(
-                    arg -> params
-                            .add(
-                                    arg.isEnum()
-                                            ? Arrays.stream(arg.getEnumConstants())
-                                            .map(Object::toString)
-                                            .collect(Collectors.joining("|"))
-                                            : arg.getName()
-                            )
-            );
-            usage = (params.stream()
-                    .map(s -> "[" + s + "]"))
-                    .collect(Collectors.joining(" "))
-                    .concat(" <player>")
-                    .toLowerCase();
-        }
-    }
-
-//    Class<? extends JDCommand> jd;
-//    CommandType(Class<? extends JDCommand> jd) {
-//        this.jd = jd;
-//
-//    }
-
-}
 public class Commands implements CommandExecutor {
     static Main plugin;
     static String cmdName;
@@ -283,135 +201,126 @@ public class Commands implements CommandExecutor {
         return false;
     }
     public static boolean stats(CommandSender sender, String[] args) {
-        StatsCommand statsCmd = new StatsCommand(sender);
-        ArrayList <String> subCmds = new ArrayList<>();
-        for (StatsCommand.SUBCOMMAND sub : StatsCommand.SUBCOMMAND.values()) {
-            subCmds.add(sub.name().toLowerCase());
+        StatsCommand jdCmd = new StatsCommand(sender);
+        StringBuilder errMessage = new StringBuilder("Insufficient args, usage:\n");
+        for (CommandType.STATS com : CommandType.STATS.values()){
+            errMessage.append(String.format("/%s %s %s %s\n", Main.commandName, jdCmd, com.toString(), com.usage).toLowerCase());
         }
-        String usage = String.format(
-                "/%s %s (%s) [name]",
-                plugin.getName(), "stats", String.join("/", subCmds)
-        );
         if (args.length == 0){
-            sender.sendMessage("No arguments provided. Usage:"+usage);
+            sender.sendMessage(errMessage.toString());
             return false;
         }
-        if (Utils.equatesTo(args[0], StatsCommand.SUBCOMMAND.RESET.toString().toLowerCase())) {
-            try {
-                // if there is a subject to reset the stats of
-                return statsCmd.reset(Bukkit.getPlayer(args[1]));
-            } catch (IndexOutOfBoundsException exc) {
-                // if there is no subject to reset the stats of
-                return statsCmd.reset();
-            }
-        } else if (Utils.equatesTo(args[0], StatsCommand.SUBCOMMAND.GET.toString().toLowerCase())) {
-            try {
-                return statsCmd.get(Bukkit.getPlayer(args[1]));
-            } catch (IndexOutOfBoundsException exc) {
-                // no subject found
-                return statsCmd.get();
+        for (CommandType.STATS s : jdCmd.getSubcommands()) {
+            if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
+                if (s == CommandType.STATS.GET) {
+                    try {
+                        return jdCmd.get(Bukkit.getPlayer(args[1]));
+                    } catch (IndexOutOfBoundsException e) {
+                        return jdCmd.get();
+                    }
+                }
             }
         }
-        sender.sendMessage(String.format("Illegal arguments. Usage: /%s (get/reset) [name]", cmdName));
+        sender.sendMessage(errMessage.toString());
         return false;
     }
     public static boolean thirst(CommandSender sender, String[] args){
-        String cmd = "Thirst";
-        ThirstCommand thirstCmd = new ThirstCommand(sender);
+        ThirstCommand jdCmd = new ThirstCommand(sender);
+        StringBuilder errMessage = new StringBuilder("Insufficient, usage:\n");
+        for (CommandType.THIRST com : CommandType.THIRST.values()){
+            errMessage.append(String.format("/%s %s %s %s\n", Main.commandName, jdCmd.getName(), com.toString(), com.usage).toLowerCase());
+        }
         if (args.length == 0){
-            StringBuilder message = new StringBuilder("Insufficient, usage:\n");
-            for (CommandType.STATS com : CommandType.STATS.values()){
-                message.append(String.format("/%s %s %s\n", cmd, com.toString(), com.usage).toLowerCase());
-            }
-            sender.sendMessage(message.toString());
+            sender.sendMessage(errMessage.toString());
             return false;
         }
-        if (Utils.equatesTo(args[0].toLowerCase(),
-                ThirstCommand.SUBCOMMAND.GET.name().toLowerCase())) {
-            try {
-                // if there is a subject to reset the stats of
-                return thirstCmd.get(Bukkit.getPlayer(args[1]));
-            } catch (IndexOutOfBoundsException exc) {
-                // if there is no subject to reset the stats of
-                return thirstCmd.get();
+        for (CommandType.THIRST s : jdCmd.getSubcommands()) {
+            if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
+                switch (s){
+                    case GET:
+                    {
+                        try {
+                            return jdCmd.get(Bukkit.getPlayer(args[1]));
+                        } catch (IndexOutOfBoundsException e){
+                            return jdCmd.get();
+                        }
+                    }
+                    case SET:
+                    {
+                        try {
+                            return jdCmd.set(Bukkit.getPlayer(args[2]), Integer.parseInt(args[1]));
+                        } catch (IndexOutOfBoundsException e){
+                            return jdCmd.set(Integer.parseInt(args[1]));
+                        }
+                    }
+                    case RESET:
+                        try {
+                            return jdCmd.reset(Bukkit.getPlayer(args[1]));
+                        } catch (IndexOutOfBoundsException e){
+                            return jdCmd.reset();
+                        }
+                    case LIST:
+                    {
+                        return jdCmd.sendThirstList();
+                    }
+                }
             }
-        } else if (Utils.equatesTo(args[0].toLowerCase(),
-                ThirstCommand.SUBCOMMAND.SET.name().toLowerCase())) {
-            try {
-                return thirstCmd.set(Bukkit.getPlayer(args[2]), Integer.parseInt(args[1]));
-            } catch (IndexOutOfBoundsException exc) {
-                // no subject found
-                return thirstCmd.set(Integer.parseInt(args[1]));
-            }
-        }
-        else if  (Utils.equatesTo(args[0].toLowerCase(),
-                ThirstCommand.SUBCOMMAND.LIST.name().toLowerCase())){
-            return thirstCmd.sendThirstList();
         }
         StringBuilder message = new StringBuilder("Insufficient, usage:\n");
         for (CommandType.STATS com : CommandType.STATS.values()){
-            message.append(String.format("/%s %s %s %s\n", Main.commandName, cmd, com.toString(), com.usage).toLowerCase());
+            message.append(String.format("/%s %s %s %s\n", Main.commandName, jdCmd.getName(), com.toString(), com.usage).toLowerCase());
         }
         sender.sendMessage(message.toString());
         return false;
     }
     public static boolean injury(CommandSender sender, String[] args){
-        String cmd = "injury";
-//        String usage = String.format(
-//                "/%s %s (%s) (%s) [name]",
-//                cmdName, cmd, sCmds.stream().map(s ->
-//                s.toString().toLowerCase()).collect(Collectors.joining("/")),
-//                Arrays.stream(Injury.INJURIES.values()).map(s ->
-//                        s.toString().toLowerCase()).collect(Collectors.joining("/"))
-//        );
-        InjuryCommand injuryCmd = new InjuryCommand(sender);
+        InjuryCommand jdCmd = new InjuryCommand(sender);
+        StringBuilder message = new StringBuilder("Not enough arguments, usage:\n");
+        Arrays.stream(CommandType.INJURY.values()).forEach(inj
+                -> message.append(
+                        String.format("/%s %s %s %s\n",
+                                Main.commandName, jdCmd.getName(), inj.toString(), inj.usage)
+                )
+        );
         if (args.length == 0){
-            StringBuilder message = new StringBuilder("Insufficient args, usage:\n");
-            for (CommandType.INJURY com : CommandType.INJURY.values()){
-                message.append(String.format("/%s %s %s %s\n", Main.commandName, cmd, com.toString(), com.usage).toLowerCase());
-            }
             sender.sendMessage(message.toString());
             return false;
         }
-        if (Utils.equatesTo(args[0].toUpperCase(),
-                InjuryCommand.SUBCOMMAND.CHECK.name())) {
-            try {
-                // if there is a subject
-                return injuryCmd.check(Bukkit.getPlayer(args[1]));
-            } catch (IndexOutOfBoundsException exc) {
-                // if there is no subject
-                return injuryCmd.check();
-            }
-        }
-        else if (Utils.equatesTo(args[0].toUpperCase(),
-                InjuryCommand.SUBCOMMAND.HEAL.name())){
-            try {
-                return injuryCmd.heal(Bukkit.getPlayer(args[2]));
-            } catch (IndexOutOfBoundsException exc) {
-                // no subject found
-                return injuryCmd.heal();
-            }
-        }
-        else if (Utils.equatesTo(args[0].toUpperCase(),
-                InjuryCommand.SUBCOMMAND.INFLICT.name())) {
-            try {
-                Injury.INJURIES inj = injuryCmd.getInjury(args[1].toUpperCase());
-                System.out.println(args[1].toUpperCase());
-                    try {
-                        return injuryCmd.inflict(inj, Bukkit.getPlayer(args[2]));
-                    } catch (IndexOutOfBoundsException exc) {
-                        // no subject found
-                        return injuryCmd.inflict(inj);
+        for (CommandType.INJURY s : jdCmd.getSubcommands()) {
+            if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
+                switch (s){
+                    case CHECK:
+                    {
+                        try { return jdCmd.check(Bukkit.getPlayer(args[1])); }
+                        catch (IndexOutOfBoundsException e){ return jdCmd.check(); }
+
+                    }
+                    case INFLICT:
+                    {
+                        try {
+                            Injury.INJURIES inj = jdCmd.getInjury(args[1].toUpperCase());
+                            System.out.println(args[1].toUpperCase());
+                            try {
+                                return jdCmd.inflict(inj, Bukkit.getPlayer(args[2]));
+                            } catch (IndexOutOfBoundsException exc) {
+                                return jdCmd.inflict(inj);
+                            }
+                        }
+                        catch (IndexOutOfBoundsException | IllegalArgumentException ignored){
+                            sender.sendMessage("Unknown injury.");
+                            return false;
+                        }
+                    }
+                    case HEAL:
+                    {
+                        try {
+                            return jdCmd.heal(Bukkit.getPlayer(args[2]));
+                        } catch (IndexOutOfBoundsException exc) {
+                            return jdCmd.heal();
+                        }
                     }
                 }
-            catch (IndexOutOfBoundsException | IllegalArgumentException ignored){
-                sender.sendMessage("Unknown injury.");
-                return false;
             }
-        }
-        StringBuilder message = new StringBuilder("Not enough arguments, usage:\n");
-        for (CommandType.INJURY inj : CommandType.INJURY.values()){
-            message.append(String.format("/%s %s %s %s\n", Main.commandName, cmd, inj.toString(), inj.usage));
         }
         sender.sendMessage(message.toString());
         return false;
