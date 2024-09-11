@@ -1,6 +1,6 @@
 package com.zyxkon.judgmentday.commands;
 
-import com.zyxkon.judgmentday.CommandType;
+import com.zyxkon.judgmentday.CommandSystem;
 import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.Utils;
@@ -24,6 +24,16 @@ public class InjuryCommand extends JDCommand {
         super(sender);
         this.setName("injury");
     }
+
+    @Override
+    public CommandSystem.Commands getCmdType() {
+        return CommandSystem.Commands.INJURY;
+    }
+
+    public String getUsage(){
+        return CommandSystem.Commands.INJURY.getUsage();
+    }
+
     public boolean check(){
         if (!isPlayer){
             sender.sendMessage("You cannot check your own health.");
@@ -116,8 +126,5 @@ public class InjuryCommand extends JDCommand {
                 });
         }
         return false;
-    }
-    public CommandType.INJURY[] getSubcommands(){
-        return CommandType.INJURY.values();
     }
 }

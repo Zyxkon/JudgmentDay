@@ -20,4 +20,6 @@ public abstract class JDCommand {
     }
     public String getName(){ return name;}
     public void setName(String n){ name = n;}
+
+    public abstract CommandSystem.Commands getCmdType();
 }

@@ -1,6 +1,6 @@
 package com.zyxkon.judgmentday.commands;
 
-import com.zyxkon.judgmentday.CommandType;
+import com.zyxkon.judgmentday.CommandSystem;
 import com.zyxkon.judgmentday.Counter;
 import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.Utils;
@@ -8,13 +8,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class StatsCommand extends JDCommand {
+    private final static CommandSystem.Commands cmdType = CommandSystem.Commands.STATS;
+
+    public CommandSystem.Commands getCmdType() {
+        return cmdType;
+    }
+    public String getUsage(){
+        return CommandSystem.Commands.STATS.getUsage();
+    }
     public StatsCommand(CommandSender sender) {
         super(sender);
         this.setName("stats");
-    }
-    public enum SUBCOMMAND
-    {
-        RESET, GET
     }
     public boolean reset(Player player){
         player.sendMessage("You may be a player, but your stats should not be reset.");
@@ -50,9 +54,6 @@ public class StatsCommand extends JDCommand {
                         "Walkers killed: %d\n",
                 Counter.getDeaths(p), Counter.getPlayerKills(p), Counter.getWalkerKills(p)
         );
-    }
-    public CommandType.STATS[] getSubcommands(){
-        return CommandType.STATS.values();
     }
 }
 

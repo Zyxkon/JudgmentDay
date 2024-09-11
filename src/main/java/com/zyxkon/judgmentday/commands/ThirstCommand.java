@@ -1,6 +1,6 @@
 package com.zyxkon.judgmentday.commands;
 
-import com.zyxkon.judgmentday.CommandType;
+import com.zyxkon.judgmentday.CommandSystem;
 import com.zyxkon.judgmentday.JDCommand;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.Bukkit;
@@ -15,6 +15,15 @@ public class ThirstCommand extends JDCommand {
     public ThirstCommand(CommandSender sender) {
         super(sender);
         this.setName("thirst");
+    }
+
+    @Override
+    public CommandSystem.Commands getCmdType() {
+        return CommandSystem.Commands.THIRST;
+    }
+
+    public String getUsage(){
+        return CommandSystem.Commands.THIRST.getUsage();
     }
     public boolean reset(Player p){
         return set(p, 100);
@@ -61,8 +70,5 @@ public class ThirstCommand extends JDCommand {
             i++;
         }
         return true;
-    }
-    public CommandType.THIRST[] getSubcommands(){
-        return CommandType.THIRST.values();
     }
 }

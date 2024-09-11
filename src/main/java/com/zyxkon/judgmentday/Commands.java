@@ -202,17 +202,14 @@ public class Commands implements CommandExecutor {
     }
     public static boolean stats(CommandSender sender, String[] args) {
         StatsCommand jdCmd = new StatsCommand(sender);
-        StringBuilder errMessage = new StringBuilder("Insufficient args, usage:\n");
-        for (CommandType.STATS com : CommandType.STATS.values()){
-            errMessage.append(String.format("/%s %s %s %s\n", Main.commandName, jdCmd, com.toString(), com.usage).toLowerCase());
-        }
+        CommandSystem.Commands c = jdCmd.getCmdType();
         if (args.length == 0){
-            sender.sendMessage(errMessage.toString());
+            sender.sendMessage(jdCmd.getUsage());
             return false;
         }
-        for (CommandType.STATS s : jdCmd.getSubcommands()) {
+        for (CommandSystem.Subcommands s : CommandSystem.Subcommands.getSubcommands(c)) {
             if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
-                if (s == CommandType.STATS.GET) {
+                if (s == CommandSystem.Subcommands.GET) {
                     try {
                         return jdCmd.get(Bukkit.getPlayer(args[1]));
                     } catch (IndexOutOfBoundsException e) {
@@ -221,20 +218,16 @@ public class Commands implements CommandExecutor {
                 }
             }
         }
-        sender.sendMessage(errMessage.toString());
+        sender.sendMessage(jdCmd.getUsage());
         return false;
     }
     public static boolean thirst(CommandSender sender, String[] args){
         ThirstCommand jdCmd = new ThirstCommand(sender);
-        StringBuilder errMessage = new StringBuilder("Insufficient, usage:\n");
-        for (CommandType.THIRST com : CommandType.THIRST.values()){
-            errMessage.append(String.format("/%s %s %s %s\n", Main.commandName, jdCmd.getName(), com.toString(), com.usage).toLowerCase());
-        }
         if (args.length == 0){
-            sender.sendMessage(errMessage.toString());
+            sender.sendMessage(jdCmd.getUsage());
             return false;
         }
-        for (CommandType.THIRST s : jdCmd.getSubcommands()) {
+        for (CommandSystem.Subcommands s : CommandSystem.Subcommands.getSubcommands(jdCmd.getCmdType())) {
             if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
                 switch (s){
                     case GET:
@@ -253,12 +246,13 @@ public class Commands implements CommandExecutor {
                             return jdCmd.set(Integer.parseInt(args[1]));
                         }
                     }
-                    case RESET:
+                    case RESET: {
                         try {
                             return jdCmd.reset(Bukkit.getPlayer(args[1]));
-                        } catch (IndexOutOfBoundsException e){
+                        } catch (IndexOutOfBoundsException e) {
                             return jdCmd.reset();
                         }
+                    }
                     case LIST:
                     {
                         return jdCmd.sendThirstList();
@@ -266,27 +260,16 @@ public class Commands implements CommandExecutor {
                 }
             }
         }
-        StringBuilder message = new StringBuilder("Insufficient, usage:\n");
-        for (CommandType.STATS com : CommandType.STATS.values()){
-            message.append(String.format("/%s %s %s %s\n", Main.commandName, jdCmd.getName(), com.toString(), com.usage).toLowerCase());
-        }
-        sender.sendMessage(message.toString());
+        sender.sendMessage(jdCmd.getUsage());
         return false;
     }
     public static boolean injury(CommandSender sender, String[] args){
         InjuryCommand jdCmd = new InjuryCommand(sender);
-        StringBuilder message = new StringBuilder("Not enough arguments, usage:\n");
-        Arrays.stream(CommandType.INJURY.values()).forEach(inj
-                -> message.append(
-                        String.format("/%s %s %s %s\n",
-                                Main.commandName, jdCmd.getName(), inj.toString(), inj.usage)
-                )
-        );
         if (args.length == 0){
-            sender.sendMessage(message.toString());
+            sender.sendMessage(jdCmd.getUsage());
             return false;
         }
-        for (CommandType.INJURY s : jdCmd.getSubcommands()) {
+        for (CommandSystem.Subcommands s : CommandSystem.Subcommands.getSubcommands(jdCmd.getCmdType())) {
             if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
                 switch (s){
                     case CHECK:
@@ -322,7 +305,7 @@ public class Commands implements CommandExecutor {
                 }
             }
         }
-        sender.sendMessage(message.toString());
+        sender.sendMessage(jdCmd.getUsage());
         return false;
     }
 }
