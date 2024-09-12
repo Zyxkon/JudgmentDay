@@ -1,4 +1,5 @@
 package com.zyxkon.judgmentday;
+import com.zyxkon.judgmentday.commands.Commands;
 import com.zyxkon.judgmentday.commands.ZCommand;
 import com.zyxkon.judgmentday.extensions.*;
 import com.zyxkon.judgmentday.general_listeners.*;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

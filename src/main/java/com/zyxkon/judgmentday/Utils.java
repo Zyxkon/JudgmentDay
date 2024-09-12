@@ -5,11 +5,13 @@ import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Objective;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Utils {
     public static String translate(String str) {
@@ -95,7 +97,7 @@ public final class Utils {
     }
     public static boolean equatesTo(String s1, String s2){
         if (s1.length() > s2.length()){
-            return equatesTo(s2, s1);
+            return false;
         }
         for (int i = 0; i<s1.length(); i++){
             if (s1.charAt(i) != s2.charAt(i)){
@@ -158,5 +160,27 @@ public final class Utils {
         //    16 public static final Color PURPLE = fromRGB(8388736);
         //    17 public static final Color ORANGE = fromRGB(16753920);
         return r;
+    }
+
+    public static String returnUsage(Class<?>... args){
+        List<String> params = new ArrayList<>();
+        Arrays.stream(args).forEach(
+                arg -> params
+                        .add(
+                                arg.isEnum()
+                                        ? Arrays.stream(arg.getEnumConstants())
+                                        .map(Object::toString)
+                                        .collect(Collectors.joining("|"))
+                                        : arg.getSimpleName()
+                        )
+        );
+        return (params.stream()
+                .map(s -> "[" + s + "]"))
+                .collect(Collectors.joining(" "));
+    }
+    public static void sendMultilineMessage(CommandSender p, String m){
+        for (String s : m.split("\n")){
+            p.sendMessage(s);
+        }
     }
 }

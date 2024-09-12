@@ -1,10 +1,11 @@
-package com.zyxkon.judgmentday;
+package com.zyxkon.judgmentday.commands;
 
-import com.zyxkon.judgmentday.commands.InjuryCommand;
-import com.zyxkon.judgmentday.commands.StatsCommand;
-import com.zyxkon.judgmentday.commands.ThirstCommand;
+import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.Utils;
+import com.zyxkon.judgmentday.commands.types.InjuryCommand;
+import com.zyxkon.judgmentday.commands.types.StatsCommand;
+import com.zyxkon.judgmentday.commands.types.ThirstCommand;
 import com.zyxkon.judgmentday.extensions.WorldGuardExtension;
-import com.zyxkon.judgmentday.injuries.Injury;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 
 public class Commands implements CommandExecutor {
@@ -202,111 +202,39 @@ public class Commands implements CommandExecutor {
     }
     public static boolean stats(CommandSender sender, String[] args) {
         StatsCommand jdCmd = new StatsCommand(sender);
-        CommandSystem.Commands c = jdCmd.getCmdType();
-        if (args.length == 0){
-            sender.sendMessage(jdCmd.getUsage());
-            return false;
-        }
-        for (CommandSystem.Subcommands s : CommandSystem.Subcommands.getSubcommands(c)) {
-            if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
-                if (s == CommandSystem.Subcommands.GET) {
-                    try {
-                        return jdCmd.get(Bukkit.getPlayer(args[1]));
-                    } catch (IndexOutOfBoundsException e) {
-                        return jdCmd.get();
-                    }
-                }
-            }
-        }
-        sender.sendMessage(jdCmd.getUsage());
-        return false;
+        return process(jdCmd, args);
     }
     public static boolean thirst(CommandSender sender, String[] args){
         ThirstCommand jdCmd = new ThirstCommand(sender);
-        if (args.length == 0){
-            sender.sendMessage(jdCmd.getUsage());
-            return false;
-        }
-        for (CommandSystem.Subcommands s : CommandSystem.Subcommands.getSubcommands(jdCmd.getCmdType())) {
-            if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
-                switch (s){
-                    case GET:
-                    {
-                        try {
-                            return jdCmd.get(Bukkit.getPlayer(args[1]));
-                        } catch (IndexOutOfBoundsException e){
-                            return jdCmd.get();
-                        }
-                    }
-                    case SET:
-                    {
-                        try {
-                            return jdCmd.set(Bukkit.getPlayer(args[2]), Integer.parseInt(args[1]));
-                        } catch (IndexOutOfBoundsException e){
-                            return jdCmd.set(Integer.parseInt(args[1]));
-                        }
-                    }
-                    case RESET: {
-                        try {
-                            return jdCmd.reset(Bukkit.getPlayer(args[1]));
-                        } catch (IndexOutOfBoundsException e) {
-                            return jdCmd.reset();
-                        }
-                    }
-                    case LIST:
-                    {
-                        return jdCmd.sendThirstList();
-                    }
-                }
-            }
-        }
-        sender.sendMessage(jdCmd.getUsage());
-        return false;
+        return process(jdCmd, args);
     }
     public static boolean injury(CommandSender sender, String[] args){
         InjuryCommand jdCmd = new InjuryCommand(sender);
+        return process(jdCmd, args);
+    }
+
+
+    public static boolean process(JDCommand jdCmd, String[] args){
+        CommandSender sender = jdCmd.sender;
         if (args.length == 0){
-            sender.sendMessage(jdCmd.getUsage());
+            Utils.sendMultilineMessage(sender, jdCmd.usages());
             return false;
         }
-        for (CommandSystem.Subcommands s : CommandSystem.Subcommands.getSubcommands(jdCmd.getCmdType())) {
-            if (Utils.equatesTo(args[0].toUpperCase(), s.name())){
-                switch (s){
-                    case CHECK:
-                    {
-                        try { return jdCmd.check(Bukkit.getPlayer(args[1])); }
-                        catch (IndexOutOfBoundsException e){ return jdCmd.check(); }
-
-                    }
-                    case INFLICT:
-                    {
-                        try {
-                            Injury.INJURIES inj = jdCmd.getInjury(args[1].toUpperCase());
-                            System.out.println(args[1].toUpperCase());
-                            try {
-                                return jdCmd.inflict(inj, Bukkit.getPlayer(args[2]));
-                            } catch (IndexOutOfBoundsException exc) {
-                                return jdCmd.inflict(inj);
-                            }
-                        }
-                        catch (IndexOutOfBoundsException | IllegalArgumentException ignored){
-                            sender.sendMessage("Unknown injury.");
-                            return false;
-                        }
-                    }
-                    case HEAL:
-                    {
-                        try {
-                            return jdCmd.heal(Bukkit.getPlayer(args[2]));
-                        } catch (IndexOutOfBoundsException exc) {
-                            return jdCmd.heal();
-                        }
-                    }
+        int i = 0;
+        for (String name : jdCmd.getSubcommandNames()) {
+            String sub = args[i].toUpperCase();
+            if (Utils.equatesTo(sub, name)){
+                try {
+                    return jdCmd.applySubcommand(name, Arrays.copyOfRange(args, i + 1, args.length));
+                } catch (IndexOutOfBoundsException e){
+                    Utils.sendMultilineMessage(sender, jdCmd.usages());
+                    return false;
                 }
             }
         }
-        sender.sendMessage(jdCmd.getUsage());
+        Utils.sendMultilineMessage(sender, jdCmd.usages());
         return false;
     }
 }
+
 
