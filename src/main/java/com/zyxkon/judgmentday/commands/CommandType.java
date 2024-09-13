@@ -1,38 +1,33 @@
 package com.zyxkon.judgmentday.commands;
 
 import com.zyxkon.judgmentday.Main;
-import com.zyxkon.judgmentday.Utils;
-import com.zyxkon.judgmentday.commands.types.InjuryCommand;
-import com.zyxkon.judgmentday.commands.types.StatsCommand;
-import com.zyxkon.judgmentday.commands.types.ThirstCommand;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
 
 public enum CommandType {
     INJURY, THIRST, STATS;
+    private final List<SubcommandType> subcommandTypeList = new ArrayList<>();
     CommandType() {
     }
 
-    public String getUsage() {
-        List<String> usageMsg = new ArrayList<>();
-        usageMsg.add("/"+ Main.commandName);
-        usageMsg.add(this.name());
-        switch (this){
-            case INJURY: {
-                usageMsg.add(InjuryCommand.getUsages());
-                break;
-            }
-            case STATS: {
-                usageMsg.add(StatsCommand.getUsages());
-                break;
-            }
-            case THIRST: {
-                usageMsg.add(ThirstCommand.getUsages());
-                break;
-            }
+    public void addSubcommand(SubcommandType subcommand){
+        this.subcommandTypeList.add(subcommand);
+    }
+    public List<SubcommandType> getSubcommands(){
+        return this.subcommandTypeList;
+    }
+    public String getUsage(){
+        List<String> uses = new ArrayList<>();
+        for (SubcommandType s : this.getSubcommands()){
+            List<String> strs = new ArrayList<>();
+            strs.add("/"+ Main.commandName);
+            strs.add(this.name());
+            strs.add(s.name());
+            strs.add(s.params);
+            uses.add(String.join(" ", strs));
         }
-        return String.join(" ", usageMsg);
+        return String.join("\n", uses);
     }
 }

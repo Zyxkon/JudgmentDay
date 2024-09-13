@@ -216,23 +216,24 @@ public class Commands implements CommandExecutor {
 
     public static boolean process(JDCommand jdCmd, String[] args){
         CommandSender sender = jdCmd.sender;
+        String u = jdCmd.getCommandType().getUsage();
         if (args.length == 0){
-            Utils.sendMultilineMessage(sender, jdCmd.usages());
+            Utils.sendMultilineMessage(sender, u);
             return false;
         }
         int i = 0;
-        for (String name : jdCmd.getSubcommandNames()) {
-            String sub = args[i].toUpperCase();
-            if (Utils.equatesTo(sub, name)){
+        for (SubcommandType sub : jdCmd.getCommandType().getSubcommands()) {
+            String arg = args[i].toUpperCase();
+            if (Utils.equatesTo(arg, sub.getName())){
                 try {
-                    return jdCmd.applySubcommand(name, Arrays.copyOfRange(args, i + 1, args.length));
+                    return jdCmd.applySubcommand(arg, Arrays.copyOfRange(args, i + 1, args.length));
                 } catch (IndexOutOfBoundsException e){
-                    Utils.sendMultilineMessage(sender, jdCmd.usages());
+                    Utils.sendMultilineMessage(sender, u);
                     return false;
                 }
             }
         }
-        Utils.sendMultilineMessage(sender, jdCmd.usages());
+        Utils.sendMultilineMessage(sender, u);
         return false;
     }
 }

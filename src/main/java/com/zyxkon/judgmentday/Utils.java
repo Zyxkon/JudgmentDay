@@ -89,7 +89,7 @@ public final class Utils {
         Material[] fluids = {Material.STATIONARY_WATER, Material.WATER, Material.STATIONARY_LAVA, Material.LAVA};
         return (!block.isEmpty() && !Arrays.asList(fluids).contains(block.getType()));
     }
-    public static <T> T randElement(ArrayList<T> arrayList){
+    static public <T> T randElement(ArrayList<T> arrayList){
         if (arrayList.isEmpty()) return null;
         int size = arrayList.size();
         Random random = new Random();

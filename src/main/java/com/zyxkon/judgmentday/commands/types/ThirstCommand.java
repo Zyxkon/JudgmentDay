@@ -1,87 +1,55 @@
 package com.zyxkon.judgmentday.commands.types;
 
 
-import com.zyxkon.judgmentday.Main;
 import com.zyxkon.judgmentday.commands.CommandType;
-import com.zyxkon.judgmentday.commands.Commands;
 
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.commands.JDCommand;
+import com.zyxkon.judgmentday.commands.SubcommandType;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ThirstCommand extends JDCommand {
-    enum Subcommands {
-        SET(int.class, Player.class),
-        GET(Player.class),
-        RESET(Player.class),
-        LIST();
-
-
-
-        String usage;
-        Subcommands(Class<?>... args) {
-            usage = Utils.returnUsage(args);
-        }
-    }
-    public String usages(){
-        return getCmdType().getUsage();
-    }
+    public static final CommandType cmdType = CommandType.THIRST;
     public ThirstCommand(CommandSender sender) {
         super(sender);
-        this.setName("thirst");
-    }
-
-    public static CommandType getCmdType() {
-        return CommandType.THIRST;
-    }
-    public ThirstCommand getStatic(){
-        return null;
-    }
-    public static String getUsages(){
-        List<String> uses = new ArrayList<>();
-        for (Subcommands s : Subcommands.values()){
-            List<String> strs = new ArrayList<>();
-            strs.add("/"+ Main.commandName);
-            strs.add(getCmdType().name());
-            strs.add(s.name());
-            strs.add(s.usage);
-            uses.add(String.join(" ", strs));
-        }
-        return String.join("\n", uses);
-    }
-
-    public List<String> getSubcommandNames(){
-        return Arrays.stream(Subcommands.values()).map(Enum::name).collect(Collectors.toList());
+        this.setName(cmdType.name());
     }
 
     @Override
-    public boolean applySubcommand(String subcmd, String... args) {
+    public CommandType getCommandType() {
+        return cmdType;
+    }
+    @Override
+    public boolean applySubcommand(String subcmd, String[] args){
         int n = args.length;
         Player subject = n != 0 ? Bukkit.getPlayer(args[n - 1]) : null;
-        switch(Subcommands.valueOf(subcmd)){
-            case GET: {
-                return this.get(subject);
-            }
-            case RESET: {
-                return this.reset(subject);
-            }
-            case SET: {
-                try {
-                    int t = Integer.parseInt(args[0]);
-                    return this.set(subject, t);
-                } catch (NumberFormatException exception){
-                    sender.sendMessage("Please input an integer!");
-                    return false;
+        for (SubcommandType s : cmdType.getSubcommands()){
+            if (Utils.equatesTo(subcmd, s.getName())) {
+                switch (s){
+                    case THIRST_GET: {
+                        return this.get(subject);
+                    }
+                    case THIRST_LIST: {
+                        return this.sendThirstList();
+                    }
+                    case THIRST_RESET: {
+                        return this.reset(subject);
+                    }
+                    case THIRST_SET: {
+                        try {
+                            int t = Integer.parseInt(args[0]);
+                            return this.set(subject, t);
+                        } catch (NumberFormatException exception){
+                            sender.sendMessage("Please input an integer!");
+                            return false;
+                        }
+                    }
                 }
-            }
-            case LIST: {
-                return sendThirstList();
             }
         }
         return false;

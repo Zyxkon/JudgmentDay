@@ -11,9 +11,7 @@ public abstract class Injury {
     public abstract Runnable getRunnable();
     public static INJURIES getValue(String name){
         for (INJURIES i : INJURIES.values()){
-            if (Utils.equatesTo(name, i.name())){
-                return i;
-            }
+            if (Utils.equatesTo(name.toUpperCase(), i.name())) return i;
         }
         return null;
     }

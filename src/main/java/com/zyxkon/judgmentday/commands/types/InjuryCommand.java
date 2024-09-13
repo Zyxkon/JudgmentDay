@@ -4,8 +4,8 @@ import com.zyxkon.judgmentday.*;
 
 import com.zyxkon.judgmentday.commands.CommandType;
 import com.zyxkon.judgmentday.commands.JDCommand;
+import com.zyxkon.judgmentday.commands.SubcommandType;
 import com.zyxkon.judgmentday.injuries.Injury;
-import com.zyxkon.judgmentday.injuries.InjuryManager;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
 import com.zyxkon.judgmentday.injuries.infection.InfectionManager;
@@ -14,74 +14,42 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class InjuryCommand extends JDCommand {
-
-    public static CommandType getCmdType() {
-        return CommandType.INJURY;
-    }
-    public String usages(){
-        return getCmdType().getUsage();
-    }
-    public enum Subcommands {
-        CHECK(Player.class),
-        INFLICT(Injury.INJURIES.class, Player.class),
-        HEAL(Player.class);
-
-
-
-        String usage;
-        Subcommands(Class<?>... args) {
-            usage = Utils.returnUsage(args);
-        }
-    }
-    public static Subcommands[] getSubcommands(){
-        return Subcommands.values();
-    }
-    public static String getUsages(){
-        List<String> uses = new ArrayList<>();
-        for (Subcommands s : getSubcommands()){
-            List<String> strs = new ArrayList<>();
-            strs.add("/"+ Main.commandName);
-            strs.add(getCmdType().name());
-            strs.add(s.name());
-            strs.add(s.usage);
-            uses.add(String.join(" ", strs));
-        }
-        return String.join("\n", uses);
-    }
-    @Override
-    public String getUsagesAsInstance(){
-        return getUsages();
-    }
-
+    public static final CommandType cmdType = CommandType.INJURY;
     public InjuryCommand(CommandSender sender) {
         super(sender);
-        this.setName("injury");
+        this.setName(cmdType.name());
     }
+
+    @Override
+    public CommandType getCommandType() {
+        return cmdType;
+    }
+
+    @Override
     public boolean applySubcommand(String subcmd, String[] args){
         int n = args.length;
         Player subject = n != 0 ? Bukkit.getPlayer(args[n - 1]) : null;
-        switch(Subcommands.valueOf(subcmd)){
-            case HEAL: {
-                return this.heal(subject);
-            }
-            case INFLICT: {
-                return this.inflict(Injury.getValue(args[0]), subject);
-            }
-            case CHECK: {
-                return this.check(subject);
+        for (SubcommandType s : cmdType.getSubcommands()){
+            if (Utils.equatesTo(subcmd, s.getName())) {
+                switch (s){
+                    case INJURY_HEAL: {
+                        return this.heal(subject);
+                    }
+                    case INJURY_INFLICT: {
+                        return this.inflict(Injury.getValue(args[0]), subject);
+                    }
+                    case INJURY_CHECK: {
+                        return this.check(subject);
+                    }
+                }
             }
         }
         return false;
-    }
-
-    public List<String> getSubcommandNames(){
-        return Arrays.stream(Subcommands.values()).map(Enum::name).collect(Collectors.toList());
     }
 
     BloodLossManager bloodMan = Main.bloodLossManager;
@@ -123,11 +91,9 @@ public class InjuryCommand extends JDCommand {
             }
             return heal(pSender);
         }
-        for (InjuryManager<?> man : Main.injuryManagers){
-            if (man.isInjured(player)){
-                man.healPlayer(player);
-            }
-        }
+        Arrays.stream(Main.injuryManagers).forEach(m -> {
+                    if (m.isInjured(player)) m.healPlayer(player);
+        });
         return true;
     }
 
