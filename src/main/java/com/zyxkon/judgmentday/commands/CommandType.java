@@ -24,7 +24,7 @@ public enum CommandType {
             List<String> strs = new ArrayList<>();
             strs.add("/"+ Main.commandName);
             strs.add(this.name());
-            strs.add(s.name());
+            strs.add(s.getName());
             strs.add(s.params);
             uses.add(String.join(" ", strs));
         }
