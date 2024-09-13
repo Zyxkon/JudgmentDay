@@ -1,11 +1,11 @@
 package com.zyxkon.judgmentday.commands.types;
 
 
-import com.zyxkon.judgmentday.commands.CommandType;
+import com.zyxkon.judgmentday.CommandType;
 
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.commands.JDCommand;
-import com.zyxkon.judgmentday.commands.SubcommandType;
+import com.zyxkon.judgmentday.SubcommandType;
 import com.zyxkon.judgmentday.thirst.ThirstManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -14,7 +14,10 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class ThirstCommand extends JDCommand {
-    public static final CommandType cmdType = CommandType.THIRST;
+    public static final CommandType cmdType;
+    static {
+        cmdType = CommandType.THIRST;
+    }
     public ThirstCommand(CommandSender sender) {
         super(sender);
         this.setName(cmdType.name());
@@ -29,7 +32,7 @@ public class ThirstCommand extends JDCommand {
         int n = args.length;
         Player subject = n != 0 ? Bukkit.getPlayer(args[n - 1]) : null;
         for (SubcommandType s : cmdType.getSubcommands()){
-            if (Utils.equatesTo(subcmd, s.getName())) {
+            if (Utils.equatesTo(subcmd, s.getSimpleName())) {
                 switch (s){
                     case THIRST_GET: {
                         return this.get(subject);

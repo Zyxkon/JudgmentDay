@@ -1,5 +1,6 @@
 package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.CommandType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -180,7 +180,7 @@ public final class Utils {
     }
     public static void sendMultilineMessage(CommandSender p, String m){
         for (String s : m.split("\n")){
-            p.sendMessage(s);
+            p.sendMessage("["+Main.commandName+"] "+s);
         }
     }
 }

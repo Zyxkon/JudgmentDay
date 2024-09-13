@@ -2,9 +2,9 @@ package com.zyxkon.judgmentday.commands.types;
 
 import com.zyxkon.judgmentday.*;
 
-import com.zyxkon.judgmentday.commands.CommandType;
+import com.zyxkon.judgmentday.CommandType;
 import com.zyxkon.judgmentday.commands.JDCommand;
-import com.zyxkon.judgmentday.commands.SubcommandType;
+import com.zyxkon.judgmentday.SubcommandType;
 import com.zyxkon.judgmentday.injuries.Injury;
 import com.zyxkon.judgmentday.injuries.bloodloss.BloodLossManager;
 import com.zyxkon.judgmentday.injuries.impairment.ImpairmentManager;
@@ -19,7 +19,10 @@ import java.util.stream.Collectors;
 
 
 public class InjuryCommand extends JDCommand {
-    public static final CommandType cmdType = CommandType.INJURY;
+    public static final CommandType cmdType;
+    static {
+        cmdType = CommandType.INJURY;
+    }
     public InjuryCommand(CommandSender sender) {
         super(sender);
         this.setName(cmdType.name());
@@ -35,7 +38,7 @@ public class InjuryCommand extends JDCommand {
         int n = args.length;
         Player subject = n != 0 ? Bukkit.getPlayer(args[n - 1]) : null;
         for (SubcommandType s : cmdType.getSubcommands()){
-            if (Utils.equatesTo(subcmd, s.getName())) {
+            if (Utils.equatesTo(subcmd, s.getSimpleName())) {
                 switch (s){
                     case INJURY_HEAL: {
                         return this.heal(subject);

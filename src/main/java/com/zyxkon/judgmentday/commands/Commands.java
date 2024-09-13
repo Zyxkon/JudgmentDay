@@ -1,6 +1,8 @@
 package com.zyxkon.judgmentday.commands;
 
+import com.zyxkon.judgmentday.CommandType;
 import com.zyxkon.judgmentday.Main;
+import com.zyxkon.judgmentday.SubcommandType;
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.commands.types.InjuryCommand;
 import com.zyxkon.judgmentday.commands.types.StatsCommand;
@@ -45,20 +47,20 @@ public class Commands implements CommandExecutor {
         // Arrays.copyOfRange doesn't copy the element at the ending index, strings.length lies outside the boundary
         // of the `strings` array
         String[] args = Arrays.copyOfRange(strings, 1, strings.length);
-        commandSender.sendMessage("Args:\n");
-        Arrays.asList(args).forEach(commandSender::sendMessage);
+//        commandSender.sendMessage("Args:\n");
+//        Arrays.asList(args).forEach(commandSender::sendMessage);
         HashMap<String, Callable<Boolean>> commands = new HashMap<>();
-        commands.put("stats",
+        commands.put(CommandType.STATS.name(),
                 () -> stats(commandSender, args)
         );
-        commands.put("thirst",
+        commands.put(CommandType.THIRST.name(),
                 () -> thirst(commandSender, args)
         );
-        commands.put("injury",
+        commands.put(CommandType.INJURY.name(),
                 () -> injury(commandSender, args)
         );
         for (String str : commands.keySet()){
-            if (Utils.equatesTo(strings[0].toLowerCase(), str)){
+            if (Utils.equatesTo(strings[0].toUpperCase(), str)){
                 try {
                     return commands.get(str).call();
                 } catch (Exception e) {
@@ -217,22 +219,26 @@ public class Commands implements CommandExecutor {
     public static boolean process(JDCommand jdCmd, String[] args){
         CommandSender sender = jdCmd.sender;
         String u = jdCmd.getCommandType().getUsage();
+        Main.log(Level.INFO, "COMMAND: "+jdCmd.getCommandType().name());
         if (args.length == 0){
+            sender.sendMessage("WRONG ARGUMENTS! NO ARGUMENTS!");
             Utils.sendMultilineMessage(sender, u);
             return false;
         }
         int i = 0;
         for (SubcommandType sub : jdCmd.getCommandType().getSubcommands()) {
             String arg = args[i].toUpperCase();
-            if (Utils.equatesTo(arg, sub.getName())){
+            if (Utils.equatesTo(arg, sub.getSimpleName())){
                 try {
                     return jdCmd.applySubcommand(arg, Arrays.copyOfRange(args, i + 1, args.length));
                 } catch (IndexOutOfBoundsException e){
+                    sender.sendMessage("INDEXOUTOFBOUNDS!");
                     Utils.sendMultilineMessage(sender, u);
                     return false;
                 }
             }
         }
+        sender.sendMessage("WHAT DID YOU JUST WRITE!?");
         Utils.sendMultilineMessage(sender, u);
         return false;
     }

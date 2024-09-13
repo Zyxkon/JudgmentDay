@@ -1,17 +1,20 @@
 package com.zyxkon.judgmentday.commands.types;
 
-import com.zyxkon.judgmentday.commands.CommandType;
+import com.zyxkon.judgmentday.CommandType;
 import com.zyxkon.judgmentday.Counter;
 import com.zyxkon.judgmentday.Utils;
 import com.zyxkon.judgmentday.commands.JDCommand;
-import com.zyxkon.judgmentday.commands.SubcommandType;
+import com.zyxkon.judgmentday.SubcommandType;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
 public class StatsCommand extends JDCommand {
-    public static final CommandType cmdType = CommandType.STATS;
+    public static final CommandType cmdType;
+    static {
+        cmdType = CommandType.STATS;
+    }
     public StatsCommand(CommandSender sender) {
         super(sender);
         this.setName(cmdType.name());
@@ -25,7 +28,7 @@ public class StatsCommand extends JDCommand {
         int n = args.length;
         Player subject = n != 0 ? Bukkit.getPlayer(args[n - 1]) : null;
         for (SubcommandType s : cmdType.getSubcommands()){
-            if (Utils.equatesTo(subcmd.toUpperCase(), s.getName())) {
+            if (Utils.equatesTo(subcmd.toUpperCase(), s.getSimpleName())) {
                 switch (s){
                     case STATS_GET: {
                         return this.get(subject);
