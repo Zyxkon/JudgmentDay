@@ -19,10 +19,7 @@ import java.util.stream.Collectors;
 
 
 public class InjuryCommand extends JDCommand {
-    public static final CommandType cmdType;
-    static {
-        cmdType = CommandType.INJURY;
-    }
+    public static final CommandType cmdType = CommandType.INJURY;
     public InjuryCommand(CommandSender sender) {
         super(sender);
         this.setName(cmdType.name());

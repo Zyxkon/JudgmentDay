@@ -42,7 +42,7 @@ public enum CommandType {
     }
     CommandType(SubcommandType... subcommands) {
         // technically, based off the code above, :CommandType: does not require any sort of subcommands
-        // but those that are explicitly added to the enums
+        // but enums explicitly stated in its initialization will always be added to it
         for (SubcommandType t : subcommands){
             if (this.addSubcommand(t)) {
                 Main.log(Level.INFO, String.format("Successfully added subcommand %s(%s) to command %s",

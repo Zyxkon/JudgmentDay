@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.*;
 
 public class ThirstCommand extends JDCommand {
-    public static final CommandType cmdType;
-    static {
-        cmdType = CommandType.THIRST;
-    }
+    public static final CommandType cmdType = CommandType.THIRST;
     public ThirstCommand(CommandSender sender) {
         super(sender);
         this.setName(cmdType.name());

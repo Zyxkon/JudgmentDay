@@ -11,10 +11,7 @@ import org.bukkit.entity.Player;
 
 
 public class StatsCommand extends JDCommand {
-    public static final CommandType cmdType;
-    static {
-        cmdType = CommandType.STATS;
-    }
+    public static final CommandType cmdType = CommandType.STATS;
     public StatsCommand(CommandSender sender) {
         super(sender);
         this.setName(cmdType.name());
